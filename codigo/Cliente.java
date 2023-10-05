@@ -4,8 +4,13 @@ public class Cliente {
 	private String id;
 	private Veiculo[] veiculos;
 
+
+
+
 	public Cliente(String nome, String id) {
-		//
+		
+		this.nome = nome;
+        this.id = id;
 	}
 
 	public void addVeiculo(Veiculo veiculo) {
@@ -16,7 +21,7 @@ public class Cliente {
 		
 	}
 
-	public int totalDeUsos() {
+	public int totalDeUsos() {a
 		
 	}
 
