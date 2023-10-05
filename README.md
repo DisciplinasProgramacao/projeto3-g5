@@ -5,7 +5,7 @@ Escreva um ou dois parágrafos resumindo o objetivo do seu projeto.
 ## Alunos integrantes da equipe
 
 * Vitor Pereira Leite de Melo
-* Nome completo do aluno 2
+* Paulo Victor Fernandes de Araujo Silva
 * Nome completo do aluno 3
 * Nome completo do aluno 4
 * Nome completo do aluno 4
