@@ -8,8 +8,8 @@ Escreva um ou dois parágrafos resumindo o objetivo do seu projeto.
 * Paulo Victor Fernandes de Araujo Silva
 * Lucas de Carvalho Barbosa 
 * Arthur Araújo Mendonça
-* Nome completo do aluno 4
-* Nome completo do aluno 4
+* Walter Roberto Rodrigues Loubak  
+* Anna Laura Reis Dornelas Gama
 
 ## Professores responsáveis
 
