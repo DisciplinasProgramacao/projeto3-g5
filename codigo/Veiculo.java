@@ -4,7 +4,7 @@ public class Veiculo {
 	private UsoDeVaga[] usos;
 
 	public Veiculo(String placa) {
-		
+		//
 	}
 
 	public void estacionar(Vaga vaga) {

@@ -9,7 +9,7 @@ public class UsoDeVaga {
 	private double valorPago;
 
 	public UsoDeVaga(Vaga vaga) {
-		
+		//
 	}
 
 	public double sair() {
