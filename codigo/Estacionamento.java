@@ -7,7 +7,7 @@ public class Estacionamento {
 	private int vagasPorFileira;
 
 	public Estacionamento(String nome, int fileiras, int vagasPorFila) {
-		
+		//
 	}
 
 	public void addVeiculo(Veiculo veiculo, String idCli) {

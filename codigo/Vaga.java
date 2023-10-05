@@ -4,7 +4,7 @@ public class Vaga {
 	private boolean disponivel;
 
 	public Vaga(int fila, int numero) {
-		
+		//
 	}
 
 	public boolean estacionar() {

@@ -5,7 +5,7 @@ public class Cliente {
 	private Veiculo[] veiculos;
 
 	public Cliente(String nome, String id) {
-		
+		//
 	}
 
 	public void addVeiculo(Veiculo veiculo) {
