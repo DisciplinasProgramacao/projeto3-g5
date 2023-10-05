@@ -7,7 +7,7 @@ Escreva um ou dois parágrafos resumindo o objetivo do seu projeto.
 * Vitor Pereira Leite de Melo
 * Paulo Victor Fernandes de Araujo Silva
 * Lucas de Carvalho Barbosa 
-* Nome completo do aluno 4
+* Arthur Araújo Mendonça
 * Nome completo do aluno 4
 * Nome completo do aluno 4
 
