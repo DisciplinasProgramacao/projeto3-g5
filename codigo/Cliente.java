@@ -36,5 +36,35 @@ public class Cliente {
 	public double arrecadadoNoMes(int mes) {
 		
 	}
+	
+    // Getter para o campo nome
+    public String getNome() {
+        return nome;
+    }
+
+    // Setter para o campo nome
+    public void setNome(String nome) {
+        this.nome = nome;
+    }
+
+    // Getter para o campo id
+    public String getId() {
+        return id;
+    }
+
+    // Setter para o campo id
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    // Getter para o campo veiculos
+    public Veiculo[] getVeiculos() {
+        return veiculos;
+    }
+
+    // Setter para o campo veiculos
+    public void setVeiculos(Veiculo[] veiculos) {
+        this.veiculos = veiculos;
+    }
 
 }
