@@ -9,8 +9,49 @@ public class UsoDeVaga {
 	private double valorPago;
 
 	public UsoDeVaga(Vaga vaga) {
+		this.vaga = vaga;
 		
 	}
+	//getter para vaga
+	public Vaga getVaga() {
+		return vaga;
+	}
+
+	//sett vaga
+	public void setVaga(Vaga vaga){
+		this.vaga = vaga;
+	}
+
+	//getter entrada
+	public LocalDateTime getEntrada(){
+		return entrada;
+	}
+
+	//sett entrada
+	public void setEntrada(LocalDateTime entrada){
+		this.entrada = entrada;
+	}
+
+	//get saida
+	public LocalDateTime getSaida(){
+		return saida;
+	}
+
+	//sett saida
+	public void setSaida(LocalDateTime saida){
+		this.saida = saida;
+	}
+
+	//gett valorPago
+	public double getvalorPago(){
+		return valorPago;
+	}
+
+	//set valorPago
+	public void setvalorPago(double valorPago){
+		this.valorPago = valorPago;
+	}
+	 
 
 	public double sair() {
 		
