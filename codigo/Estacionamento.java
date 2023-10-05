@@ -10,6 +10,45 @@ public class Estacionamento {
 		//
 	}
 
+	public void setNome(String nome){
+		this.nome =nome;
+	}
+	
+	public String getNome(){
+		return this.nome
+	}
+
+	public void setId(Cliente[] id){
+		this.id = id;
+	}
+
+	public Cliente[] getId(){
+		return this.id;
+	}
+
+	public void setVaga(Vaga[] vaga){
+		this.vaga = vaga;
+	}
+
+	public Vaga[] getVaga(){
+		return this.vaga;
+	}
+
+	public void setQuantFileiras(int quantFileiras){
+		this.quantFileiras = quantFileiras;
+	}
+
+	public int getQuantFileiras(){
+		return this.quantFileiras;
+	}
+
+	public void setVagasPorFileira(int vagasPorFileira){
+		this.vagasPorFileira = vagasPorFileira;
+	}
+
+	public int getVagasPorFileira(){
+		return this.setvagasPorFileira;
+	}
 	public void addVeiculo(Veiculo veiculo, String idCli) {
 		
 	}
