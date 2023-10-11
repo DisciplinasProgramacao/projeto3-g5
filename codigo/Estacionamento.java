@@ -1,3 +1,7 @@
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+
 public class Estacionamento {
 
 	private String nome;
@@ -15,7 +19,7 @@ public class Estacionamento {
 	}
 	
 	public String getNome(){
-		return this.nome
+		return this.nome;
 	}
 
 	public void setId(Cliente[] id){
@@ -27,11 +31,11 @@ public class Estacionamento {
 	}
 
 	public void setVaga(Vaga[] vaga){
-		this.vaga = vaga;
+		this.vagas = vaga;
 	}
 
 	public Vaga[] getVaga(){
-		return this.vaga;
+		return this.vagas;
 	}
 
 	public void setQuantFileiras(int quantFileiras){
@@ -47,14 +51,14 @@ public class Estacionamento {
 	}
 
 	public int getVagasPorFileira(){
-		return this.setvagasPorFileira;
+		return this.vagasPorFileira;
 	}
 	public void addVeiculo(Veiculo veiculo, String idCli) {
 		
 	}
 
 	public void addCliente(Cliente cliente) {
-		
+
 	}
 
 	private void gerarVagas() {
@@ -69,16 +73,46 @@ public class Estacionamento {
 		
 	}
 
-	public double totalArrecadado() {
-		
+	public double totalArrecadado() throws IOException{
+		double sum = 0;
+		BufferedReader buffRead = new BufferedReader(new FileReader("path"));
+		String linha = "";
+		while (true) {
+			if (linha != null) {
+				String col[] = linha.split(";");
+				if(col[3] != "Valor"){
+					sum += Integer.parseInt(col[3]);
+				}
+			} else
+				break;
+			linha = buffRead.readLine();
+		}
+		buffRead.close();
+		return sum;
 	}
 
 	public double arrecadacaoNoMes(int mes) {
 		
 	}
 
-	public double valorMedioPorUso() {
-		
+	public double valorMedioPorUso() throws IOException{
+		double sum = 0;
+		int count = 0;
+		BufferedReader buffRead = new BufferedReader(new FileReader("path"));
+		String linha = "";
+		while (true) {
+			if (linha != null) {
+				String col[] = linha.split(";");
+				if(col[3] != "Valor"){
+					sum += Integer.parseInt(col[3]);
+					count++;
+				}
+			} else
+				break;
+			linha = buffRead.readLine();
+		}
+		buffRead.close();
+		return sum/count;
 	}
 
 	public String top5Clientes(int mes) {
