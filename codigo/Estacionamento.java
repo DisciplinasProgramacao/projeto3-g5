@@ -1,3 +1,5 @@
+import java.util.Random;
+
 public class Estacionamento {
 
 	private String nome;
@@ -17,7 +19,7 @@ public class Estacionamento {
 	}
 	
 	public String getNome(){
-		return this.nome
+		return this.nome;
 	}
 
 	public void setId(Cliente[] id){
@@ -28,12 +30,12 @@ public class Estacionamento {
 		return this.id;
 	}
 
-	public void setVaga(Vaga[] vaga){
-		this.vaga = vaga;
+	public void setVaga(Vaga[] vagas){
+		this.vagas = vagas;
 	}
 
 	public Vaga[] getVaga(){
-		return this.vaga;
+		return this.vagas;
 	}
 
 	public void setQuantFileiras(int quantFileiras){
@@ -49,7 +51,7 @@ public class Estacionamento {
 	}
 
 	public int getVagasPorFileira(){
-		return this.setvagasPorFileira;
+		return this.vagasPorFileira;
 	}
 	public void addVeiculo(Veiculo veiculo, String idCli) {
 		
@@ -60,7 +62,21 @@ public class Estacionamento {
 	}
 
 	private void gerarVagas() {
-		
+		int index =  this.quantFileiras * this.vagasPorFileira;
+		Vaga[] vagas = new Vaga[index];
+		String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+		int count = 0;
+		for(int i = 0; i< this.quantFileiras; i++){
+			for(int j= 0; j < this.vagasPorFileira; j++){
+				String id = String.valueOf(characters.charAt(i));
+				if(j < 10){
+					id += "0";
+				}
+				id += String.valueOf(j);
+				vagas[count].setId(id);
+				vagas[count].setDisponivel(true);
+			}
+		}
 	}
 
 	public void estacionar(String placa) {
