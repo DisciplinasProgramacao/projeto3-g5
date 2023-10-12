@@ -91,9 +91,15 @@ public class Estacionamento {
 		return sum;
 	}
 
-	public double arrecadacaoNoMes(int mes) {
-		
-	}
+	public double arrecadacaoNoMes(int mes, registros) {
+		double arrecadacao = 0;
+        for (int i = 0; i< registros.length; i++) {
+            if (registro[i].mes == mes) {
+                arrecadacao += registro[i].tarifa;
+            }
+        }
+        return arrecadacao;
+    }
 
 	public double valorMedioPorUso() throws IOException{
 		double sum = 0;
@@ -116,7 +122,31 @@ public class Estacionamento {
 	}
 
 	public String top5Clientes(int mes) {
-		
+		Map<String, Double> despesasMensais = new HashMap<>();
+        for (Map.Entry<String, Double> entry : despesasPorCliente.entrySet()) {
+            String chave = entry.getKey();
+            double despesa = entry.getValue();
+            String[] partes = chave.split("-");
+            int mesRegistro = Integer.parseInt(partes[1]);
+            if (mesRegistro == mes) {
+                if (despesasMensais.containsKey(partes[0])) {
+                    double despesaAtual = despesasMensais.get(partes[0]);
+                    despesasMensais.put(partes[0], despesaAtual + despesa);
+                } else {
+                    despesasMensais.put(partes[0], despesa);
+                }
+            }
+        }
+
+        List<String> topClientes = new ArrayList<>(despesasMensais.keySet());
+
+        topClientes.sort((cliente1, cliente2) -> Double.compare(despesasMensais.get(cliente2), despesasMensais.get(cliente1));
+
+        if (topClientes.size() > 5) {
+            topClientes = topClientes.subList(0, 5);
+        }
+
+        return topClientes;
 	}
 
 }
