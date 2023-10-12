@@ -24,7 +24,7 @@ public class Cliente {
     public Veiculo possuiVeiculo(String placa) {
         for (Veiculo veiculo : veiculos) {
             if (veiculo != null && veiculo.getPlaca().equals(placa)) {
-                return veiculo;
+                returan veiculo;
             }
         }
         return null;
