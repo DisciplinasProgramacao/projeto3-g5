@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 import java.util.*;
 
 public class Veiculo {
@@ -70,38 +69,6 @@ public class Veiculo {
         return totalUsos;
     }
 	
-=======
-public class Veiculo {
-
-	private String placa;
-	private UsoDeVaga[] usos;
-
-	public Veiculo(String placa, UsoDeVaga[] usos) {
-		this.placa = placa;
-		this.usos = usos;
-	}
-
-	public void estacionar(Vaga vaga) {
-		
-	}
-
-	public double sair() {
-		
-	}
-
-	public double totalArrecadado() {
-		
-	}
-
-	public double arrecadadoNoMes(int mes) {
-		
-	}
-
-	public int totalDeUsos() {
-		
-	}
-
->>>>>>> master
 	public String getPlaca() {
 		return this.placa;
 	}
