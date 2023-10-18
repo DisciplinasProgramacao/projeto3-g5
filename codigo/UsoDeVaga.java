@@ -9,8 +9,9 @@ public class UsoDeVaga {
 	private LocalDateTime saida;
 	private double valorPago;
 
-	public UsoDeVaga(Vaga vaga) {
+	public UsoDeVaga(Vaga vaga, LocalDateTime entrada) {
 		this.vaga = vaga;
+		this.entrada = entrada;
 		
 	}
 	//getter para vaga
@@ -55,11 +56,32 @@ public class UsoDeVaga {
 	 
 
 	public double sair() {
+		if(entrada != null && saida != null){
+		//diferença entre entrada e saida
+		LocalDateTime tempEntrada = entrada;
+		LocalDateTime tempSaida = saida;
+
+		long minutosEstacionados = 0;
+
+		while(tempEntrada.isBefore(tempSaida)){
+			minutosEstacionados++;
+			tempEntrada = tempEntrada.plusMinutes(1);
+		}
+
+		//valor pela taxa de fraçao de uso
+		double valor = minutosEstacionados * FRACAO_USO * VALOR_FRACAO;
+
+		//valor maximo
+		valorPago = Math.min(valor, VALOR_MAXIMO);
 		return valorPago;
+
+		}
+		return 0.0;
 		
 	}
 
 	public double valorPago() {
+		
 		return valorPago;
 		
 	}
