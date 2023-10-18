@@ -12,7 +12,7 @@ public class Veiculo {
 	}
 
 	public double sair() {
-		
+		return  100.00;
 	}
 
 	public double totalArrecadado() {

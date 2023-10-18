@@ -126,6 +126,7 @@ public class Estacionamento {
 						return this.id[k].possuiVeiculo(placa).sair();
 						}
 					}
+        return contCli;
 					
 
 	}
