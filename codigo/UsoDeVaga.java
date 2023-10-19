@@ -1,3 +1,4 @@
+import java.time.LocalDateTime;
 public class UsoDeVaga {
 
 	private static final double FRACAO_USO = 0.25;
@@ -8,15 +9,80 @@ public class UsoDeVaga {
 	private LocalDateTime saida;
 	private double valorPago;
 
-	public UsoDeVaga(Vaga vaga) {
-		//
+	public UsoDeVaga(Vaga vaga, LocalDateTime entrada) {
+		this.vaga = vaga;
+		this.entrada = entrada;
+		
+	}
+	//getter para vaga
+	public Vaga getVaga() {
+		return vaga;
 	}
 
+	//sett vaga
+	public void setVaga(Vaga vaga){
+		this.vaga = vaga;
+	}
+
+	//getter entrada
+	public LocalDateTime getEntrada(){
+		return entrada;
+	}
+
+	//sett entrada
+	public void setEntrada(LocalDateTime entrada){
+		this.entrada = entrada;
+	}
+
+	//get saida
+	public LocalDateTime getSaida(){
+		return saida;
+	}
+
+	//sett saida
+	public void setSaida(LocalDateTime saida){
+		this.saida = saida;
+	}
+
+	//gett valorPago
+	public double getvalorPago(){
+		return valorPago;
+	}
+
+	//set valorPago
+	public void setvalorPago(double valorPago){
+		this.valorPago = valorPago;
+	}
+	 
+
 	public double sair() {
+		if(entrada != null && saida != null){
+		//diferença entre entrada e saida
+		LocalDateTime tempEntrada = entrada;
+		LocalDateTime tempSaida = saida;
+
+		long minutosEstacionados = 0;
+
+		while(tempEntrada.isBefore(tempSaida)){
+			minutosEstacionados++;
+			tempEntrada = tempEntrada.plusMinutes(1);
+		}
+
+		//valor pela taxa de fraçao de uso
+		double valor = minutosEstacionados * FRACAO_USO * VALOR_FRACAO;
+
+		//valor maximo
+		valorPago = Math.min(valor, VALOR_MAXIMO);
+		return valorPago;
+
+		}
+		return 0.0;
 		
 	}
 
 	public double valorPago() {
+		
+		return valorPago;
 		
 	}
 
