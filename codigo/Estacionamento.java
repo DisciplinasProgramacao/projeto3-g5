@@ -123,12 +123,10 @@ public class Estacionamento {
 		// }
 		for(int k=0;k<this.contCli;k++){
 						if(this.id[k].possuiVeiculo(placa) != null){
-						return this.id[k].possuiVeiculo(placa).sair();
+							return this.id[k].possuiVeiculo(placa).sair();
 						}
 					}
-        return contCli;
-					
-
+       return 0;
 	}
 
 	public double totalArrecadado() {
