@@ -21,6 +21,18 @@ public class Veiculo {
             }
         }
     }
+    public void estacionar(Vaga vaga) {
+        for (int i = 0; i < usos.length; i++) {
+            if (usos[i] == null) {
+				if (vaga.disponivel()) {
+					usos[i] = new UsoDeVaga(vaga, this);
+					vaga.estacionar();
+					break;
+				}
+            }
+        }
+    }
+
 
     public double sair() {
         double totalPago = 0.0;
