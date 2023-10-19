@@ -5,7 +5,7 @@ import static org.junit.Assert.*;
 public class VagaTeste {
     private Vaga vaga;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         vaga = new Vaga(1, 1);
     }

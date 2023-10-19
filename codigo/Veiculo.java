@@ -1,4 +1,5 @@
 import java.util.*;
+import java.time.LocalDateTime;
 
 public class Veiculo {
 
@@ -14,7 +15,7 @@ public class Veiculo {
         for (int i = 0; i < usos.length; i++) {
             if (usos[i] == null) {
 				if (vaga.disponivel()) {
-					usos[i] = new UsoDeVaga(vaga, this);
+					usos[i] = new UsoDeVaga(vaga);
 					vaga.estacionar();
 					break;
 				}
@@ -22,11 +23,10 @@ public class Veiculo {
         }
     }
 
-
     public double sair() {
         double totalPago = 0.0;
         for (int i = 0; i < usos.length; i++) {
-            if (usos[i] != null && !usos[i].getSaida()) {
+            if (usos[i] != null && usos[i].getSaida() != null) {
                 usos[i].sair();
                 totalPago += usos[i].valorPago();
                 usos[i] = null;
@@ -38,7 +38,7 @@ public class Veiculo {
     public double totalArrecadado() {
         double totalArrecadado = 0.0;
         for (UsoDeVaga uso : usos) {
-            if (uso != null && uso.getSaida()) {
+            if (uso != null && uso.getSaida() != null) {
                 totalArrecadado += uso.valorPago();
             }
         }
@@ -47,10 +47,10 @@ public class Veiculo {
 
     public double arrecadadoNoMes(int mes) {
         double totalArrecadadoNoMes = 0.0;
-		int mesData = data.getMonth() + 1;
         for (UsoDeVaga uso : usos) {
 			if (uso != null) {
-				Date data = uso.getSaida();
+				LocalDateTime data = uso.getSaida();
+                int mesData = data.getMonthValue();
 
 				if (data != null && mesData == mes) {
 					totalArrecadadoNoMes += uso.valorPago();
