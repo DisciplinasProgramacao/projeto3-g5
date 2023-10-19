@@ -1,4 +1,8 @@
+
 import java.util.Random;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 
 public class Estacionamento {
 
@@ -32,8 +36,9 @@ public class Estacionamento {
 		return this.id;
 	}
 
-	public void setVaga(Vaga[] vagas){
-		this.vagas = vagas;
+
+	public void setVaga(Vaga[] vaga){
+		this.vagas = vaga;
 	}
 
 	public Vaga[] getVaga(){
@@ -66,9 +71,9 @@ public class Estacionamento {
 	}
 
 	public void addCliente(Cliente cliente) {
-
 	this.id[this.contCli]=cliente;
 	this.contCli++;
+
 	}
 
 	private void gerarVagas() {
@@ -131,20 +136,80 @@ public class Estacionamento {
 
 	}
 
-	public double totalArrecadado() {
-		
+	public double totalArrecadado() throws IOException{
+		double sum = 0;
+		BufferedReader buffRead = new BufferedReader(new FileReader("path"));
+		String linha = "";
+		while (true) {
+			if (linha != null) {
+				String col[] = linha.split(";");
+				if(col[3] != "Valor"){
+					sum += Integer.parseInt(col[3]);
+				}
+			} else
+				break;
+			linha = buffRead.readLine();
+		}
+		buffRead.close();
+		return sum;
 	}
 
-	public double arrecadacaoNoMes(int mes) {
-		
-	}
+	public double arrecadacaoNoMes(int mes, registros) {
+		double arrecadacao = 0;
+        for (int i = 0; i< registros.length; i++) {
+            if (registro[i].mes == mes) {
+                arrecadacao += registro[i].tarifa;
+            }
+        }
+        return arrecadacao;
+    }
 
-	public double valorMedioPorUso() {
-		
+	public double valorMedioPorUso() throws IOException{
+		double sum = 0;
+		int count = 0;
+		BufferedReader buffRead = new BufferedReader(new FileReader("path"));
+		String linha = "";
+		while (true) {
+			if (linha != null) {
+				String col[] = linha.split(";");
+				if(col[3] != "Valor"){
+					sum += Integer.parseInt(col[3]);
+					count++;
+				}
+			} else
+				break;
+			linha = buffRead.readLine();
+		}
+		buffRead.close();
+		return sum/count;
 	}
 
 	public String top5Clientes(int mes) {
-		
+		Map<String, Double> despesasMensais = new HashMap<>();
+        for (Map.Entry<String, Double> entry : despesasPorCliente.entrySet()) {
+            String chave = entry.getKey();
+            double despesa = entry.getValue();
+            String[] partes = chave.split("-");
+            int mesRegistro = Integer.parseInt(partes[1]);
+            if (mesRegistro == mes) {
+                if (despesasMensais.containsKey(partes[0])) {
+                    double despesaAtual = despesasMensais.get(partes[0]);
+                    despesasMensais.put(partes[0], despesaAtual + despesa);
+                } else {
+                    despesasMensais.put(partes[0], despesa);
+                }
+            }
+        }
+
+        List<String> topClientes = new ArrayList<>(despesasMensais.keySet());
+
+        topClientes.sort((cliente1, cliente2) -> Double.compare(despesasMensais.get(cliente2), despesasMensais.get(cliente1));
+
+        if (topClientes.size() > 5) {
+            topClientes = topClientes.subList(0, 5);
+        }
+
+        return topClientes;
 	}
 
 }
