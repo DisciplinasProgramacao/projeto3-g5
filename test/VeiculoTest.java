@@ -1,6 +1,6 @@
 package projeto3-g5.testes;
 
-public class Veiculo {
+public class VeiculoTest {
     public void testArrecadadoNoMes() {
         // Crie uma instância da classe ArrecadacaoAnual
         Veiculo arrecadacao = new Veiculo();
