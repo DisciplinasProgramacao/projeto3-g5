@@ -169,21 +169,25 @@ public class Estacionamento {
 		return sum/count;
 	}
 	public String top5Clientes(int mes){
-		Map<String, Double>[] clientes = new HashMap[5];
+		String[] clienteNome = new String[5];
+		Double[] value = new Double[5];
 		for(int i=0; i< this.id.length; i++){
 			double arrecadado = this.id[i].arrecadadoNoMes();
 			for(int j=0; j<5; j++){
-				if(clientes[j] != null){
-					if(arrecadado > clientes[j].get("valor")){
-						Map<String, Double> temp = clientes[j];
-						clientes[j] = new HashMap<>();
-						clientes[j].put("nome", this.id[i].getNome());
-						clientes[j].put("valor", arrecadado);
+				if(value[j] != null){
+					if(arrecadado > value[j]){
+						String temp = clienteNome[j];
+						double tempValue = value[j];
+						value[j] = arrecadado;
+						clienteNome[j] = this.id[i].getNome();
 
 						for (int k = j + 1; k < 5; k++) {
-							Map<String, Double> temp2 = clientes[k];
-							clientes[k] = temp;
+							String temp2 = clienteNome[k];
+							double tempValue2 = value[k];
+							clienteNome[k] = temp;
+							value[k] = tempValue2;
 							temp = temp2;
+							tempValue = tempValue2;
 						}
 						break;
 					}
