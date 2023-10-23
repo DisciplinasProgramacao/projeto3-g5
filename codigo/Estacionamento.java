@@ -5,15 +5,12 @@ import java.io.FileReader;
 import java.io.IOException;
 
 public class Estacionamento {
-
 	private String nome;
 	private Cliente[] id;
 	private Vaga[] vagas;
 	private int quantFileiras;
 	private int vagasPorFileira;
 	private int contCli=0;
-	// private int contVei=0;
-	// private Veiculo[] veiculo;
 	public Estacionamento(String nome, int fileiras, int vagasPorFila) {
 		this.setNome(nome);
 		this.setQuantFileiras(fileiras);
@@ -107,12 +104,7 @@ public class Estacionamento {
 						if(this.id[k].possuiVeiculo(placa) != null){
 						this.id[k].possuiVeiculo(placa).estacionar(this.vagas[count]);	
 						}
-					}
-					// Veiculo veiculo =new Veiculo(placa);
-					// this.veiculo[this.contVei]=veiculo;
-					// this.contVei++;
-					//veiculo.estacionar(this.vagas[count]);
-					//this.vagas[count].estacionar();			
+					}		
 				}
 				count++;
 			}
@@ -121,11 +113,6 @@ public class Estacionamento {
 	}
 
 	public double sair(String placa) {
-		// for(int i=0;i<this.contVei;i++){
-		// 	if(this.veiculo[i].getPlaca().equals(placa)){
-		// 		return this.veiculo[i].sair();
-		// 	}
-		// }
 		for(int k=0;k<this.contCli;k++){
 						if(this.id[k].possuiVeiculo(placa) != null){
 						return this.id[k].possuiVeiculo(placa).sair();
@@ -154,15 +141,13 @@ public class Estacionamento {
 		return sum;
 	}
 
-	// public double arrecadacaoNoMes(int mes, registros) {
-	// 	double arrecadacao = 0;
-    //     for (int i = 0; i< registros.length; i++) {
-    //         if (registro[i].mes == mes) {
-    //             arrecadacao += registro[i].tarifa;
-    //         }
-    //     }
-    //     return arrecadacao;
-    // }
+	public double arrecadacaoNoMes(int mes) {
+		let total = 0;
+		for(int i=0; i< this.id.length; i++){
+			total += this.id[i].arrecadadoNoMes();
+		}
+		return total;
+    }
 
 	public double valorMedioPorUso() throws IOException{
 		double sum = 0;
@@ -183,33 +168,36 @@ public class Estacionamento {
 		buffRead.close();
 		return sum/count;
 	}
+	public String top5Clientes(int mes){
+		Map<String, Double>[] clientes = new HashMap[5];
+		for(int i=0; i< this.id.length; i++){
+			double arrecadado = this.id[i].arrecadadoNoMes();
+			for(int j=0; j<5; j++){
+				if(clientes[j] != null){
+					if(arrecadado > clientes[j].get("valor")){
+						Map<String, Double> temp = clientes[j];
+						clientes[j] = new HashMap<>();
+						clientes[j].put("nome", this.id[i].getNome());
+						clientes[j].put("valor", arrecadado);
 
-	// public String top5Clientes(int mes) {
-	// 	Map<String, Double> despesasMensais = new HashMap<>();
-    //     for (Map.Entry<String, Double> entry : despesasPorCliente.entrySet()) {
-    //         String chave = entry.getKey();
-    //         double despesa = entry.getValue();
-    //         String[] partes = chave.split("-");
-    //         int mesRegistro = Integer.parseInt(partes[1]);
-    //         if (mesRegistro == mes) {
-    //             if (despesasMensais.containsKey(partes[0])) {
-    //                 double despesaAtual = despesasMensais.get(partes[0]);
-    //                 despesasMensais.put(partes[0], despesaAtual + despesa);
-    //             } else {
-    //                 despesasMensais.put(partes[0], despesa);
-    //             }
-    //         }
-    //     }
-
-    //     List<String> topClientes = new ArrayList<>(despesasMensais.keySet());
-
-    //     topClientes.sort((cliente1, cliente2) -> Double.compare(despesasMensais.get(cliente2), despesasMensais.get(cliente1));
-
-    //     if (topClientes.size() > 5) {
-    //         topClientes = topClientes.subList(0, 5);
-    //     }
-
-    //     return topClientes;
-	// }
-
+						for (int k = j + 1; k < 5; k++) {
+							Map<String, Double> temp2 = clientes[k];
+							clientes[k] = temp;
+							temp = temp2;
+						}
+						break;
+					}
+				}else{
+					clientes[j].put("nome", this.id[i].getNome());
+					clientes[j].put("valor", arrecadado);
+					break;
+				}
+			}
+		}
+		String top5 = "";
+		for(int i=0; i<clientes.length; i++){
+			top5 += clientes[i].get("nome");
+		}
+		return top5;
+	}
 }
