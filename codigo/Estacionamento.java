@@ -1,5 +1,5 @@
 
-import java.util.Random;
+import java.util.*;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -74,7 +74,7 @@ public class Estacionamento {
 	}
 
 	private void gerarVagas() {
-		int index =  this.quantFileiras * this.vagasPorFileira;
+		// int index =  this.quantFileiras * this.vagasPorFileira;
 		//Vaga[] vagas = new Vaga[index];
 		String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 		int count = 0;
@@ -97,7 +97,7 @@ public class Estacionamento {
 		int count = 0;
 		for(int i = 0; i< this.quantFileiras; i++){
 			for(int j = 0; j< this.vagasPorFileira; j++){
-				if(this.vagas[count].disponivel()){
+				if(this.vagas[count].getDisponivel()){
 					i=this.quantFileiras;
 					j=this.vagasPorFileira;
 					for(int k=0;k<this.contCli;k++){
@@ -142,9 +142,9 @@ public class Estacionamento {
 	}
 
 	public double arrecadacaoNoMes(int mes) {
-		let total = 0;
+		int total = 0;
 		for(int i=0; i< this.id.length; i++){
-			total += this.id[i].arrecadadoNoMes();
+			total += this.id[i].arrecadadoNoMes(mes);
 		}
 		return total;
     }
@@ -172,7 +172,7 @@ public class Estacionamento {
 		String[] clienteNome = new String[5];
 		Double[] value = new Double[5];
 		for(int i=0; i< this.id.length; i++){
-			double arrecadado = this.id[i].arrecadadoNoMes();
+			double arrecadado = this.id[i].arrecadadoNoMes(mes);
 			for(int j=0; j<5; j++){
 				if(value[j] != null){
 					if(arrecadado > value[j]){
@@ -185,22 +185,22 @@ public class Estacionamento {
 							String temp2 = clienteNome[k];
 							double tempValue2 = value[k];
 							clienteNome[k] = temp;
-							value[k] = tempValue2;
+							value[k] = tempValue;
 							temp = temp2;
 							tempValue = tempValue2;
 						}
 						break;
 					}
 				}else{
-					clientes[j].put("nome", this.id[i].getNome());
-					clientes[j].put("valor", arrecadado);
+					value[j] = arrecadado;
+					clienteNome[j] = this.id[i].getNome();
 					break;
 				}
 			}
 		}
 		String top5 = "";
-		for(int i=0; i<clientes.length; i++){
-			top5 += clientes[i].get("nome");
+		for(int i=0; i<clienteNome.length; i++){
+			top5 += clienteNome[i];
 		}
 		return top5;
 	}
