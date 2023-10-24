@@ -15,8 +15,8 @@ public class Veiculo {
     public void estacionar(Vaga vaga) {
         for (int i = 0; i < usos.length; i++) {
             if (usos[i] == null) {
-				if (vaga.disponivel()) {
-					usos[i] = new UsoDeVaga(vaga, this);
+				if (vaga.getDisponivel()) {
+					usos[i] = new UsoDeVaga(vaga);
 					vaga.estacionar();
 					break;
 				}
