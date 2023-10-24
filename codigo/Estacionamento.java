@@ -210,21 +210,11 @@ public class Estacionamento {
 
 	}
 
-	public double totalArrecadado() throws IOException {
+	public double totalArrecadado(){
 		double sum = 0;
-		BufferedReader buffRead = new BufferedReader(new FileReader("path"));
-		String linha = "";
-		while (true) {
-			if (linha != null) {
-				String col[] = linha.split(";");
-				if (col[3] != "Valor") {
-					sum += Integer.parseInt(col[3]);
-				}
-			} else
-				break;
-			linha = buffRead.readLine();
+		for(int i=0; i< this.id.length; i++){
+			sum += this.id[i].arrecadadoTotal();
 		}
-		buffRead.close();
 		return sum;
 	}
 
@@ -236,24 +226,12 @@ public class Estacionamento {
 		return total;
 	}
 
-	public double valorMedioPorUso() throws IOException {
+	public double valorMedioPorUso(){
 		double sum = 0;
-		int count = 0;
-		BufferedReader buffRead = new BufferedReader(new FileReader("path"));
-		String linha = "";
-		while (true) {
-			if (linha != null) {
-				String col[] = linha.split(";");
-				if (col[3] != "Valor") {
-					sum += Integer.parseInt(col[3]);
-					count++;
-				}
-			} else
-				break;
-			linha = buffRead.readLine();
+		for(int i=0; i< this.id.length; i++){
+			sum += (this.id[i].arrecadadoTotal() / this.id[i].totalDeUsos());
 		}
-		buffRead.close();
-		return sum / count;
+		return sum/this.id.length;
 	}
 
 	public String top5Clientes(int mes) {
