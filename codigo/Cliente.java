@@ -1,3 +1,5 @@
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class Cliente {
@@ -10,6 +12,26 @@ public class Cliente {
         this.nome = nome;
         this.id = id;
         
+    }
+    public void escreverArquivo(String estacionamento){
+        try {
+        FileWriter fileWriter = new FileWriter("cliente.txt",true);
+		fileWriter.write(estacionamento+","+this.nome+","+this.id+";");
+
+        for (Veiculo veiculo : veiculos) {
+        veiculo.escreverArquivo(this.nome,estacionamento);
+
+        }
+        
+      
+
+        fileWriter.close();
+
+      
+    } catch (IOException e) {
+        e.printStackTrace();
+    }
+
     }
 
     public void addVeiculo(Veiculo veiculo) {

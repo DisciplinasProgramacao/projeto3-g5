@@ -1,3 +1,5 @@
+import java.io.FileWriter;
+import java.io.IOException;
 import java.time.LocalDateTime;
 public class UsoDeVaga {
 
@@ -17,6 +19,23 @@ public class UsoDeVaga {
 	//getter para vaga
 	public Vaga getVaga() {
 		return vaga;
+	}
+
+	public void escreverArquivo(String placa, String estacionamento){
+		 try {
+        FileWriter fileWriter = new FileWriter("usoDeVaga.txt",true);
+		fileWriter.write(placa+","+this.entrada+","+this.saida+","+this.valorPago+","+this.vaga.getId()+";");
+			//this.vaga.escreverArquivo(estacionamento);
+            
+        
+      
+
+        fileWriter.close();
+
+      
+    } catch (IOException e) {
+        e.printStackTrace();
+    }
 	}
 
 	//sett vaga

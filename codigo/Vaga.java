@@ -1,3 +1,6 @@
+import java.io.FileWriter;
+import java.io.IOException;
+
 public class Vaga {
 	private String id;
 	private boolean disponivel;
@@ -9,6 +12,18 @@ public class Vaga {
 
 	public String getId() {
 		return this.id;
+	}
+	public void escreverArquivo(String estacionamento){
+		 try {
+        FileWriter fileWriter = new FileWriter("vaga.txt",true);
+		fileWriter.write(estacionamento+","+this.id+","+this.disponivel+";");             
+
+        fileWriter.close();
+
+      
+    } catch (IOException e) {
+        e.printStackTrace();
+    }
 	}
 
 	public void setId(String id) {

@@ -2,6 +2,7 @@
 import java.util.*;
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 
 public class Estacionamento {
@@ -57,6 +58,26 @@ public class Estacionamento {
 	public int getVagasPorFileira(){
 		return this.vagasPorFileira;
 	}
+
+	public void escreverArquivo(){
+	  try {
+        FileWriter fileWriter = new FileWriter("estacionamento.txt",true);
+		fileWriter.write(this.nome+","+this.quantFileiras+","+this.vagasPorFileira+";");
+		for (Cliente cliente : id) {
+			cliente.escreverArquivo(this.nome);
+		}
+       for (Vaga vaga : vagas) {
+		vaga.escreverArquivo(this.nome);
+	   }
+
+        fileWriter.close();
+
+        //System.out.println("Array escrito em " + nomeArquivo);
+    } catch (IOException e) {
+        e.printStackTrace();
+    }
+	}
+
 	public void addVeiculo(Veiculo veiculo, String idCli) {
 	
 		for (int i = 0;i<this.contCli;i++){
@@ -73,7 +94,7 @@ public class Estacionamento {
 
 	}
 
-	private void gerarVagas() {
+	public void gerarVagas() {
 		// int index =  this.quantFileiras * this.vagasPorFileira;
 		//Vaga[] vagas = new Vaga[index];
 		String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";

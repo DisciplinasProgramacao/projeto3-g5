@@ -1,3 +1,5 @@
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.*;
 
 public class Veiculo {
@@ -21,7 +23,26 @@ public class Veiculo {
             }
         }
     }
+public void escreverArquivo(String cliente,String estacionamento){
+        try {
+        FileWriter fileWriter = new FileWriter("veiculo.txt",true);
+		fileWriter.write(cliente+","+this.placa+";");
 
+        for (UsoDeVaga usoDeVaga : usos) {
+            usoDeVaga.escreverArquivo(this.placa, estacionamento);
+        }
+            
+        
+      
+
+        fileWriter.close();
+
+      
+    } catch (IOException e) {
+        e.printStackTrace();
+    }
+
+    }
 
     public double sair() {
         double totalPago = 0.0;
