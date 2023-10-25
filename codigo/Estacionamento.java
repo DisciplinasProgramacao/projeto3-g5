@@ -1,9 +1,8 @@
-
-import java.util.*;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.time.LocalDateTime;
 
 public class Estacionamento {
 	private String nome;
@@ -64,6 +63,7 @@ public class Estacionamento {
 
 			FileReader leitor = new FileReader("cliente.txt");
 			BufferedReader bufferedReader = new BufferedReader(leitor);
+			LocalDateTime momentoAtual = LocalDateTime.now();
 			String linha;
 			linha = bufferedReader.readLine();
 			String[] clientes = linha.split("[;]");
@@ -103,7 +103,7 @@ public class Estacionamento {
 								int cAUV = 0;
 								for (Vaga vaga : this.vagas) {
 									if (vaga.getId().equals(uso[4])) {
-										UsoDeVaga uv = new UsoDeVaga(vaga);
+										UsoDeVaga uv = new UsoDeVaga(vaga, momentoAtual);
 										arrUsoDeVaga[cAUV] = uv;
 										cAUV++;
 									}
@@ -182,6 +182,7 @@ public class Estacionamento {
 	}
 
 	public void estacionar(String placa) {
+		LocalDateTime momentoAtual = LocalDateTime.now();
 		int count = 0;
 		for (int i = 0; i < this.quantFileiras; i++) {
 			for (int j = 0; j < this.vagasPorFileira; j++) {
@@ -190,7 +191,7 @@ public class Estacionamento {
 					j = this.vagasPorFileira;
 					for (int k = 0; k < this.contCli; k++) {
 						if (this.id[k].possuiVeiculo(placa) != null) {
-							this.id[k].possuiVeiculo(placa).estacionar(this.vagas[count]);
+							this.id[k].possuiVeiculo(placa).estacionar(this.vagas[count], momentoAtual);
 						}
 					}
 				}
@@ -210,9 +211,9 @@ public class Estacionamento {
 
 	}
 
-	public double totalArrecadado(){
+	public double totalArrecadado() {
 		double sum = 0;
-		for(int i=0; i< this.id.length; i++){
+		for (int i = 0; i < this.id.length; i++) {
 			sum += this.id[i].arrecadadoTotal();
 		}
 		return sum;
@@ -226,12 +227,12 @@ public class Estacionamento {
 		return total;
 	}
 
-	public double valorMedioPorUso(){
+	public double valorMedioPorUso() {
 		double sum = 0;
-		for(int i=0; i< this.id.length; i++){
+		for (int i = 0; i < this.id.length; i++) {
 			sum += (this.id[i].arrecadadoTotal() / this.id[i].totalDeUsos());
 		}
-		return sum/this.id.length;
+		return sum / this.id.length;
 	}
 
 	public String top5Clientes(int mes) {
