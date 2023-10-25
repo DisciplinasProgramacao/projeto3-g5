@@ -13,11 +13,11 @@ public class Veiculo {
         this.usos = new UsoDeVaga[maxUsos];
     }
 
-    public void estacionar(Vaga vaga) {
+    public void estacionar(Vaga vaga, LocalDateTime entrada) {
         for (int i = 0; i < usos.length; i++) {
             if (usos[i] == null) {
-                if (vaga.disponivel()) {
-                    usos[i] = new UsoDeVaga(vaga);
+                if (vaga.getDisponivel()) {
+                    usos[i] = new UsoDeVaga(vaga, entrada);
                     vaga.estacionar();
                     break;
                 }
@@ -30,15 +30,11 @@ public class Veiculo {
             FileWriter fileWriter = new FileWriter("veiculo.txt", true);
             fileWriter.write(cliente + "," + this.placa + ";");
 
-            for (UsoDeVaga usoDeVaga: usos) {
+            for (UsoDeVaga usoDeVaga : usos) {
                 usoDeVaga.escreverArquivo(this.placa, estacionamento);
             }
 
-
-
-
             fileWriter.close();
-
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -60,7 +56,7 @@ public class Veiculo {
 
     public double totalArrecadado() {
         double totalArrecadado = 0.0;
-        for (UsoDeVaga uso: usos) {
+        for (UsoDeVaga uso : usos) {
             if (uso != null && uso.getSaida() != null) {
                 totalArrecadado += uso.valorPago();
             }
@@ -70,7 +66,7 @@ public class Veiculo {
 
     public double arrecadadoNoMes(int mes) {
         double totalArrecadadoNoMes = 0.0;
-        for (UsoDeVaga uso: usos) {
+        for (UsoDeVaga uso : usos) {
             if (uso != null) {
                 LocalDateTime data = uso.getSaida();
                 int mesData = data.getMonthValue();
@@ -85,7 +81,7 @@ public class Veiculo {
 
     public int totalDeUsos() {
         int totalUsos = 0;
-        for (UsoDeVaga uso: usos) {
+        for (UsoDeVaga uso : usos) {
             if (uso != null) {
                 totalUsos++;
             }
