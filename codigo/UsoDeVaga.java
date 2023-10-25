@@ -11,9 +11,9 @@ public class UsoDeVaga {
 	private LocalDateTime saida;
 	private double valorPago;
 
-	public UsoDeVaga(Vaga vaga) {
+	public UsoDeVaga(Vaga vaga, LocalDateTime entrada) {
 		this.vaga = vaga;
-		this.entrada = LocalDateTime.now();
+		this.entrada = entrada;
 		
 	}
 	//getter para vaga
