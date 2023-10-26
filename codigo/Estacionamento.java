@@ -13,10 +13,13 @@ public class Estacionamento {
 	private int contCli = 0;
 
 	public Estacionamento(String nome, int fileiras, int vagasPorFila) {
-		this.setNome(nome);
-		this.setQuantFileiras(fileiras);
-		this.setVagasPorFileira(vagasPorFila);
+		this.nome = nome;
+        this.id = new Cliente[1000]; 
+        this.vagas = new Vaga[fileiras * vagasPorFileira];
+        this.quantFileiras = fileiras;
+        this.vagasPorFileira = vagasPorFileira;
 	}
+
 
 	public void setNome(String nome) {
 		this.nome = nome;
@@ -162,42 +165,47 @@ public class Estacionamento {
 	}
 
 	public void gerarVagas() {
-		// int index = this.quantFileiras * this.vagasPorFileira;
-		// Vaga[] vagas = new Vaga[index];
-		String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-		int count = 0;
-		for (int i = 0; i < this.quantFileiras; i++) {
-			for (int j = 0; j < this.vagasPorFileira; j++) {
-				String id = String.valueOf(characters.charAt(i));
-				if (j < 10) {
-					id += "0";
-				}
-				id += String.valueOf(j);
-
-				this.vagas[count].setId(id);
-				this.vagas[count].setDisponivel(true);
-				count++;
+        int index = 0;
+        for (int i = 0; i < this.quantFileiras; i++) {
+            for (int j = 0; j < this.vagasPorFileira; j++) {
+                String id = String.format("Fila%dVaga%02d", i, j);
+                this.vagas[index] = new Vaga(id);
+                index++;
+            }
+        }
+    }
+	private Cliente encontrarClientePorPlaca(String placa) {
+		for (int i = 0; i < this.contCli; i++) {
+			Veiculo veiculo = this.id[i].possuiVeiculo(placa);
+			if (veiculo != null) {
+				return this.id[i];
 			}
 		}
+		return null; // Retorna null se não encontrar o cliente
 	}
 
 	public void estacionar(String placa) {
 		LocalDateTime momentoAtual = LocalDateTime.now();
-		int count = 0;
-		for (int i = 0; i < this.quantFileiras; i++) {
-			for (int j = 0; j < this.vagasPorFileira; j++) {
-				if (this.vagas[count].getDisponivel()) {
-					i = this.quantFileiras;
-					j = this.vagasPorFileira;
-					for (int k = 0; k < this.contCli; k++) {
-						if (this.id[k].possuiVeiculo(placa) != null) {
-							this.id[k].possuiVeiculo(placa).estacionar(this.vagas[count], momentoAtual);
-						}
-					}
-				}
-				count++;
-			}
+    for (int i = 0; i < this.quantFileiras; i++) {
+        for (int j = 0; j < this.vagasPorFileira; j++) {
+            int index = i * this.vagasPorFileira + j;
+            if (index < this.vagas.length && this.vagas[index].getDisponivel()) {
+                // Encontrou uma vaga disponível
+                Vaga vaga = this.vagas[index];
+                // Crie um novo veículo com a placa especificada
+                Veiculo veiculo = new Veiculo(placa, 20); // 20 é o número máximo de usos do veículo
+                // Estaciona o veículo na vaga
+                veiculo.estacionar(vaga, momentoAtual);
+                // Adiciona o veículo ao cliente (você precisa implementar este método em Cliente)
+                Cliente cliente = encontrarClientePorPlaca(placa);
+                if (cliente != null) {
+                    cliente.addVeiculo(veiculo);
+                }
+                System.out.println("Veículo com placa " + placa + " estacionado na vaga " + vaga.getId());
+                return;
+            }
 		}
+	}
 
 	}
 

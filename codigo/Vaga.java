@@ -5,11 +5,10 @@ public class Vaga {
 	private String id;
 	private boolean disponivel;
 
-	public Vaga(int fila, int numero) {
-		this.id = "Fila" + fila + "Vaga" + numero;
-		this.disponivel = true;
+	public Vaga(String id) {
+        this.id = id;
+        this.disponivel = true;
 	}
-
 	public String getId() {
 		return this.id;
 	}
