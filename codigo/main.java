@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class main {
@@ -57,9 +58,13 @@ public class main {
                 case 2:
                     sairVeiculo(estacionamento1);
                     break;
-                case 3:
-                    System.out.println("Saindo do programa.");
-                    System.exit(0);
+                    case 3:
+                    ArrayList<String> historico = estacionamento1.historicoDeUso();
+                    System.out.println(historico);
+                    break;
+                case 4:
+                    System.out.println("Saindo do menu do cliente.");
+                    return;
                 default:
                     System.out.println("Opção inválida. Escolha uma opção válida.");
                     break;

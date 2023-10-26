@@ -3,6 +3,8 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 
 public class Estacionamento {
 	private String nome;
@@ -206,8 +208,35 @@ public class Estacionamento {
             }
 		}
 	}
-
+}
+	public ArrayList<String> historicoDeUso() {
+		ArrayList<String> historico = new ArrayList<>();
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
+	
+		for (int i = 0; i < this.contCli; i++) {
+			Veiculo[] veiculos = this.id[i].getVeiculos();
+			for (Veiculo veiculo : veiculos) {
+				if (veiculo != null) {
+					UsoDeVaga[] usos = veiculo.getUsos();
+					for (UsoDeVaga uso : usos) {
+						if (uso != null) {
+							String infoUso = "Cliente: " + this.id[i].getNome() +
+											 ", Veículo: " + veiculo.getPlaca() +
+											 ", Entrada: " + uso.getEntrada().format(formatter) +
+											 ", Saída: " + (uso.getSaida() != null ? uso.getSaida().format(formatter) : "ainda estacionado") +
+											 ", Valor Pago: R$" + uso.valorPago() +
+											 ", Vaga: " + uso.getVaga().getId();
+							historico.add(infoUso);
+						}
+					}
+				}
+			}
+		}
+	
+		return historico;
 	}
+	
+	
 
 	public double sair(String placa) {
 		for (int k = 0; k < this.contCli; k++) {
