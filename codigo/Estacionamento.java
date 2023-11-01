@@ -17,9 +17,11 @@ public class Estacionamento {
 	public Estacionamento(String nome, int fileiras, int vagasPorFila) {
 		this.nome = nome;
         this.id = new Cliente[1000]; 
-        this.vagas = new Vaga[fileiras * vagasPorFileira];
+		
+        this.vagas = new Vaga[fileiras * vagasPorFila];
         this.quantFileiras = fileiras;
-        this.vagasPorFileira = vagasPorFileira;
+        this.vagasPorFileira = vagasPorFila;
+		gerarVagas();
 	}
 
 
@@ -72,14 +74,18 @@ public class Estacionamento {
 			String linha;
 			linha = bufferedReader.readLine();
 			String[] clientes = linha.split("[;]");
+			leitor.close();
 			leitor = new FileReader("veiculo.txt");
 			bufferedReader = new BufferedReader(leitor);
+			
 			linha = bufferedReader.readLine();
 			String[] veiculos = linha.split("[;]");
+			leitor.close();
 			leitor = new FileReader("usoDeVaga.txt");
 			bufferedReader = new BufferedReader(leitor);
 			linha = bufferedReader.readLine();
 			String[] usos = linha.split("[;]");
+			leitor.close();
 			leitor = new FileReader("vaga.txt");
 			bufferedReader = new BufferedReader(leitor);
 			linha = bufferedReader.readLine();
@@ -136,9 +142,11 @@ public class Estacionamento {
 			FileWriter fileWriter = new FileWriter("estacionamento.txt", true);
 			fileWriter.write(this.nome + "," + this.quantFileiras + "," + this.vagasPorFileira + ";");
 			for (Cliente cliente : id) {
+				if(cliente!=null)
 				cliente.escreverArquivo(this.nome);
 			}
 			for (Vaga vaga : vagas) {
+				if(vaga!=null)
 				vaga.escreverArquivo(this.nome);
 			}
 
@@ -151,8 +159,9 @@ public class Estacionamento {
 	}
 
 	public void addVeiculo(Veiculo veiculo, String idCli) {
-
+		
 		for (int i = 0; i < this.contCli; i++) {
+			System.out.println(this.id[i].getId());
 			if (this.id[i].getId().equals(idCli)) {
 				this.id[i].addVeiculo(veiculo);
 			}
@@ -168,17 +177,22 @@ public class Estacionamento {
 
 	public void gerarVagas() {
         int index = 0;
+		//System.out.println(this.vagas.length);
         for (int i = 0; i < this.quantFileiras; i++) {
             for (int j = 0; j < this.vagasPorFileira; j++) {
                 String id = String.format("Fila%dVaga%02d", i, j);
                 this.vagas[index] = new Vaga(id);
+				
                 index++;
             }
         }
     }
 	private Cliente encontrarClientePorPlaca(String placa) {
+		
 		for (int i = 0; i < this.contCli; i++) {
+			System.out.println(this.contCli);
 			Veiculo veiculo = this.id[i].possuiVeiculo(placa);
+			System.out.println(veiculo);
 			if (veiculo != null) {
 				return this.id[i];
 			}
@@ -186,25 +200,27 @@ public class Estacionamento {
 		return null; // Retorna null se não encontrar o cliente
 	}
 
-	public void estacionar(String placa) {
-		LocalDateTime momentoAtual = LocalDateTime.now();
+	public void estacionar(String placa, LocalDateTime time) {
+		boolean estacionado=false;
     for (int i = 0; i < this.quantFileiras; i++) {
         for (int j = 0; j < this.vagasPorFileira; j++) {
             int index = i * this.vagasPorFileira + j;
-            if (index < this.vagas.length && this.vagas[index].getDisponivel()) {
-                // Encontrou uma vaga disponível
+            if (index < this.vagas.length && this.vagas[index].getDisponivel()&& !estacionado) {
                 Vaga vaga = this.vagas[index];
                 // Crie um novo veículo com a placa especificada
-                Veiculo veiculo = new Veiculo(placa, 20); // 20 é o número máximo de usos do veículo
-                // Estaciona o veículo na vaga
-                veiculo.estacionar(vaga, momentoAtual);
+                // Veiculo veiculo = new Veiculo(placa, 20); // 20 é o número máximo de usos do veículo
+             
+				Cliente cliente = encontrarClientePorPlaca(placa);				
+
+				Veiculo veiculo=cliente.possuiVeiculo(placa);
+                veiculo.estacionar(vaga, time);
                 // Adiciona o veículo ao cliente (você precisa implementar este método em Cliente)
-                Cliente cliente = encontrarClientePorPlaca(placa);
+                
                 if (cliente != null) {
                     cliente.addVeiculo(veiculo);
                 }
                 System.out.println("Veículo com placa " + placa + " estacionado na vaga " + vaga.getId());
-                return;
+                estacionado=true;
             }
 		}
 	}
@@ -238,10 +254,11 @@ public class Estacionamento {
 	
 	
 
-	public double sair(String placa) {
+	public double sair(String placa, LocalDateTime time) {
+		
 		for (int k = 0; k < this.contCli; k++) {
 			if (this.id[k].possuiVeiculo(placa) != null) {
-				return this.id[k].possuiVeiculo(placa).sair();
+				return this.id[k].possuiVeiculo(placa).sair(time);
 			}
 		}
 		return contCli;

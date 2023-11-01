@@ -6,7 +6,7 @@ public class Cliente {
 
     private String nome;
     private String id;
-    private Veiculo[] veiculos;
+    private Veiculo[] veiculos=new Veiculo[10];
 
     public Cliente(String nome, String id) {
         this.nome = nome;
@@ -19,6 +19,7 @@ public class Cliente {
 		fileWriter.write(estacionamento+","+this.nome+","+this.id+";");
 
         for (Veiculo veiculo : veiculos) {
+            if(veiculo!=null)
         veiculo.escreverArquivo(this.nome,estacionamento);
 
         }
@@ -35,16 +36,25 @@ public class Cliente {
     }
 
     public void addVeiculo(Veiculo veiculo) {
-        for (int i = 0; i < veiculos.length; i++) {
+        System.out.println(veiculos.length);
+
+        if (veiculos!=null) {
+            for (int i = 0; i < veiculos.length; i++) {
             if (veiculos[i] == null) {
                 veiculos[i] = veiculo;
-               
+                break;
             }
         }
+        }
+        else{
+            veiculos[0] = veiculo;}
+        
     }
 
     public Veiculo possuiVeiculo(String placa) {
+        System.out.println(veiculos.length);
         for (Veiculo veiculo : veiculos) {
+            
             if (veiculo != null && veiculo.getPlaca().equals(placa)) {
                 return veiculo;
             }

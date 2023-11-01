@@ -14,23 +14,32 @@ public class Veiculo {
     }
 
     public void estacionar(Vaga vaga, LocalDateTime entrada) {
-        for (int i = 0; i < usos.length; i++) {
-            if (usos[i] == null) {
+         if (this.usos != null) {
+        for (int i = 0; i < this.usos.length; i++) {
+            if (this.usos[i] == null) {
                 if (vaga.getDisponivel()) {
-                    usos[i] = new UsoDeVaga(vaga, entrada);
+                    this.usos[i] = new UsoDeVaga(vaga, entrada);
                     vaga.estacionar();
                     break;
                 }
             }
         }
+        }
+        else{
+            this.usos[0]=new UsoDeVaga(vaga, entrada);
+            
+        }
+        System.out.println(this.usos[0].getVaga());
+
     }
 
     public void escreverArquivo(String cliente, String estacionamento) {
         try {
             FileWriter fileWriter = new FileWriter("veiculo.txt", true);
             fileWriter.write(cliente + "," + this.placa + ";");
-
+            System.out.println(this.usos[0]);
             for (UsoDeVaga usoDeVaga : usos) {
+                if(usoDeVaga!=null)
                 usoDeVaga.escreverArquivo(this.placa, estacionamento);
             }
 
@@ -42,13 +51,13 @@ public class Veiculo {
 
     }
 
-    public double sair() {
+    public double sair(LocalDateTime time) {
         double totalPago = 0.0;
         for (int i = 0; i < usos.length; i++) {
-            if (usos[i] != null && usos[i].getSaida() != null) {
+            if (usos[i] != null && usos[i].getSaida() == null) {     
+                usos[i].setSaida(time);           
                 usos[i].sair();
                 totalPago += usos[i].valorPago();
-                usos[i] = null;
             }
         }
         return totalPago;

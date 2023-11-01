@@ -86,10 +86,10 @@ public class UsoDeVaga {
 			minutosEstacionados++;
 			tempEntrada = tempEntrada.plusMinutes(1);
 		}
-
+		System.out.println(minutosEstacionados);
 		//valor pela taxa de fraçao de uso
 		double valor = minutosEstacionados * FRACAO_USO * VALOR_FRACAO;
-
+		
 		//valor maximo
 		valorPago = Math.min(valor, VALOR_MAXIMO);
 		return valorPago;

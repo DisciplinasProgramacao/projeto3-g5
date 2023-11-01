@@ -1,3 +1,5 @@
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -7,6 +9,7 @@ public class main {
         Estacionamento estacionamento1 = new Estacionamento("Estacionamento 1", 12, 22);
         Estacionamento estacionamento2 = new Estacionamento("Estacionamento 2", 10, 28);
         Estacionamento estacionamento3 = new Estacionamento("Estacionamento 3", 15, 25);
+        
         int escolha;
         do {
             System.out.println("Menu Principal");
@@ -19,7 +22,7 @@ public class main {
 
             switch (escolha) {
                 case 1:
-                    entrarComoCliente(estacionamento1);
+                    entrarComoCliente(estacionamento1,estacionamento2,estacionamento3);
                     break;
                 case 2:
                     entrarComoGestor(estacionamento1, estacionamento2, estacionamento3);
@@ -34,23 +37,69 @@ public class main {
         }while (escolha < 4 && escolha > 0);
     }
 
-    public static void entrarComoCliente(Estacionamento estacionamento1) {
+    public static void entrarComoCliente(Estacionamento estacionamento1,Estacionamento estacionamento2,Estacionamento estacionamento3) {
         Scanner scanner = new Scanner(System.in);
+        Estacionamento e=estacionamento1;
+        System.out.println("escolha o estacionamento: ");
+        int escolha = scanner.nextInt();
+
+         switch (escolha) {
+            case 1:
+                e=estacionamento1;
+                break;
+            case 2:
+                e=estacionamento2;
+                break;
+            case 3:
+                e=estacionamento3;
+                break;
+            default:
+                System.out.println("Opção inválida. Escolha uma opção válida.");
+
+                break;
+        }
+        e.carregarArquivo();
+        System.out.println("carregando estacionamento salvo ");
+        scanner.nextLine();
         System.out.println("Indique seu identificador: ");
         String id = scanner.nextLine();
-        menuCliente(estacionamento1);
+        
+
+        menuCliente(e,id);
     }
 
-    public static void menuCliente(Estacionamento estacionamento1){
+    public static void menuCliente(Estacionamento estacionamento1,String id){
         Scanner scanner = new Scanner(System.in);
+        Cliente[] arrCliente= estacionamento1.getId();
+        Cliente c;
+        boolean existe=false; 
+        if(arrCliente.length>0){
+        for (Cliente cliente : arrCliente) {
+            if(cliente!=null && cliente.getId().equals(id)){
+               c=cliente;
+                existe = true;
+            }
+        }
+    }
+        if(!existe){
+        System.out.println("Indique seu nome: ");
+        String nome = scanner.nextLine();
+         c=new Cliente(nome, id);
+         estacionamento1.addCliente(c);
+        }
+
+
+        //Scanner scanner = new Scanner(System.in);
         int escolha;
         do{
             System.out.println("Menu Cliente");
             System.out.println("1. Estacionar Veiculo");
             System.out.println("2. Sair com veículo");
             System.out.println("3. Acessar histórico de uso do estacionamento");
-            System.out.println("4. Sair");
+            System.out.println("4. adicionar veículo");
+            System.out.println("5. Sair");
             escolha = scanner.nextInt();
+            scanner.nextLine();
             switch (escolha) {
                 case 1:
                     estacionarVeiculo(estacionamento1);
@@ -58,12 +107,18 @@ public class main {
                 case 2:
                     sairVeiculo(estacionamento1);
                     break;
-                    case 3:
+                case 3:
                     ArrayList<String> historico = estacionamento1.historicoDeUso();
                     System.out.println(historico);
                     break;
                 case 4:
+                System.out.println("digite a placa do carro.");
+                String placa = scanner.nextLine();
+                    adicionarVeiculo(estacionamento1,id,placa);
+                break;
+                case 5:
                     System.out.println("Saindo do menu do cliente.");
+                    estacionamento1.escreverArquivo();
                     return;
                 default:
                     System.out.println("Opção inválida. Escolha uma opção válida.");
@@ -71,19 +126,31 @@ public class main {
             }
         }while(escolha < 4 && escolha > 0);
     }
+   public static void adicionarVeiculo(Estacionamento estacionamento,String id,String placa){
+    Veiculo v= new Veiculo(placa, 20);
+    estacionamento.addVeiculo(v, id);
+    menuCliente(estacionamento,id);
+   }
 
     public static void estacionarVeiculo(Estacionamento estacionamento) {
         Scanner scanner = new Scanner(System.in);
         System.out.println("Indique a placa do veiculo: ");
         String plaque = scanner.nextLine();
-        estacionamento.estacionar(plaque);
+        System.out.println("Indique hora de entrada: ");        
+        String hour = scanner.nextLine();
+        LocalDateTime momentoAtual = LocalDate.now().atTime(Integer.parseInt(hour.split(":")[0]), Integer.parseInt(hour.split(":")[1]));
+        estacionamento.estacionar(plaque, momentoAtual);
     }
 
     public static void sairVeiculo(Estacionamento estacionamento) {
         Scanner scanner = new Scanner(System.in);
         System.out.println("Indique a placa do veiculo: ");
         String plaque = scanner.nextLine();
-        estacionamento.sair(plaque);
+        System.out.println("Indique hora de saida: ");        
+        String hour = scanner.nextLine();
+        LocalDateTime momentoAtual = LocalDate.now().atTime(Integer.parseInt(hour.split(":")[0]), Integer.parseInt(hour.split(":")[1]));
+        
+        estacionamento.sair(plaque, momentoAtual);
     }
     public static void entrarComoGestor(Estacionamento estacionamento1, Estacionamento estacionamento2, Estacionamento estacionamento3) {
         Scanner scanner = new Scanner(System.in);
