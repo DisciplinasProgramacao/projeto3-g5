@@ -25,7 +25,7 @@ public class UsoDeVaga {
 		 try {
         FileWriter fileWriter = new FileWriter("usoDeVaga.txt",true);
 		fileWriter.write(placa+","+this.entrada+","+this.saida+","+this.valorPago+","+this.vaga.getId()+";");
-			//this.vaga.escreverArquivo(estacionamento);
+			this.vaga.escreverArquivo(estacionamento);
             
         
       
@@ -86,7 +86,7 @@ public class UsoDeVaga {
 			minutosEstacionados++;
 			tempEntrada = tempEntrada.plusMinutes(1);
 		}
-		System.out.println(minutosEstacionados);
+		//System.out.println(minutosEstacionados);
 		//valor pela taxa de fraçao de uso
 		double valor = minutosEstacionados * FRACAO_USO * VALOR_FRACAO;
 		

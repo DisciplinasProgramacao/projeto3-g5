@@ -91,9 +91,11 @@ public class Estacionamento {
 			linha = bufferedReader.readLine();
 			String[] vagas = linha.split("[;]");
 			int contVagas = 0;
+
 			for (String v : vagas) {
 				String[] vaga = v.split("[,]");
-				if (vaga[0].equals(this.nome)) {
+				if (vaga[0].equals(this.nome)&&contVagas<264) {
+					
 					this.vagas[contVagas].setId(vaga[1]);
 					this.vagas[contVagas].setDisponivel(Boolean.parseBoolean(vaga[2]));
 					contVagas++;

@@ -1,3 +1,5 @@
+import java.io.FileWriter;
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -118,6 +120,7 @@ public class main {
                 break;
                 case 5:
                     System.out.println("Saindo do menu do cliente.");
+                    apagarArquivos();
                     estacionamento1.escreverArquivo();
                     return;
                 default:
@@ -125,6 +128,20 @@ public class main {
                     break;
             }
         }while(escolha < 4 && escolha > 0);
+    }
+    public static void apagarArquivos(){
+        try {
+        FileWriter writer = new FileWriter("cliente.txt", false);
+        writer.close();
+          writer = new FileWriter("estacionamento.txt", false);
+        writer.close();
+          writer = new FileWriter("vaga.txt", false);
+        writer.close();
+          writer = new FileWriter("veiculo.txt", false);
+        writer.close();
+            } catch (IOException e) {
+			e.printStackTrace();
+		}
     }
    public static void adicionarVeiculo(Estacionamento estacionamento,String id,String placa){
     Veiculo v= new Veiculo(placa, 20);
