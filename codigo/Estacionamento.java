@@ -269,62 +269,94 @@ public class Estacionamento {
 
 	public double totalArrecadado() {
 		double sum = 0;
+		
 		for (int i = 0; i < this.id.length; i++) {
-			sum += this.id[i].arrecadadoTotal();
+			if (this.id[i] != null) {
+				sum += this.id[i].arrecadadoTotal();
+			}
 		}
 		return sum;
 	}
 
 	public double arrecadacaoNoMes(int mes) {
-		int total = 0;
-		for (int i = 0; i < this.id.length; i++) {
-			total += this.id[i].arrecadadoNoMes(mes);
+		double totalArrecadadoNoMes = 0.0;
+		for (int i = 0; i < this.contCli; i++) {
+			Veiculo[] veiculos = this.id[i].getVeiculos();
+			for (Veiculo veiculo : veiculos) {
+				if (veiculo != null) {
+					UsoDeVaga[] usos = veiculo.getUsos();
+					for (UsoDeVaga uso : usos) {
+						if (uso != null && uso.getSaida() != null) {
+							LocalDateTime data = uso.getSaida();
+							int mesData = data.getMonthValue();
+							if (mesData == mes) {
+								totalArrecadadoNoMes += uso.valorPago();
+							}
+						}
+					}
+				}
+			}
 		}
-		return total;
+		return totalArrecadadoNoMes;
 	}
+	
 
 	public double valorMedioPorUso() {
 		double sum = 0;
+		int count = 0; // Contador para clientes não nulos
 		for (int i = 0; i < this.id.length; i++) {
-			sum += (this.id[i].arrecadadoTotal() / this.id[i].totalDeUsos());
+			if (this.id[i] != null) { // Verifica se o cliente não é nulo
+				sum += (this.id[i].arrecadadoTotal() / this.id[i].totalDeUsos());
+				count++;
+			}
 		}
-		return sum / this.id.length;
+		if (count > 0) {
+			return sum / count; // Retorna a média apenas se houver clientes não nulos
+		} else {
+			return 0; // Retorna 0 se não houver clientes não nulos
+		}
 	}
+	
 
 	public String top5Clientes(int mes) {
 		String[] clienteNome = new String[5];
 		Double[] value = new Double[5];
 		for (int i = 0; i < this.id.length; i++) {
-			double arrecadado = this.id[i].arrecadadoNoMes(mes);
-			for (int j = 0; j < 5; j++) {
-				if (value[j] != null) {
-					if (arrecadado > value[j]) {
-						String temp = clienteNome[j];
-						double tempValue = value[j];
+			if (this.id[i] != null) { // Verifica se o cliente não é nulo
+				double arrecadado = this.id[i].arrecadadoNoMes(mes);
+				for (int j = 0; j < 5; j++) {
+					if (value[j] != null) {
+						if (arrecadado > value[j]) {
+							String temp = clienteNome[j];
+							double tempValue = value[j];
+							value[j] = arrecadado;
+							clienteNome[j] = this.id[i].getNome();
+	
+							for (int k = j + 1; k < 5; k++) {
+								String temp2 = clienteNome[k];
+								double tempValue2 = value[k];
+								clienteNome[k] = temp;
+								value[k] = tempValue;
+								temp = temp2;
+								tempValue = tempValue2;
+							}
+							break;
+						}
+					} else {
 						value[j] = arrecadado;
 						clienteNome[j] = this.id[i].getNome();
-
-						for (int k = j + 1; k < 5; k++) {
-							String temp2 = clienteNome[k];
-							double tempValue2 = value[k];
-							clienteNome[k] = temp;
-							value[k] = tempValue;
-							temp = temp2;
-							tempValue = tempValue2;
-						}
 						break;
 					}
-				} else {
-					value[j] = arrecadado;
-					clienteNome[j] = this.id[i].getNome();
-					break;
 				}
 			}
 		}
-		String top5 = "";
+		StringBuilder top5 = new StringBuilder();
 		for (int i = 0; i < clienteNome.length; i++) {
-			top5 += clienteNome[i];
+			if (clienteNome[i] != null) {
+				top5.append(clienteNome[i]).append(" ");
+			}
 		}
-		return top5;
+		return top5.toString();
 	}
+	
 }
