@@ -184,6 +184,8 @@ public class main {
         if(num == 3){
             estacionamento = estacionamento3;
         }
+        
+
         int escolha;
         do{
             System.out.println("Menu Gestor");
