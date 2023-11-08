@@ -61,6 +61,7 @@ public class main {
                 break;
         }
         e.carregarArquivo();
+        //System.out.println("nome cliente"+ e.getId()[0].getNome()+" placa do carro"+e.getId()[0].getVeiculos()[0].getPlaca());
         System.out.println("carregando estacionamento salvo ");
         scanner.nextLine();
         System.out.println("Indique seu identificador: ");

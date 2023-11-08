@@ -18,6 +18,7 @@ public class Veiculo {
         for (int i = 0; i < this.usos.length; i++) {
             if (this.usos[i] == null) {
                 if (vaga.getDisponivel()) {
+                    //System.out.println("escrito um uso de vaga em veiculo");
                     this.usos[i] = new UsoDeVaga(vaga, entrada);
                     vaga.estacionar();
                     break;
@@ -29,7 +30,7 @@ public class Veiculo {
             this.usos[0]=new UsoDeVaga(vaga, entrada);
             
         }
-        System.out.println(this.usos[0].getVaga());
+       // System.out.println(this.usos[0].getVaga());
 
     }
 
@@ -37,7 +38,7 @@ public class Veiculo {
         try {
             FileWriter fileWriter = new FileWriter("veiculo.txt", true);
             fileWriter.write(cliente + "," + this.placa + ";");
-            System.out.println(this.usos[0]);
+            //System.out.println("escrito um veiculo");
             for (UsoDeVaga usoDeVaga : usos) {
                 if(usoDeVaga!=null)
                 usoDeVaga.escreverArquivo(this.placa, estacionamento);

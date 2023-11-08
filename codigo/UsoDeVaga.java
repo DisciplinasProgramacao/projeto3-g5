@@ -25,6 +25,7 @@ public class UsoDeVaga {
 		 try {
         FileWriter fileWriter = new FileWriter("usoDeVaga.txt",true);
 		fileWriter.write(placa+","+this.entrada+","+this.saida+","+this.valorPago+","+this.vaga.getId()+";");
+		//System.out.println("escrito um usodevaga");
 			this.vaga.escreverArquivo(estacionamento);
             
         

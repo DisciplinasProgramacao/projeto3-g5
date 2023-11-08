@@ -93,6 +93,8 @@ public class Estacionamento {
 			int contVagas = 0;
 
 			for (String v : vagas) {
+				
+
 				String[] vaga = v.split("[,]");
 				if (vaga[0].equals(this.nome)&&contVagas<264) {
 					
@@ -114,24 +116,29 @@ public class Estacionamento {
 							if (veiculo[0].equals(cliente[1]) && uso[0].equals(veiculo[1])) {
 								UsoDeVaga[] arrUsoDeVaga = new UsoDeVaga[20];
 								int cAUV = 0;
+								
 								for (Vaga vaga : this.vagas) {
 									if (vaga.getId().equals(uso[4])) {
 										UsoDeVaga uv = new UsoDeVaga(vaga, momentoAtual);
 										arrUsoDeVaga[cAUV] = uv;
 										cAUV++;
 									}
+									
 								}
+								this.id[contCli] = cli;
+								contCli++;
 								Veiculo v = new Veiculo(veiculo[1], 20);
+								
 								v.setUsos(arrUsoDeVaga);
 								addVeiculo(v, cli.getId());
 							}
 						}
 
 					}
-					this.id[contCli] = cli;
-					contCli++;
+					
 				}
 			}
+			
 
 			leitor.close();
 		} catch (IOException e) {
@@ -161,12 +168,15 @@ public class Estacionamento {
 	}
 
 	public void addVeiculo(Veiculo veiculo, String idCli) {
-		
-		for (int i = 0; i < this.contCli; i++) {
-			System.out.println(this.id[i].getId());
-			if (this.id[i].getId().equals(idCli)) {
-				this.id[i].addVeiculo(veiculo);
+		//System.out.println(this.id[0].getId()+"idCli");
+		for (Cliente c: this.id) {
+			if(c!=null){
+			
+			if (c.getId().equals(idCli)) {
+				
+				c.addVeiculo(veiculo);
 			}
+		}
 		}
 
 	}
@@ -192,9 +202,9 @@ public class Estacionamento {
 	private Cliente encontrarClientePorPlaca(String placa) {
 		
 		for (int i = 0; i < this.contCli; i++) {
-			System.out.println(this.contCli);
+			//System.out.println(this.contCli);
 			Veiculo veiculo = this.id[i].possuiVeiculo(placa);
-			System.out.println(veiculo);
+			//System.out.println(veiculo);
 			if (veiculo != null) {
 				return this.id[i];
 			}
@@ -218,10 +228,8 @@ public class Estacionamento {
                 veiculo.estacionar(vaga, time);
                 // Adiciona o veículo ao cliente (você precisa implementar este método em Cliente)
                 
-                if (cliente != null) {
-                    cliente.addVeiculo(veiculo);
-                }
-                System.out.println("Veículo com placa " + placa + " estacionado na vaga " + vaga.getId());
+                
+                //System.out.println("Veículo com placa " + placa + " estacionado na vaga " + vaga.getId());
                 estacionado=true;
             }
 		}
@@ -230,15 +238,20 @@ public class Estacionamento {
 	public ArrayList<String> historicoDeUso() {
 		ArrayList<String> historico = new ArrayList<>();
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
-	
-		for (int i = 0; i < this.contCli; i++) {
-			Veiculo[] veiculos = this.id[i].getVeiculos();
+	int i=0;
+		for (Cliente cliente : this.id ) {
+			if (cliente != null) {
+			Veiculo[] veiculos = cliente.getVeiculos();
+			
+							
 			for (Veiculo veiculo : veiculos) {
 				if (veiculo != null) {
 					UsoDeVaga[] usos = veiculo.getUsos();
+					
 					for (UsoDeVaga uso : usos) {
 						if (uso != null) {
-							String infoUso = "Cliente: " + this.id[i].getNome() +
+							System.out.println(i);i++;
+							String infoUso = "Cliente: " + cliente.getNome() +
 											 ", Veículo: " + veiculo.getPlaca() +
 											 ", Entrada: " + uso.getEntrada().format(formatter) +
 											 ", Saída: " + (uso.getSaida() != null ? uso.getSaida().format(formatter) : "ainda estacionado") +
@@ -250,6 +263,7 @@ public class Estacionamento {
 				}
 			}
 		}
+	}
 	
 		return historico;
 	}

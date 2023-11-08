@@ -15,7 +15,8 @@ public class Vaga {
 	public void escreverArquivo(String estacionamento){
 		 try {
         FileWriter fileWriter = new FileWriter("vaga.txt",true);
-		fileWriter.write(estacionamento+","+this.id+","+this.disponivel+";");             
+		fileWriter.write(estacionamento+","+this.id+","+this.disponivel+";");      
+		//System.out.println("escrito uma vaga");       
         fileWriter.close();
 
       

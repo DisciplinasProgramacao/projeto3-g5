@@ -17,6 +17,7 @@ public class Cliente {
         try {
         FileWriter fileWriter = new FileWriter("cliente.txt",true);
 		fileWriter.write(estacionamento+","+this.nome+","+this.id+";");
+        
 
         for (Veiculo veiculo : veiculos) {
             if(veiculo!=null)
@@ -36,23 +37,25 @@ public class Cliente {
     }
 
     public void addVeiculo(Veiculo veiculo) {
-        System.out.println(veiculos.length);
+        //System.out.println(veiculos.length);
 
         if (veiculos!=null) {
             for (int i = 0; i < veiculos.length; i++) {
             if (veiculos[i] == null) {
+                
                 veiculos[i] = veiculo;
                 break;
             }
         }
         }
         else{
+            
             veiculos[0] = veiculo;}
         
     }
 
     public Veiculo possuiVeiculo(String placa) {
-        System.out.println(veiculos.length);
+        
         for (Veiculo veiculo : veiculos) {
             
             if (veiculo != null && veiculo.getPlaca().equals(placa)) {
