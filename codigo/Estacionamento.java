@@ -247,10 +247,10 @@ public class Estacionamento {
 			for (Veiculo veiculo : veiculos) {
 				if (veiculo != null) {
 					UsoDeVaga[] usos = veiculo.getUsos();
-					
+					System.out.println(i);i++;
 					for (UsoDeVaga uso : usos) {
 						if (uso != null) {
-							System.out.println(i);i++;
+							
 							String infoUso = "Cliente: " + cliente.getNome() +
 											 ", Veículo: " + veiculo.getPlaca() +
 											 ", Entrada: " + uso.getEntrada().format(formatter) +

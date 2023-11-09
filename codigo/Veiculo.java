@@ -77,7 +77,7 @@ public class Veiculo {
     public double arrecadadoNoMes(int mes) {
         double totalArrecadadoNoMes = 0.0;
         for (UsoDeVaga uso : usos) {
-            if (uso != null) {
+            if (uso != null && uso.getSaida() != null) {
                 LocalDateTime data = uso.getSaida();
                 int mesData = data.getMonthValue();
 

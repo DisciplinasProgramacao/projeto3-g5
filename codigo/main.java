@@ -11,7 +11,10 @@ public class main {
         Estacionamento estacionamento1 = new Estacionamento("Estacionamento 1", 12, 22);
         Estacionamento estacionamento2 = new Estacionamento("Estacionamento 2", 10, 28);
         Estacionamento estacionamento3 = new Estacionamento("Estacionamento 3", 15, 25);
-        
+        estacionamento1.carregarArquivo();
+        //estacionamento2.carregarArquivo();
+        //estacionamento3.carregarArquivo();
+        System.out.println("carregando estacionamento salvo ");
         int escolha;
         do {
             System.out.println("Menu Principal");
@@ -60,9 +63,9 @@ public class main {
 
                 break;
         }
-        e.carregarArquivo();
+        
         //System.out.println("nome cliente"+ e.getId()[0].getNome()+" placa do carro"+e.getId()[0].getVeiculos()[0].getPlaca());
-        System.out.println("carregando estacionamento salvo ");
+        
         scanner.nextLine();
         System.out.println("Indique seu identificador: ");
         String id = scanner.nextLine();
