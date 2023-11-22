@@ -7,6 +7,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Map;
 
+import javax.management.RuntimeErrorException;
+
 public class Estacionamento {
 	private String nome;
 	private Cliente[] id;
@@ -114,17 +116,17 @@ public class Estacionamento {
 				boolean idNaoExiste = true;
 
 				// Verifica se existe algum elemento no vetor id igual a cliente[2]
-				
 
 				if (cliente[0].equals(this.nome) && idNaoExiste) {
 
-					Cliente cli = new Cliente(cliente[2],cliente[1]);
+					Cliente cli = new Cliente(cliente[2], cliente[1]);
 					this.id[contCli] = cli;
 					for (String ve : veiculos) {
 						String[] veiculo = ve.split("[,]");
 						for (String us : usos) {
 							String[] uso = us.split("[,]");
-							if (veiculo[0].equals(cliente[2]) && uso[0].equals(veiculo[1]) && (contCli == 0 || !this.id[contCli - 1].getId().equals(cliente[2]))) {
+							if (veiculo[0].equals(cliente[2]) && uso[0].equals(veiculo[1])
+									&& (contCli == 0 || !this.id[contCli - 1].getId().equals(cliente[2]))) {
 								UsoDeVaga[] arrUsoDeVaga = new UsoDeVaga[20];
 								int cAUV = 0;
 
@@ -132,7 +134,6 @@ public class Estacionamento {
 									if (vaga.getId().equals(uso[4])) {
 										DateTimeFormatter formatador = DateTimeFormatter
 												.ofPattern("yyyy-MM-dd'T'HH:mm");
-										// System.out.println(LocalDateTime.parse(uso[1], formatador));
 										UsoDeVaga uv = new UsoDeVaga(vaga, LocalDateTime.parse(uso[1], formatador),
 												uso[2].equals("null") ? null : LocalDateTime.parse(uso[2], formatador),
 												Double.parseDouble(uso[3]));
@@ -142,7 +143,7 @@ public class Estacionamento {
 									}
 
 								}
-								
+
 								System.out.println("add");
 								Veiculo v = new Veiculo(veiculo[1], 20);
 
@@ -171,7 +172,6 @@ public class Estacionamento {
 			for (Cliente cliente : id) {
 				if (cliente != null) {
 					cliente.escreverArquivo(this.nome);
-					System.out.println(contCli);
 				}
 			}
 
@@ -184,8 +184,13 @@ public class Estacionamento {
 	}
 
 	public void addVeiculo(Veiculo veiculo, String idCli) {
+
 		for (Cliente cliente : this.id) {
 			if (cliente != null && cliente.getId().equals(idCli)) {
+				if (cliente.possuiVeiculo(veiculo.getPlaca()) != null) {
+					System.out.println("Veiculo já existe");
+					return;
+				}
 				cliente.addVeiculo(veiculo);
 
 				return; // Interrompe o loop assim que o cliente é encontrado
@@ -197,7 +202,6 @@ public class Estacionamento {
 	}
 
 	public void addCliente(Cliente cliente) {
-		System.out.println(contCli);
 		this.id[this.contCli] = cliente;
 		this.contCli++;
 
@@ -231,28 +235,40 @@ public class Estacionamento {
 
 	public void estacionar(String placa, LocalDateTime time) {
 		boolean estacionado = false;
-		for (int i = 0; i < this.quantFileiras; i++) {
-			for (int j = 0; j < this.vagasPorFileira; j++) {
-				int index = i * this.vagasPorFileira + j;
-				if (index < this.vagas.length && this.vagas[index].getDisponivel() && !estacionado) {
-					Vaga vaga = this.vagas[index];
-					// Crie um novo veículo com a placa especificada
-					// Veiculo veiculo = new Veiculo(placa, 20); // 20 é o número máximo de usos do
-					// veículo
+		try {
+			for (int i = 0; i < this.quantFileiras; i++) {
+				for (int j = 0; j < this.vagasPorFileira; j++) {
+					int index = i * this.vagasPorFileira + j;
+					if (index < this.vagas.length && this.vagas[index].getDisponivel() && !estacionado) {
+						Vaga vaga = this.vagas[index];
+						// Crie um novo veículo com a placa especificada
+						// Veiculo veiculo = new Veiculo(placa, 20); // 20 é o número máximo de usos do
+						// veículo
 
-					Cliente cliente = encontrarClientePorPlaca(placa);
+						Cliente cliente = encontrarClientePorPlaca(placa);
+						if (cliente == null) {
+							System.out.println();
+							throw new RuntimeErrorException(null, "Veiculo não encontrado");
+						}
 
-					Veiculo veiculo = cliente.possuiVeiculo(placa);
-					veiculo.estacionar(vaga, time);
-					// Adiciona o veículo ao cliente (você precisa implementar este método em
-					// Cliente)
+						Veiculo veiculo = cliente.possuiVeiculo(placa);
+						if (veiculo == null) {
+							throw new RuntimeErrorException(null, "Veiculo não encontrado");
+						}
+						veiculo.estacionar(vaga, time);
+						// Adiciona o veículo ao cliente (você precisa implementar este método em
+						// Cliente)
 
-					// System.out.println("Veículo com placa " + placa + " estacionado na vaga " +
-					// vaga.getId());
-					estacionado = true;
+						// System.out.println("Veículo com placa " + placa + " estacionado na vaga " +
+						// vaga.getId());
+						estacionado = true;
+					}
 				}
 			}
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
 		}
+
 	}
 
 	public static double calcularCustoServicos(Map<String, Boolean> servicosAtivos) {
@@ -295,9 +311,7 @@ public class Estacionamento {
 
 			for (Veiculo veiculo : veiculos) {
 				if (veiculo != null) {
-					System.out.println(veiculos.length);
 					UsoDeVaga[] usos = veiculo.getUsos();
-					System.out.println(veiculo.getPlaca());
 					i++;
 					for (UsoDeVaga uso : usos) {
 						if (uso != null) {
@@ -326,6 +340,9 @@ public class Estacionamento {
 		for (int k = 0; k < this.contCli; k++) {
 			if (this.id[k].possuiVeiculo(placa) != null) {
 				return this.id[k].possuiVeiculo(placa).sair(time);
+			} else {
+				System.out.println("Veiculo não cadastrado, favor cadastrar");
+				break;
 			}
 		}
 		return contCli;

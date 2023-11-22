@@ -57,9 +57,18 @@ public class Veiculo {
         double totalPago = 0.0;
         for (int i = 0; i < usos.length; i++) {
             if (usos[i] != null && usos[i].getSaida() == null) {     
+                System.out.println(usos[i].getEntrada());
+                if(usos[i].getEntrada() == null){
+                    System.out.println("Não é possível sair com veiculo não estacionado");
+                    break;
+                }
                 usos[i].setSaida(time);           
                 usos[i].sair();
                 totalPago += usos[i].valorPago();
+                return totalPago;
+            }else{
+                System.out.println("Não é possível sair com veiculo não estacionado");
+                break;
             }
         }
         return totalPago;
