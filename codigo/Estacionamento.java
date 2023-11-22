@@ -372,5 +372,78 @@ public class Estacionamento {
 		}
 		return top5.toString();
 	}
+	public double mediaUsoMensalistasNoMes(int mes) {
+		int totalUsos = 0;
+		int totalClientesMensalistas = 0;
+	
+		for (int i = 0; i < this.contCli; i++) {
+			if (this.id[i] != null && this.id[i].getCategoria() == CategoriaCliente.MENSALISTA) {
+				Veiculo[] veiculos = this.id[i].getVeiculos();
+	
+				for (Veiculo veiculo : veiculos) {
+					UsoDeVaga[] usos = veiculo.getUsos();
+	
+					for (UsoDeVaga uso : usos) {
+						if (uso != null && uso.getSaida() != null) {
+							LocalDateTime data = uso.getSaida();
+							int mesData = data.getMonthValue();
+	
+							if (mesData == mes) {
+								totalUsos++;
+							}
+						}
+					}
+				}
+	
+				totalClientesMensalistas++;
+			}
+		}
+	
+		if (totalClientesMensalistas > 0) {
+			return (double) totalUsos / totalClientesMensalistas;
+		} else {
+			return 0.0;
+		}
+	}
+	
+	public int quantidadeUsosMensalistaNoMes(String idCliente, int mes) {
+		int totalUsos = 0;
+	
+		for (int i = 0; i < this.contCli; i++) {
+			if (this.id[i] != null && this.id[i].getId().equals(idCliente) && this.id[i].getCategoria() == CategoriaCliente.MENSALISTA) {
+				Veiculo[] veiculos = this.id[i].getVeiculos();
+	
+				for (Veiculo veiculo : veiculos) {
+					UsoDeVaga[] usos = veiculo.getUsos();
+	
+					for (UsoDeVaga uso : usos) {
+						if (uso != null && uso.getSaida() != null) {
+							LocalDateTime data = uso.getSaida();
+							int mesData = data.getMonthValue();
+	
+							if (mesData == mes) {
+								totalUsos++;
+							}
+						}
+					}
+				}
+			}
+		}
+	
+		return totalUsos;
+	}
+	
+	
+	
+	
+	
+
+	
+
+
+
+
+
+
 	
 }
