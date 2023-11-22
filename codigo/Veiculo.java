@@ -18,7 +18,7 @@ public class Veiculo {
         for (int i = 0; i < this.usos.length; i++) {
             if (this.usos[i] == null) {
                 if (vaga.getDisponivel()) {
-                    //System.out.println("escrito um uso de vaga em veiculo");
+                    
                     this.usos[i] = new UsoDeVaga(vaga, entrada);
                     vaga.estacionar();
                     break;
@@ -27,6 +27,7 @@ public class Veiculo {
         }
         }
         else{
+           
             this.usos[0]=new UsoDeVaga(vaga, entrada);
             
         }

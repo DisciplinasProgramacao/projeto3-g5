@@ -16,6 +16,13 @@ public class UsoDeVaga {
 		this.entrada = entrada;
 		
 	}
+	public UsoDeVaga(Vaga vaga, LocalDateTime entrada,LocalDateTime saida,double valorPago) {
+		this.vaga = vaga;
+		this.entrada = entrada;
+		this.saida = saida;
+		this.valorPago = valorPago;
+		
+	}
 	//getter para vaga
 	public Vaga getVaga() {
 		return vaga;
@@ -23,11 +30,12 @@ public class UsoDeVaga {
 
 	public void escreverArquivo(String placa, String estacionamento){
 		 try {
+
         FileWriter fileWriter = new FileWriter("usoDeVaga.txt",true);
 		fileWriter.write(placa+","+this.entrada+","+this.saida+","+this.valorPago+","+this.vaga.getId()+";");
-		//System.out.println("escrito um usodevaga");
-			this.vaga.escreverArquivo(estacionamento);
-            
+		
+		this.vaga.escreverArquivo(estacionamento);
+	
         
       
 

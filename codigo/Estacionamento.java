@@ -70,7 +70,7 @@ public class Estacionamento {
 
 			FileReader leitor = new FileReader("cliente.txt");
 			BufferedReader bufferedReader = new BufferedReader(leitor);
-			LocalDateTime momentoAtual = LocalDateTime.now();
+			contCli=0;
 			String linha;
 			linha = bufferedReader.readLine();
 			String[] clientes = linha.split("[;]");
@@ -106,20 +106,36 @@ public class Estacionamento {
 
 			for (String token : clientes) {
 				String[] cliente = token.split("[,]");
-				if (cliente[0].equals(this.nome)) {
+
+				boolean idNaoExiste = true;
+
+				// Verifica se existe algum elemento no vetor id igual a cliente[2]
+				for (Cliente clienteExistente : id) {
+    				if (clienteExistente != null && clienteExistente.getId().equals(cliente[2])) {
+        			idNaoExiste = false;
+        				break;
+    				}
+				}
+
+				if (cliente[0].equals(this.nome)&& idNaoExiste) {
+
+
 					Cliente cli = new Cliente(cliente[1], cliente[2]);
 					for (String ve : veiculos) {
 						String[] veiculo = ve.split("[,]");
 						for (String us : usos) {
 							String[] uso = us.split("[,]");
 
-							if (veiculo[0].equals(cliente[1]) && uso[0].equals(veiculo[1])) {
+							if (veiculo[0].equals(cliente[2]) && uso[0].equals(veiculo[1])) {
 								UsoDeVaga[] arrUsoDeVaga = new UsoDeVaga[20];
 								int cAUV = 0;
 								
 								for (Vaga vaga : this.vagas) {
 									if (vaga.getId().equals(uso[4])) {
-										UsoDeVaga uv = new UsoDeVaga(vaga, momentoAtual);
+										DateTimeFormatter formatador = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
+										//System.out.println(LocalDateTime.parse(uso[1], formatador));
+										UsoDeVaga uv = new UsoDeVaga(vaga, LocalDateTime.parse(uso[1], formatador),uso[2].equals("null")?null:LocalDateTime.parse(uso[2], formatador),Double.parseDouble(uso[3]) );
+									
 										arrUsoDeVaga[cAUV] = uv;
 										cAUV++;
 									}
@@ -130,6 +146,7 @@ public class Estacionamento {
 								Veiculo v = new Veiculo(veiculo[1], 20);
 								
 								v.setUsos(arrUsoDeVaga);
+								
 								addVeiculo(v, cli.getId());
 							}
 						}
@@ -142,7 +159,8 @@ public class Estacionamento {
 
 			leitor.close();
 		} catch (IOException e) {
-			e.printStackTrace();
+			System.out.println("erro ao carregar arquivos");
+			//e.printStackTrace();
 		}
 	}
 
@@ -151,13 +169,12 @@ public class Estacionamento {
 			FileWriter fileWriter = new FileWriter("estacionamento.txt", true);
 			fileWriter.write(this.nome + "," + this.quantFileiras + "," + this.vagasPorFileira + ";");
 			for (Cliente cliente : id) {
-				if(cliente!=null)
+				if(cliente!=null){
 				cliente.escreverArquivo(this.nome);
+					System.out.println(contCli);
 			}
-			for (Vaga vaga : vagas) {
-				if(vaga!=null)
-				vaga.escreverArquivo(this.nome);
 			}
+			
 
 			fileWriter.close();
 
@@ -168,20 +185,20 @@ public class Estacionamento {
 	}
 
 	public void addVeiculo(Veiculo veiculo, String idCli) {
-		//System.out.println(this.id[0].getId()+"idCli");
-		for (Cliente c: this.id) {
-			if(c!=null){
+		for (Cliente cliente : this.id) {
+			if (cliente != null && cliente.getId().equals(idCli)) {
+				cliente.addVeiculo(veiculo);
 			
-			if (c.getId().equals(idCli)) {
-				
-				c.addVeiculo(veiculo);
+				return; // Interrompe o loop assim que o cliente é encontrado
 			}
 		}
-		}
-
+	
+		// Se chegou aqui, o cliente com o ID especificado não foi encontrado
+		System.out.println("Cliente com ID " + idCli + " não encontrado.");
 	}
 
 	public void addCliente(Cliente cliente) {
+		System.out.println(contCli);
 		this.id[this.contCli] = cliente;
 		this.contCli++;
 
@@ -235,19 +252,20 @@ public class Estacionamento {
 		}
 	}
 }
-	public ArrayList<String> historicoDeUso() {
+	public ArrayList<String> historicoDeUso(Cliente cliente) {
 		ArrayList<String> historico = new ArrayList<>();
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
 	int i=0;
-		for (Cliente cliente : this.id ) {
+		//for (Cliente cliente : this.id ) {
 			if (cliente != null) {
 			Veiculo[] veiculos = cliente.getVeiculos();
 			
-							
+					
 			for (Veiculo veiculo : veiculos) {
 				if (veiculo != null) {
+					System.out.println(veiculos.length);
 					UsoDeVaga[] usos = veiculo.getUsos();
-					System.out.println(i);i++;
+					System.out.println(veiculo.getPlaca());i++;
 					for (UsoDeVaga uso : usos) {
 						if (uso != null) {
 							
@@ -256,14 +274,14 @@ public class Estacionamento {
 											 ", Entrada: " + uso.getEntrada().format(formatter) +
 											 ", Saída: " + (uso.getSaida() != null ? uso.getSaida().format(formatter) : "ainda estacionado") +
 											 ", Valor Pago: R$" + uso.valorPago() +
-											 ", Vaga: " + uso.getVaga().getId();
+											 ", Vaga: " + uso.getVaga().getId()+"\n";
 							historico.add(infoUso);
 						}
 					}
 				}
 			}
 		}
-	}
+	//}
 	
 		return historico;
 	}

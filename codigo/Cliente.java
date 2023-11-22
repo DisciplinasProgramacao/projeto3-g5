@@ -11,7 +11,8 @@ public class Cliente {
     public Cliente(String nome, String id) {
         this.nome = nome;
         this.id = id;
-        
+        System.out.println("criado o cliente"+nome);
+
     }
     public void escreverArquivo(String estacionamento){
         try {
@@ -21,7 +22,7 @@ public class Cliente {
 
         for (Veiculo veiculo : veiculos) {
             if(veiculo!=null)
-        veiculo.escreverArquivo(this.nome,estacionamento);
+        veiculo.escreverArquivo(this.id,estacionamento);
 
         }
         
@@ -37,19 +38,19 @@ public class Cliente {
     }
 
     public void addVeiculo(Veiculo veiculo) {
-        //System.out.println(veiculos.length);
+        
 
         if (veiculos!=null) {
             for (int i = 0; i < veiculos.length; i++) {
             if (veiculos[i] == null) {
-                
+              
                 veiculos[i] = veiculo;
                 break;
             }
         }
         }
         else{
-            
+           
             veiculos[0] = veiculo;}
         
     }
