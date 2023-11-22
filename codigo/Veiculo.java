@@ -52,12 +52,12 @@ public class Veiculo {
 
     }
 
-    public double sair(LocalDateTime time) {
+    public double sair(LocalDateTime time, int mensalista) {
         double totalPago = 0.0;
         for (int i = 0; i < usos.length; i++) {
             if (usos[i] != null && usos[i].getSaida() == null) {     
                 usos[i].setSaida(time);           
-                usos[i].sair();
+                usos[i].sair(mensalista);
                 totalPago += usos[i].valorPago();
             }
         }

@@ -2,9 +2,12 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Optional;
 
 public class Estacionamento {
 	private String nome;
@@ -107,7 +110,7 @@ public class Estacionamento {
 			for (String token : clientes) {
 				String[] cliente = token.split("[,]");
 				if (cliente[0].equals(this.nome)) {
-					Cliente cli = new Cliente(cliente[1], cliente[2]);
+					Cliente cli = new Cliente(cliente[1], cliente[2], Integer.parseInt(cliente[3]),  LocalDate.parse(cliente[4]));
 					for (String ve : veiculos) {
 						String[] veiculo = ve.split("[,]");
 						for (String us : usos) {
@@ -179,6 +182,15 @@ public class Estacionamento {
 		}
 		}
 
+	}
+
+	public void setMensalista(int mensalidade, String idCli){
+		Optional<Cliente> mensalista = Arrays.stream(id)
+                .filter(client -> client.getId() == idCli)
+                .findFirst();
+		LocalDate today = LocalDate.now();
+		mensalista.get().setMensalista(mensalidade);
+		mensalista.get().setDateMensalista(today);
 	}
 
 	public void addCliente(Cliente cliente) {
@@ -274,7 +286,7 @@ public class Estacionamento {
 		
 		for (int k = 0; k < this.contCli; k++) {
 			if (this.id[k].possuiVeiculo(placa) != null) {
-				return this.id[k].possuiVeiculo(placa).sair(time);
+				return this.id[k].possuiVeiculo(placa).sair(time, this.id[k].getMensalista());
 			}
 		}
 		return contCli;

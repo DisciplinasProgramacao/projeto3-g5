@@ -1,63 +1,67 @@
 import java.io.FileWriter;
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.Period;
 import java.util.ArrayList;
 
 public class Cliente {
 
     private String nome;
     private String id;
-    private Veiculo[] veiculos=new Veiculo[10];
+    private Veiculo[] veiculos = new Veiculo[10];
+    private int mensalista;
+    private LocalDate dateMensalista;
 
-    public Cliente(String nome, String id) {
+    public Cliente(String nome, String id, int mensalista, LocalDate dateMensalista) {
         this.nome = nome;
         this.id = id;
-        
+        this.mensalista = mensalista;
+        this.dateMensalista = dateMensalista;
     }
-    public void escreverArquivo(String estacionamento){
+
+    public void escreverArquivo(String estacionamento) {
         try {
-        FileWriter fileWriter = new FileWriter("cliente.txt",true);
-		fileWriter.write(estacionamento+","+this.nome+","+this.id+";");
-        
+            FileWriter fileWriter = new FileWriter("cliente.txt", true);
+            fileWriter.write(estacionamento + "," + this.nome + "," + this.id + "," + this.mensalista + ","
+                    + this.dateMensalista + ";");
 
-        for (Veiculo veiculo : veiculos) {
-            if(veiculo!=null)
-        veiculo.escreverArquivo(this.nome,estacionamento);
+            for (Veiculo veiculo : veiculos) {
+                if (veiculo != null)
+                    veiculo.escreverArquivo(this.nome, estacionamento);
 
+            }
+
+            fileWriter.close();
+
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-        
-      
-
-        fileWriter.close();
-
-      
-    } catch (IOException e) {
-        e.printStackTrace();
-    }
 
     }
 
     public void addVeiculo(Veiculo veiculo) {
-        //System.out.println(veiculos.length);
+        // System.out.println(veiculos.length);
 
-        if (veiculos!=null) {
+        if (veiculos != null) {
             for (int i = 0; i < veiculos.length; i++) {
-            if (veiculos[i] == null) {
-                
-                veiculos[i] = veiculo;
-                break;
+                if (veiculos[i] == null) {
+
+                    veiculos[i] = veiculo;
+                    break;
+                }
             }
+        } else {
+
+            veiculos[0] = veiculo;
         }
-        }
-        else{
-            
-            veiculos[0] = veiculo;}
-        
+
     }
 
     public Veiculo possuiVeiculo(String placa) {
-        
+
         for (Veiculo veiculo : veiculos) {
-            
+
             if (veiculo != null && veiculo.getPlaca().equals(placa)) {
                 return veiculo;
             }
@@ -90,6 +94,15 @@ public class Cliente {
                 totalArrecadado += veiculo.totalArrecadado();
             }
         }
+        if (this.mensalista > 0) {
+            LocalDate momentoAtual = LocalDate.now();
+            long mes = Period.between(momentoAtual, this.dateMensalista).getMonths();
+            if (this.mensalista < 4) {
+                totalArrecadado += (mes * 200);
+            } else {
+                totalArrecadado += (mes * 500);
+            }
+        }
         return totalArrecadado;
     }
 
@@ -100,6 +113,14 @@ public class Cliente {
                 arrecadadoNoMes += veiculo.arrecadadoNoMes(mes);
             }
         }
+        if (this.mensalista > 0 && mes >= this.dateMensalista.getMonthValue()) {
+            if (this.mensalista < 4) {
+                arrecadadoNoMes += 200;
+            } else {
+                arrecadadoNoMes += 500;
+            }
+        }
+
         return arrecadadoNoMes;
     }
 
@@ -132,4 +153,21 @@ public class Cliente {
     public void setVeiculos(Veiculo[] veiculos) {
         this.veiculos = veiculos;
     }
+
+    public int getMensalista() {
+        return this.mensalista;
+    }
+
+    public void setMensalista(int mensalista) {
+        this.mensalista = mensalista;
+    }
+
+    public LocalDate getDateMensalista() {
+        return this.dateMensalista;
+    }
+
+    public void setDateMensalista(LocalDate dateMensalista) {
+        this.dateMensalista = dateMensalista;
+    }
+
 }
