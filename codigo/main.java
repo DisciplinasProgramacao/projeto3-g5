@@ -22,6 +22,7 @@ public class main {
          estacionamento3 = new Estacionamento("Estacionamento 3", 15, 25);
         if(estacionamento1.getId()[0]!=null) System.err.println( estacionamento1.getId()[0].getNome());
          estacionamento1.carregarArquivo();
+         System.out.println("contcli_1 "+estacionamento1.contCli);
          estacionamento2.carregarArquivo();
          estacionamento3.carregarArquivo();
            System.out.println("carregando estacionamento salvo ");
@@ -132,6 +133,7 @@ public class main {
                 break;
                 case 5:
                     System.out.println("Saindo do menu do cliente.");
+                    System.out.println("contcli_2 "+estacionamento1.contCli);
                     apagarArquivos(estacionamento1);
                     
                     return;

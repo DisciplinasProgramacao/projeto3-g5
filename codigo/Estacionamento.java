@@ -13,7 +13,7 @@ public class Estacionamento {
 	private Vaga[] vagas;
 	private int quantFileiras;
 	private int vagasPorFileira;
-	private int contCli = 0;
+	public int contCli = 0;
 
 	public Estacionamento(String nome, int fileiras, int vagasPorFila) {
 		this.nome = nome;
@@ -114,22 +114,17 @@ public class Estacionamento {
 				boolean idNaoExiste = true;
 
 				// Verifica se existe algum elemento no vetor id igual a cliente[2]
-				for (Cliente clienteExistente : id) {
-					if (clienteExistente != null && clienteExistente.getId().equals(cliente[2])) {
-						idNaoExiste = false;
-						break;
-					}
-				}
+				
 
 				if (cliente[0].equals(this.nome) && idNaoExiste) {
 
-					Cliente cli = new Cliente(cliente[1], cliente[2]);
+					Cliente cli = new Cliente(cliente[2],cliente[1]);
+					this.id[contCli] = cli;
 					for (String ve : veiculos) {
 						String[] veiculo = ve.split("[,]");
 						for (String us : usos) {
 							String[] uso = us.split("[,]");
-
-							if (veiculo[0].equals(cliente[2]) && uso[0].equals(veiculo[1])) {
+							if (veiculo[0].equals(cliente[2]) && uso[0].equals(veiculo[1]) && (contCli == 0 || !this.id[contCli - 1].getId().equals(cliente[2]))) {
 								UsoDeVaga[] arrUsoDeVaga = new UsoDeVaga[20];
 								int cAUV = 0;
 
@@ -147,8 +142,8 @@ public class Estacionamento {
 									}
 
 								}
-								this.id[contCli] = cli;
-								contCli++;
+								
+								System.out.println("add");
 								Veiculo v = new Veiculo(veiculo[1], 20);
 
 								v.setUsos(arrUsoDeVaga);
@@ -158,7 +153,7 @@ public class Estacionamento {
 						}
 
 					}
-
+					contCli++;
 				}
 			}
 
