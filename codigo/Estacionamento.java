@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Map;
 
 public class Estacionamento {
 	private String nome;
@@ -16,6 +17,11 @@ public class Estacionamento {
 
 	public Estacionamento(String nome, int fileiras, int vagasPorFila) {
 		this.nome = nome;
+		this.id = new Cliente[1000];
+
+		this.vagas = new Vaga[fileiras * vagasPorFila];
+		this.quantFileiras = fileiras;
+		this.vagasPorFileira = vagasPorFila;
 		this.id = new Cliente[1000];
 
 		this.vagas = new Vaga[fileiras * vagasPorFila];
@@ -254,6 +260,36 @@ public class Estacionamento {
 		}
 	}
 
+	public static double calcularCustoServicos(Map<String, Boolean> servicosAtivos) {
+		double valorTotal = 0.0;
+
+		for (Map.Entry<String, Boolean> entry : servicosAtivos.entrySet()) {
+			String servico = entry.getKey();
+			boolean ativo = entry.getValue();
+
+			if (ativo) {
+				double valorServico = obterValorServico(servico);
+				valorTotal += valorServico;
+				System.out.println("Cobrando serviço: " + servico + " - Valor: R$" + valorServico);
+			}
+		}
+
+		return valorTotal;
+	}
+
+	private static double obterValorServico(String servico) {
+		switch (servico) {
+			case "manobrista":
+				return 5.0;
+			case "lavagem":
+				return 30.0;
+			case "polimento":
+				return 50.0;
+			default:
+				return 0.0;
+		}
+	}
+
 	public ArrayList<String> historicoDeUso(Cliente cliente) {
 		ArrayList<String> historico = new ArrayList<>();
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
@@ -389,6 +425,80 @@ public class Estacionamento {
 			}
 		}
 		return top5.toString();
+	}
+
+	public Veiculo getVeiculoByPlaca(String placa) {
+		for (Cliente cliente : this.id) {
+			if (cliente != null) {
+				Veiculo veiculo = cliente.possuiVeiculo(placa);
+				if (veiculo != null) {
+					return veiculo;
+				}
+			}
+		}
+		return null;
+	}
+
+	public double mediaUsoMensalistasNoMes(int mes) {
+		int totalUsos = 0;
+		int totalClientesMensalistas = 0;
+
+		for (int i = 0; i < this.contCli; i++) {
+			if (this.id[i] != null && this.id[i].getCategoria() == CategoriaCliente.MENSALISTA) {
+				Veiculo[] veiculos = this.id[i].getVeiculos();
+
+				for (Veiculo veiculo : veiculos) {
+					UsoDeVaga[] usos = veiculo.getUsos();
+
+					for (UsoDeVaga uso : usos) {
+						if (uso != null && uso.getSaida() != null) {
+							LocalDateTime data = uso.getSaida();
+							int mesData = data.getMonthValue();
+
+							if (mesData == mes) {
+								totalUsos++;
+							}
+						}
+					}
+				}
+
+				totalClientesMensalistas++;
+			}
+		}
+
+		if (totalClientesMensalistas > 0) {
+			return (double) totalUsos / totalClientesMensalistas;
+		} else {
+			return 0.0;
+		}
+	}
+
+	public int quantidadeUsosMensalistaNoMes(String idCliente, int mes) {
+		int totalUsos = 0;
+
+		for (int i = 0; i < this.contCli; i++) {
+			if (this.id[i] != null && this.id[i].getId().equals(idCliente)
+					&& this.id[i].getCategoria() == CategoriaCliente.MENSALISTA) {
+				Veiculo[] veiculos = this.id[i].getVeiculos();
+
+				for (Veiculo veiculo : veiculos) {
+					UsoDeVaga[] usos = veiculo.getUsos();
+
+					for (UsoDeVaga uso : usos) {
+						if (uso != null && uso.getSaida() != null) {
+							LocalDateTime data = uso.getSaida();
+							int mesData = data.getMonthValue();
+
+							if (mesData == mes) {
+								totalUsos++;
+							}
+						}
+					}
+				}
+			}
+		}
+
+		return totalUsos;
 	}
 
 }
