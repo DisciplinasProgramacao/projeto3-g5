@@ -6,59 +6,55 @@ public class Cliente {
 
     private String nome;
     private String id;
-    private Veiculo[] veiculos=new Veiculo[10];
+    private Veiculo[] veiculos = new Veiculo[10];
 
     public Cliente(String nome, String id) {
         this.nome = nome;
         this.id = id;
-        System.out.println("criado o cliente"+nome);
+        System.out.println("criado o cliente" + nome);
 
     }
-    public void escreverArquivo(String estacionamento){
+
+    public void escreverArquivo(String estacionamento) {
         try {
-        FileWriter fileWriter = new FileWriter("cliente.txt",true);
-		fileWriter.write(estacionamento+","+this.nome+","+this.id+";");
-        
+            FileWriter fileWriter = new FileWriter("cliente.txt", true);
+            fileWriter.write(estacionamento + "," + this.nome + "," + this.id + ";");
 
-        for (Veiculo veiculo : veiculos) {
-            if(veiculo!=null)
-        veiculo.escreverArquivo(this.id,estacionamento);
+            for (Veiculo veiculo : veiculos) {
+                if (veiculo != null)
+                    veiculo.escreverArquivo(this.id, estacionamento);
 
+            }
+
+            fileWriter.close();
+
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-        
-      
-
-        fileWriter.close();
-
-      
-    } catch (IOException e) {
-        e.printStackTrace();
-    }
 
     }
 
     public void addVeiculo(Veiculo veiculo) {
-        
 
-        if (veiculos!=null) {
+        if (veiculos != null) {
             for (int i = 0; i < veiculos.length; i++) {
-            if (veiculos[i] == null) {
-              
-                veiculos[i] = veiculo;
-                break;
+                if (veiculos[i] == null) {
+
+                    veiculos[i] = veiculo;
+                    break;
+                }
             }
+        } else {
+
+            veiculos[0] = veiculo;
         }
-        }
-        else{
-           
-            veiculos[0] = veiculo;}
-        
+
     }
 
     public Veiculo possuiVeiculo(String placa) {
-        
+
         for (Veiculo veiculo : veiculos) {
-            
+
             if (veiculo != null && veiculo.getPlaca().equals(placa)) {
                 return veiculo;
             }
