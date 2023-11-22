@@ -2,16 +2,26 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 
+
+enum CategoriaCliente {
+    HORISTA, TURNO, MENSALISTA
+}
+
 public class Cliente {
 
     private String nome;
     private String id;
     private Veiculo[] veiculos=new Veiculo[10];
+    private CategoriaCliente categoria;
 
-    public Cliente(String nome, String id) {
+    public Cliente(String nome, String id, CategoriaCliente categoria) {
         this.nome = nome;
         this.id = id;
-        
+        this.categoria = categoria;
+    }
+    public Cliente(String id, String nome) {
+        this.id = id;
+        this.nome = nome;
     }
     public void escreverArquivo(String estacionamento){
         try {
@@ -131,5 +141,13 @@ public class Cliente {
     // Setter para o campo veiculos
     public void setVeiculos(Veiculo[] veiculos) {
         this.veiculos = veiculos;
+    }
+
+    public CategoriaCliente getCategoria() {
+        return categoria;
+    }
+
+    public void setCategoria(CategoriaCliente categoria) {
+        this.categoria = categoria;
     }
 }
