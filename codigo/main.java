@@ -11,12 +11,20 @@ public class main {
         Estacionamento estacionamento1 = new Estacionamento("Estacionamento 1", 12, 22);
         Estacionamento estacionamento2 = new Estacionamento("Estacionamento 2", 10, 28);
         Estacionamento estacionamento3 = new Estacionamento("Estacionamento 3", 15, 25);
-        estacionamento1.carregarArquivo();
+        // estacionamento1.carregarArquivo();
         // estacionamento2.carregarArquivo();
         // estacionamento3.carregarArquivo();
-        System.out.println("carregando estacionamento salvo ");
+
         int escolha;
         do {
+            estacionamento1 = new Estacionamento("Estacionamento 1", 12, 22);
+            estacionamento2 = new Estacionamento("Estacionamento 2", 10, 28);
+            estacionamento3 = new Estacionamento("Estacionamento 3", 15, 25);
+            if (estacionamento1.getId()[0] != null)
+            estacionamento1.carregarArquivo();
+            estacionamento2.carregarArquivo();
+            estacionamento3.carregarArquivo();
+            System.out.println("carregando estacionamento salvo ");
             System.out.println("Menu Principal");
             System.out.println("1. Entrar como Cliente");
             System.out.println("2. Entrar como Gestor");
@@ -78,7 +86,7 @@ public class main {
     public static void menuCliente(Estacionamento estacionamento1, String id) {
         Scanner scanner = new Scanner(System.in);
         Cliente[] arrCliente = estacionamento1.getId();
-        Cliente c;
+        Cliente c=estacionamento1.getId()[0];
         boolean existe = false;
         if (arrCliente.length > 0) {
             for (Cliente cliente : arrCliente) {
@@ -115,7 +123,7 @@ public class main {
                     sairVeiculo(estacionamento1);
                     break;
                 case 3:
-                    ArrayList<String> historico = estacionamento1.historicoDeUso();
+                    ArrayList<String> historico = estacionamento1.historicoDeUso(c);
                     System.out.println(historico);
                     break;
                 case 4:
@@ -128,8 +136,9 @@ public class main {
                     break;
                 case 6:
                     System.out.println("Saindo do menu do cliente.");
-                    apagarArquivos();
-                    estacionamento1.escreverArquivo();
+                    System.out.println("contcli_2 " + estacionamento1.contCli);
+                    apagarArquivos(estacionamento1);
+
                     return;
                 default:
                     System.out.println("Opção inválida. Escolha uma opção válida.");
@@ -174,7 +183,7 @@ public class main {
         }
     }
 
-    public static void apagarArquivos() {
+    public static void apagarArquivos(Estacionamento estacionamento1) {
         try {
             FileWriter writer = new FileWriter("cliente.txt", false);
             writer.close();
@@ -184,8 +193,12 @@ public class main {
             writer.close();
             writer = new FileWriter("veiculo.txt", false);
             writer.close();
+            writer = new FileWriter("usoDeVaga.txt", false);
+            writer.close();
         } catch (IOException e) {
             e.printStackTrace();
+        } finally {
+            estacionamento1.escreverArquivo();
         }
     }
 

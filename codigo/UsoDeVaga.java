@@ -19,8 +19,14 @@ public class UsoDeVaga {
 		this.entrada = entrada;
 
 	}
-
-	// getter para vaga
+	public UsoDeVaga(Vaga vaga, LocalDateTime entrada,LocalDateTime saida,double valorPago) {
+		this.vaga = vaga;
+		this.entrada = entrada;
+		this.saida = saida;
+		this.valorPago = valorPago;
+		
+	}
+	//getter para vaga
 	public Vaga getVaga() {
 		return vaga;
 	}

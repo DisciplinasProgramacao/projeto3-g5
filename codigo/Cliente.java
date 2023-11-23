@@ -5,6 +5,11 @@ import java.time.LocalDateTime;
 import java.time.Period;
 import java.util.ArrayList;
 
+
+enum CategoriaCliente {
+    HORISTA, TURNO, MENSALISTA
+}
+
 public class Cliente {
 
     private String nome;
@@ -16,8 +21,7 @@ public class Cliente {
     public Cliente(String nome, String id, int mensalista, LocalDate dateMensalista) {
         this.nome = nome;
         this.id = id;
-        this.mensalista = mensalista;
-        this.dateMensalista = dateMensalista;
+        
     }
 
     public void escreverArquivo(String estacionamento) {
@@ -28,7 +32,7 @@ public class Cliente {
 
             for (Veiculo veiculo : veiculos) {
                 if (veiculo != null)
-                    veiculo.escreverArquivo(this.nome, estacionamento);
+                    veiculo.escreverArquivo(this.id, estacionamento);
 
             }
 
@@ -41,7 +45,6 @@ public class Cliente {
     }
 
     public void addVeiculo(Veiculo veiculo) {
-        // System.out.println(veiculos.length);
 
         if (veiculos != null) {
             for (int i = 0; i < veiculos.length; i++) {
