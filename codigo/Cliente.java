@@ -1,5 +1,8 @@
 import java.io.FileWriter;
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.Period;
 import java.util.ArrayList;
 
 
@@ -12,24 +15,20 @@ public class Cliente {
     private String nome;
     private String id;
     private Veiculo[] veiculos = new Veiculo[10];
-    private CategoriaCliente categoria;
+    private int mensalista;
+    private LocalDate dateMensalista;
 
-    public Cliente(String nome, String id, CategoriaCliente categoria) {
+    public Cliente(String nome, String id, int mensalista, LocalDate dateMensalista) {
         this.nome = nome;
         this.id = id;
-        System.out.println("criado o cliente" + nome);
-
-        this.categoria = categoria;
-    }
-    public Cliente(String id, String nome) {
-        this.id = id;
-        this.nome = nome;
+        
     }
 
     public void escreverArquivo(String estacionamento) {
         try {
             FileWriter fileWriter = new FileWriter("cliente.txt", true);
-            fileWriter.write(estacionamento + "," + this.nome + "," + this.id + ";");
+            fileWriter.write(estacionamento + "," + this.nome + "," + this.id + "," + this.mensalista + ","
+                    + this.dateMensalista + ";");
 
             for (Veiculo veiculo : veiculos) {
                 if (veiculo != null)
@@ -98,6 +97,15 @@ public class Cliente {
                 totalArrecadado += veiculo.totalArrecadado();
             }
         }
+        if (this.mensalista > 0) {
+            LocalDate momentoAtual = LocalDate.now();
+            long mes = Period.between(momentoAtual, this.dateMensalista).getMonths();
+            if (this.mensalista < 4) {
+                totalArrecadado += (mes * 200);
+            } else {
+                totalArrecadado += (mes * 500);
+            }
+        }
         return totalArrecadado;
     }
 
@@ -108,6 +116,14 @@ public class Cliente {
                 arrecadadoNoMes += veiculo.arrecadadoNoMes(mes);
             }
         }
+        if (this.mensalista > 0 && mes >= this.dateMensalista.getMonthValue()) {
+            if (this.mensalista < 4) {
+                arrecadadoNoMes += 200;
+            } else {
+                arrecadadoNoMes += 500;
+            }
+        }
+
         return arrecadadoNoMes;
     }
 
@@ -141,11 +157,20 @@ public class Cliente {
         this.veiculos = veiculos;
     }
 
-    public CategoriaCliente getCategoria() {
-        return categoria;
+    public int getMensalista() {
+        return this.mensalista;
     }
 
-    public void setCategoria(CategoriaCliente categoria) {
-        this.categoria = categoria;
+    public void setMensalista(int mensalista) {
+        this.mensalista = mensalista;
     }
+
+    public LocalDate getDateMensalista() {
+        return this.dateMensalista;
+    }
+
+    public void setDateMensalista(LocalDate dateMensalista) {
+        this.dateMensalista = dateMensalista;
+    }
+
 }

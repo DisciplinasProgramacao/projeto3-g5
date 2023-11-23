@@ -86,7 +86,7 @@ public class main {
     public static void menuCliente(Estacionamento estacionamento1, String id) {
         Scanner scanner = new Scanner(System.in);
         Cliente[] arrCliente = estacionamento1.getId();
-        Cliente c = estacionamento1.getId()[0];
+        Cliente c=estacionamento1.getId()[0];
         boolean existe = false;
         if (arrCliente.length > 0) {
             for (Cliente cliente : arrCliente) {
@@ -99,7 +99,7 @@ public class main {
         if (!existe) {
             System.out.println("Indique seu nome: ");
             String nome = scanner.nextLine();
-            c = new Cliente(id, nome);
+            c = new Cliente(nome, id, 0, null);
             estacionamento1.addCliente(c);
         }
 
@@ -111,7 +111,8 @@ public class main {
             System.out.println("2. Sair com veículo");
             System.out.println("3. Acessar histórico de uso do estacionamento");
             System.out.println("4. adicionar veículo");
-            System.out.println("5. Sair");
+            System.out.println("5. Seja um mensalista!");
+            System.out.println("6. Sair");
             escolha = scanner.nextInt();
             scanner.nextLine();
             switch (escolha) {
@@ -131,6 +132,9 @@ public class main {
                     adicionarVeiculo(estacionamento1, id, placa);
                     break;
                 case 5:
+                    menuMensalista(estacionamento1, id);
+                    break;
+                case 6:
                     System.out.println("Saindo do menu do cliente.");
                     System.out.println("contcli_2 " + estacionamento1.contCli);
                     apagarArquivos(estacionamento1);
@@ -141,6 +145,42 @@ public class main {
                     break;
             }
         } while (escolha < 4 && escolha > 0);
+    }
+
+    public static void menuMensalista(Estacionamento estacionamento, String id) {
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("1- Ser Mensalista por turno");
+        System.out.println("2- Ser Mensalista sem turno definido");
+        System.out.println("3- Sair");
+        int escolha = scanner.nextInt();
+        scanner.nextLine();
+        switch (escolha) {
+            case 1:
+                System.out.println("Escolha turno: ");
+                System.out.println("1- Manhã");
+                System.out.println("2- Tarde");
+                System.out.println("3- Noite");
+                int turno = scanner.nextInt();
+                scanner.nextLine();
+                if(turno >0 && turno < 4){
+                    estacionamento.setMensalista(turno, id);
+                    System.out.println("Mensalidade de 200 reais adicionada");
+                }else{
+                    System.out.println("Opção inválida!");
+                }
+                break;
+                
+            case 2: 
+                estacionamento.setMensalista(4, id);
+                System.out.println("Mensalidade de 500 reais adicionada");
+                break;
+            case 3:
+                System.out.println("Saindo...");
+                return;
+            default:
+                System.out.println("Opção inválida. Escolha uma opção válida.");
+                break;
+        }
     }
 
     public static void apagarArquivos(Estacionamento estacionamento1) {
