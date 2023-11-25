@@ -6,19 +6,25 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 public class main {
+     // Instâncias estáticas de Estacionamento
     public static Estacionamento estacionamento1 = new Estacionamento("Estacionamento 1", 12, 22);
     public static Estacionamento estacionamento2 = new Estacionamento("Estacionamento 2", 10, 28);
     public static Estacionamento estacionamento3 = new Estacionamento("Estacionamento 3", 15, 25);
 
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
+        /*  Função principal que controla o fluxo do programa.
+         Inicializa os estacionamentos e apresenta um menu principal para o usuário.
+         Permite a entrada como cliente, gestor ou a saída do programa.*/
 
         // estacionamento1.carregarArquivo();
         // estacionamento2.carregarArquivo();
         // estacionamento3.carregarArquivo();
-
+        
+        // Inicialização dos estacionamentos e tentativa de carregar estados anteriores
         int escolha;
         do {
+            // Carregar estacionamentos previamente salvos
             estacionamento1 = new Estacionamento("Estacionamento 1", 12, 22);
             estacionamento2 = new Estacionamento("Estacionamento 2", 10, 28);
             estacionamento3 = new Estacionamento("Estacionamento 3", 15, 25);
@@ -34,7 +40,8 @@ public class main {
             }
             // estacionamento2.carregarArquivo();
             // estacionamento3.carregarArquivo();
-
+            
+            // Menu principal
             System.out.println("Menu Principal");
             System.out.println("1. Entrar como Cliente");
             System.out.println("2. Entrar como Gestor");
@@ -43,6 +50,7 @@ public class main {
             System.out.print("Escolha uma opção: ");
             escolha = scanner.nextInt();
 
+            // Switch para lidar com as opções do menu principal
             switch (escolha) {
                 case 1:
                     entrarComoCliente();
@@ -59,7 +67,13 @@ public class main {
             }
         } while (escolha < 4 && escolha > 0);
     }
+    
 
+
+    /* Método para entrada como cliente
+     Permite ao usuário escolher um estacionamento e entrar como cliente.
+     Chama o menu do cliente para realizar operações relacionadas ao cliente.
+    */
     public static void entrarComoCliente() {
         Scanner scanner = new Scanner(System.in);
         Estacionamento e = estacionamento1;
@@ -91,7 +105,13 @@ public class main {
 
         menuCliente(e, id);
     }
+    
 
+
+    /*  Método para o menu do cliente
+      Apresenta um menu para o cliente realizar diversas operações no estacionamento.
+      Inclui estacionar veículo, sair com veículo, acessar histórico, adicionar veículo, ser mensalista e adicionar serviço.  */
+       
     public static void menuCliente(Estacionamento estacionamento, String id) {
         Scanner scanner = new Scanner(System.in);
         Cliente[] arrCliente = estacionamento.getId();
@@ -163,6 +183,9 @@ public class main {
         } while (escolha < 7 && escolha > 0);
     }
 
+    /*  Método para o menu de tornar-se mensalista
+        Permite ao cliente tornar-se mensalista, escolhendo entre opções com ou sem turno definido.
+    */
     public static void menuMensalista(Estacionamento estacionamento, String id) {
         Scanner scanner = new Scanner(System.in);
         System.out.println("1- Ser Mensalista por turno");
@@ -209,6 +232,11 @@ public class main {
                 break;
         }
     }
+
+
+    /*  Método para o menu de adição de serviços
+        Permite ao cliente adicionar serviços ao seu veículo, como manobrista, lavagem e polimento.
+    */
     public static void menuServico(Estacionamento estacionamento, String id) {
         Scanner scanner = new Scanner(System.in);
         System.out.println("Indique a placa do veiculo: ");
@@ -221,6 +249,10 @@ public class main {
         estacionamento.adicionarServico(id,escolha,plaque);
     }
 
+
+    /* Método para salvar os estados dos estacionamentos
+       Salva os estados dos estacionamentos em arquivos para persistência de dados.
+    */
     public static void salvarEstacionamentos() {
         try {
             estacionamento1.salvarEstado();
@@ -230,13 +262,17 @@ public class main {
             e.printStackTrace();
         }
     }
-
+    /* Método para adicionar veículo ao cliente
+       Adiciona um novo veículo ao cliente no estacionamento.
+    */
     public static void adicionarVeiculo(Estacionamento estacionamento, String id, String placa) {
         Veiculo v = new Veiculo(placa, 20);
         estacionamento.addVeiculo(v, id);
         menuCliente(estacionamento, id);
     }
-
+    /*Método para estacionar um veículo
+      Permite ao cliente estacionar um veículo, solicitando a placa e a hora de entrada.
+    */
     public static void estacionarVeiculo(Estacionamento estacionamento) {
         Scanner scanner = new Scanner(System.in);
         System.out.println("Indique a placa do veiculo: ");
@@ -252,7 +288,9 @@ public class main {
         }
 
     }
-
+    /* Método para sair com um veículo
+       Permite ao cliente sair com um veículo, solicitando a placa e a hora de saída.
+     */
     public static void sairVeiculo(Estacionamento estacionamento) {
         Scanner scanner = new Scanner(System.in);
         System.out.println("Indique a placa do veiculo: ");
@@ -268,7 +306,9 @@ public class main {
             System.out.println("digite um horario valido");
         }
     }
-
+    /* Método para entrada como gestor
+      Permite ao usuário entrar como gestor e realizar operações de gestão no estacionamento escolhido.
+    */
     public static void entrarComoGestor() {
         Scanner scanner = new Scanner(System.in);
         System.out.println("Qual estacionamento você quer gerenciar(1 a 3)?");
