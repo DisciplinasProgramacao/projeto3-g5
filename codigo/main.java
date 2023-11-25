@@ -110,7 +110,7 @@ public class main {
             String nome = scanner.nextLine();
             TipoCliente tipoCliente = null;
             c = new Cliente(nome, id,tipoCliente.HORISTA , null);
-            estacionamento1.addCliente(c);
+            estacionamento.addCliente(c);
         }
 
         // Scanner scanner = new Scanner(System.in);
@@ -122,7 +122,8 @@ public class main {
             System.out.println("3. Acessar histórico de uso do estacionamento");
             System.out.println("4. adicionar veículo");
             System.out.println("5. Seja um mensalista!");
-            System.out.println("6. Sair");
+            System.out.println("6. Adicionar um serviço");
+            System.out.println("7. Sair");
             escolha = scanner.nextInt();
             scanner.nextLine();
             switch (escolha) {
@@ -142,20 +143,24 @@ public class main {
                     adicionarVeiculo(estacionamento, id, placa);
                     break;
                 case 5:
-                    menuMensalista(estacionamento1, id);
-                    menuCliente(estacionamento1, id);
+                    menuMensalista(estacionamento, id);
+                    menuCliente(estacionamento, id);
                     break;
-                case 6:
+                    case 6:
+                    menuServico(estacionamento, id);
+                    menuCliente(estacionamento, id);
+                    break;
+                case 7:
                     System.out.println("Saindo do menu do cliente.");
                     // System.out.println("contcli_2 " + estacionamento1.contCli);
                     salvarEstacionamentos();
 
-                    return;
+                    break;
                 default:
                     System.out.println("Opção inválida. Escolha uma opção válida.");
                     break;
             }
-        } while (escolha < 4 && escolha > 0);
+        } while (escolha < 7 && escolha > 0);
     }
 
     public static void menuMensalista(Estacionamento estacionamento, String id) {
@@ -204,6 +209,17 @@ public class main {
                 break;
         }
     }
+    public static void menuServico(Estacionamento estacionamento, String id) {
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Indique a placa do veiculo: ");
+        String plaque = scanner.nextLine();
+
+        System.out.println("1- Manobrista");
+        System.out.println("2- Lavagem");
+        System.out.println("3- Polimento(inclui lavagem)");
+        int escolha = scanner.nextInt();
+        estacionamento.adicionarServico(id,escolha,plaque);
+    }
 
     public static void salvarEstacionamentos() {
         try {
@@ -246,7 +262,8 @@ public class main {
         try {
         LocalDateTime momentoAtual = LocalDate.now().atTime(Integer.parseInt(hour.split(":")[0]),
                 Integer.parseInt(hour.split(":")[1]));
-        estacionamento.sair(plaque, momentoAtual);
+        if(!estacionamento.sair(plaque, momentoAtual))
+        sairVeiculo( estacionamento);
         } catch (Exception e) {
             System.out.println("digite um horario valido");
         }
@@ -296,12 +313,13 @@ public class main {
                     System.out.println(estacionamento.top5Clientes(mes));
                     break;
                 case 5:
-                    System.out.println("Saindo do programa.");
-                    System.exit(0);
+                    System.out.println("Saindo do gestor.");
+                    break;
+                    //System.exit(0);
                 default:
                     System.out.println("Opção inválida. Escolha uma opção válida.");
                     break;
             }
-        } while (escolha < 4 && escolha > 0);
+        } while (escolha < 5 && escolha > 0);
     }
 }

@@ -115,7 +115,7 @@ public class Cliente implements Serializable {
     }
 
     public double arrecadadoTotal() {
-         System.out.println(this.mensalista);
+         
         double totalArrecadado = 0;
         for (Veiculo veiculo : veiculos) {
             if (veiculo != null) {
@@ -136,7 +136,7 @@ public class Cliente implements Serializable {
     }
 
     public double arrecadadoNoMes(int mes) {
-        System.out.println( mes >= this.dateMensalista.getMonthValue());
+        //System.out.println( mes >= this.dateMensalista.getMonthValue());
         double arrecadadoNoMes = 0;
         for (Veiculo veiculo : veiculos) {
             if (veiculo != null) {
