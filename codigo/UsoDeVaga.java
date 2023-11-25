@@ -20,14 +20,16 @@ public class UsoDeVaga implements Serializable {
 		this.entrada = entrada;
 
 	}
-	public UsoDeVaga(Vaga vaga, LocalDateTime entrada,LocalDateTime saida,double valorPago) {
+
+	public UsoDeVaga(Vaga vaga, LocalDateTime entrada, LocalDateTime saida, double valorPago) {
 		this.vaga = vaga;
 		this.entrada = entrada;
 		this.saida = saida;
 		this.valorPago = valorPago;
-		
+
 	}
-	//getter para vaga
+
+	// getter para vaga
 	public Vaga getVaga() {
 		return vaga;
 	}
@@ -82,71 +84,47 @@ public class UsoDeVaga implements Serializable {
 		this.valorPago = valorPago;
 	}
 
-	public double sair(int mensalista) {
-		System.out.println(mensalista);
-		valorPago = 0.0;
+	public double sair(TipoCliente tipoCliente) {
 
 		if (entrada != null && saida != null) {
 			// diferença entre entrada e saida
-			LocalDateTime tempEntrada = entrada;
-			LocalDateTime tempSaida = saida;
-			if (mensalista <= 0) {
-				long minutosEstacionados = 0;
-
-				while (tempEntrada.isBefore(tempSaida)) {
-					minutosEstacionados++;
-					tempEntrada = tempEntrada.plusMinutes(1);
-				}
-				// System.out.println(minutosEstacionados);
-				// valor pela taxa de fraçao de uso
-				double valor = minutosEstacionados * FRACAO_USO * VALOR_FRACAO;
-
-				// valor maximo
-				valorPago = Math.min(valor, VALOR_MAXIMO);
-				return valorPago;
-
-			} else {
-				LocalTime entrada = tempEntrada.toLocalTime();
-				LocalTime saida = tempSaida.toLocalTime();
-				if (mensalista == 1) {
-					LocalTime horaInicio = LocalTime.of(8, 0);
-					LocalTime horaFim = LocalTime.of(12, 0);
-					if (entrada.isAfter(horaFim) || saida.isAfter(horaFim)) {
-						valorPago = calcDiferenceValue(entrada, saida, horaInicio, horaFim);
-					} else {
-						valorPago = 0.0;
-					}
-				} else if (mensalista == 2) {
-					LocalTime horaInicio = LocalTime.of(12, 1);
-					LocalTime horaFim = LocalTime.of(18, 0);
-					if (entrada.isBefore(horaFim) || entrada.isAfter(horaFim) || saida.isBefore(horaFim)
-							|| saida.isAfter(horaFim)) {
-						valorPago = calcDiferenceValue(entrada, saida, horaInicio, horaFim);
-					} else {
-						valorPago = 0.0;
-					}
-
-				} else if (mensalista == 3) {
-					LocalTime horaInicio = LocalTime.of(18, 1);
-					LocalTime horaFim = LocalTime.of(23, 59);
-					if (entrada.isBefore(horaFim) || entrada.isAfter(horaFim) || saida.isBefore(horaFim)
-							|| saida.isAfter(horaFim)) {
-						valorPago = calcDiferenceValue(entrada, saida, horaInicio, horaFim);
-					} else {
-						valorPago = 0.0;
-					}
-				} else {
-					valorPago = 0.0;
-				}
-				return valorPago;
+			switch (tipoCliente) {
+				case HORISTA:
+					return calcValue(entrada.toLocalTime(), saida.toLocalTime());
+				case TURNO_MANHA:
+					return calcDiferenceValue(entrada.toLocalTime(), saida.toLocalTime(), tipoCliente.getHoraInicio(), tipoCliente.getHoraFim());
+				case TURNO_TARDE:
+					return calcDiferenceValue(entrada.toLocalTime(), saida.toLocalTime(), tipoCliente.getHoraInicio(), tipoCliente.getHoraFim());
+				case TURNO_NOITE:
+					return calcDiferenceValue(entrada.toLocalTime(), saida.toLocalTime(), tipoCliente.getHoraInicio(), tipoCliente.getHoraFim());
+				case MENSALISTA:
+					return 0.0;
+				default:
+					return 0.0;
 			}
 		}
-		return valorPago;
+		
+		return 0;
 
 	}
 
 	public double valorPago() {
 
+		return valorPago;
+
+	}
+
+	public double calcValue(LocalTime entrada, LocalTime saida) {
+		int minutosEstacionados = 0;
+		while (entrada.isBefore(saida)) {
+			minutosEstacionados++;
+			entrada = entrada.plusMinutes(1);
+		}
+		// valor pela taxa de fraçao de uso
+		double valor = minutosEstacionados * FRACAO_USO * VALOR_FRACAO;
+
+		// valor maximo
+		valorPago = Math.min(valor, VALOR_MAXIMO);
 		return valorPago;
 
 	}
@@ -168,12 +146,7 @@ public class UsoDeVaga implements Serializable {
 			inicio = entrada;
 			fim = horaInicio;
 		}
-		System.out.println(inicio);
-		System.out.println(fim);
-		Duration intervalo = Duration.between(inicio, fim);
-		long minutos = intervalo.toMinutes();
-		double valor = minutos * FRACAO_USO * VALOR_FRACAO;
-		return Math.min(valor, VALOR_MAXIMO);
+		return calcValue(inicio, fim);
 	}
 
 }

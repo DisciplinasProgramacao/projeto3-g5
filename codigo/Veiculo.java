@@ -54,7 +54,7 @@ public class Veiculo implements Serializable  {
 
     }
 
-    public double sair(LocalDateTime time, int mensalista) {
+    public double sair(LocalDateTime time, TipoCliente tipoCliente) {
         double totalPago = 0.0;
         for (int i = 0; i < usos.length; i++) {
             if (usos[i] != null && usos[i].getSaida() == null) {     
@@ -64,7 +64,7 @@ public class Veiculo implements Serializable  {
                     break;
                 }
                 usos[i].setSaida(time);           
-                usos[i].sair(mensalista);
+                usos[i].sair(tipoCliente);
                 totalPago += usos[i].valorPago();
                 return totalPago;
             }else{

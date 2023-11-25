@@ -135,14 +135,34 @@ public class Estacionamento implements Serializable  {
 
 			for (String token : clientes) {
 				String[] cliente = token.split("[,]");
-
 				boolean idNaoExiste = true;
+				Cliente cli = new Cliente(cliente[1], cliente[2], TipoCliente.HORISTA,
+						cliente[4].equals("null") ? null : LocalDate.parse(cliente[4]));
 
 				// Verifica se existe algum elemento no vetor id igual a cliente[2]
 
 				if (cliente[0].equals(this.nome) && idNaoExiste) {
 
-					Cliente cli = new Cliente(cliente[1], cliente[2], Integer.parseInt(cliente[3]),  LocalDate.parse(cliente[4]));					this.id[contCli] = cli;
+					switch (cliente[3]) {
+						case "TURNO_MANHA":
+							cli.setTipoCliente(TipoCliente.TURNO_MANHA);
+							break;
+						case "TURNO_TARDE":
+							cli.setTipoCliente(TipoCliente.TURNO_TARDE);
+							break;
+						case "TURNO_NOITE":
+							cli.setTipoCliente(TipoCliente.TURNO_NOITE);
+							break;
+						case "MENSALISTA":
+							cli.setTipoCliente(TipoCliente.MENSALISTA);
+							break;
+						default:
+							cli.setTipoCliente(TipoCliente.HORISTA);
+							break;
+					}
+					this.id[contCli] = cli;
+					this.id[contCli] = cli;
+					System.out.println(this.id[contCli].getId());
 					for (String ve : veiculos) {
 						String[] veiculo = ve.split("[,]");
 						for (String us : usos) {
@@ -361,7 +381,7 @@ public class Estacionamento implements Serializable  {
 
 		for (int k = 0; k < this.contCli; k++) {
 			if (this.id[k].possuiVeiculo(placa) != null) {
-				return this.id[k].possuiVeiculo(placa).sair(time, this.id[k].getMensalista());
+				return this.id[k].possuiVeiculo(placa).sair(time, this.id[k].getTipoCliente());
 			} else {
 				System.out.println("Veiculo não cadastrado, favor cadastrar");
 				break;
@@ -461,87 +481,77 @@ public class Estacionamento implements Serializable  {
 		return top5.toString();
 	}
 
-	// public Veiculo getVeiculoByPlaca(String placa) {
-	// 	for (Cliente cliente : this.id) {
-	// 		if (cliente != null) {
-	// 			Veiculo veiculo = cliente.possuiVeiculo(placa);
-	// 			if (veiculo != null) {
-	// 				return veiculo;
-	// 			}
-	// 		}
-	// 	}
-	// 	return null;
-	// }
+	public double mediaUsoMensalistasNoMes(int mes) {
+		int totalUsos = 0;
+		int totalClientesMensalistas = 0;
 
-	// public double mediaUsoMensalistasNoMes(int mes) {
-	// 	int totalUsos = 0;
-	// 	int totalClientesMensalistas = 0;
+		for (int i = 0; i < this.contCli; i++) {
+			if (this.id[i] != null && this.id[i].getTipoCliente() == TipoCliente.MENSALISTA) {
+				Veiculo[] veiculos = this.id[i].getVeiculos();
 
-	// 	for (int i = 0; i < this.contCli; i++) {
-	// 		if (this.id[i] != null && this.id[i].getCategoria() == CategoriaCliente.MENSALISTA) {
-	// 			Veiculo[] veiculos = this.id[i].getVeiculos();
+				for (Veiculo veiculo : veiculos) {
+					UsoDeVaga[] usos = veiculo.getUsos();
 
-	// 			for (Veiculo veiculo : veiculos) {
-	// 				UsoDeVaga[] usos = veiculo.getUsos();
+					for (UsoDeVaga uso : usos) {
+						if (uso != null && uso.getSaida() != null) {
+							LocalDateTime data = uso.getSaida();
+							int mesData = data.getMonthValue();
 
-	// 				for (UsoDeVaga uso : usos) {
-	// 					if (uso != null && uso.getSaida() != null) {
-	// 						LocalDateTime data = uso.getSaida();
-	// 						int mesData = data.getMonthValue();
+							if (mesData == mes) {
+								totalUsos++;
+							}
+						}
+					}
+				}
 
-	// 						if (mesData == mes) {
-	// 							totalUsos++;
-	// 						}
-	// 					}
-	// 				}
-	// 			}
+				totalClientesMensalistas++;
+			}
+		}
 
-	// 			totalClientesMensalistas++;
-	// 		}
-	// 	}
-
-	// 	if (totalClientesMensalistas > 0) {
-	// 		return (double) totalUsos / totalClientesMensalistas;
-	// 	} else {
-	// 		return 0.0;
-	// 	}
-	// }
-
-	// public int quantidadeUsosMensalistaNoMes(String idCliente, int mes) {
-	// 	int totalUsos = 0;
-
-	// 	for (int i = 0; i < this.contCli; i++) {
-	// 		if (this.id[i] != null && this.id[i].getId().equals(idCliente)
-	// 				&& this.id[i].getCategoria() == CategoriaCliente.MENSALISTA) {
-	// 			Veiculo[] veiculos = this.id[i].getVeiculos();
-
-	// 			for (Veiculo veiculo : veiculos) {
-	// 				UsoDeVaga[] usos = veiculo.getUsos();
-
-	// 				for (UsoDeVaga uso : usos) {
-	// 					if (uso != null && uso.getSaida() != null) {
-	// 						LocalDateTime data = uso.getSaida();
-	// 						int mesData = data.getMonthValue();
-
-	// 						if (mesData == mes) {
-	// 							totalUsos++;
-	// 						}
-	// 					}
-	// 				}
-	// 			}
-	// 		}
-	// 	}
-
-	// 	return totalUsos;
-	// }
-	
-	public void setMensalista(int mensalidade, String idCli){
-		Optional<Cliente> mensalista = Arrays.stream(id)
-                .filter(client -> client.getId() == idCli)
-                .findFirst();
-		LocalDate today = LocalDate.now();
-		mensalista.get().setMensalista(mensalidade);
-		mensalista.get().setDateMensalista(today);
+		if (totalClientesMensalistas > 0) {
+			return (double) totalUsos / totalClientesMensalistas;
+		} else {
+			return 0.0;
+		}
 	}
-	
+
+	public int quantidadeUsosMensalistaNoMes(String idCliente, int mes) {
+		int totalUsos = 0;
+
+		for (int i = 0; i < this.contCli; i++) {
+			if (this.id[i] != null && this.id[i].getId().equals(idCliente)
+					&& this.id[i].getTipoCliente() == TipoCliente.MENSALISTA) {
+				Veiculo[] veiculos = this.id[i].getVeiculos();
+
+				for (Veiculo veiculo : veiculos) {
+					UsoDeVaga[] usos = veiculo.getUsos();
+
+					for (UsoDeVaga uso : usos) {
+						if (uso != null && uso.getSaida() != null) {
+							LocalDateTime data = uso.getSaida();
+							int mesData = data.getMonthValue();
+
+							if (mesData == mes) {
+								totalUsos++;
+							}
+						}
+					}
+				}
+			}
+		}
+
+		return totalUsos;
+	}
+
+	public void setMensalista(TipoCliente tipoCliente, String idCli) {
+		for (Cliente cliente : id) {
+			if (cliente != null && cliente.getId().equals(idCli)) {
+				LocalDate today = LocalDate.now();
+				cliente.setTipoCliente(tipoCliente);
+				cliente.setDateMensalista(today);
+			}
+		}
+
+	}
+
 }

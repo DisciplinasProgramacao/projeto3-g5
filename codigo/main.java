@@ -108,8 +108,9 @@ public class main {
         if (!existe) {
             System.out.println("Indique seu nome: ");
             String nome = scanner.nextLine();
-            c = new Cliente(nome, id, 0, null);
-            estacionamento.addCliente(c);
+            TipoCliente tipoCliente = null;
+            c = new Cliente(nome, id,tipoCliente.HORISTA , null);
+            estacionamento1.addCliente(c);
         }
 
         // Scanner scanner = new Scanner(System.in);
@@ -141,7 +142,8 @@ public class main {
                     adicionarVeiculo(estacionamento, id, placa);
                     break;
                 case 5:
-                    menuMensalista(estacionamento, id);
+                    menuMensalista(estacionamento1, id);
+                    menuCliente(estacionamento1, id);
                     break;
                 case 6:
                     System.out.println("Saindo do menu do cliente.");
@@ -162,6 +164,7 @@ public class main {
         System.out.println("2- Ser Mensalista sem turno definido");
         System.out.println("3- Sair");
         int escolha = scanner.nextInt();
+        TipoCliente tipoCliente = null;
         scanner.nextLine();
         switch (escolha) {
             case 1:
@@ -171,17 +174,27 @@ public class main {
                 System.out.println("3- Noite");
                 int turno = scanner.nextInt();
                 scanner.nextLine();
-                if (turno > 0 && turno < 4) {
-                    estacionamento.setMensalista(turno, id);
-                    System.out.println("Mensalidade de 200 reais adicionada");
-                } else {
-                    System.out.println("Opção inválida!");
+                switch (turno) {
+                    case 1:
+                        estacionamento.setMensalista(tipoCliente.TURNO_MANHA, id);
+                        System.out.println("Mensalidade de 200 reais adicionada");  
+                        break;
+                    case 2:
+                        estacionamento.setMensalista(tipoCliente.TURNO_TARDE, id);
+                        System.out.println("Mensalidade de 200 reais adicionada");
+                        break;
+                    case 3:
+                        estacionamento.setMensalista(tipoCliente.TURNO_NOITE, id);
+                        System.out.println("Mensalidade de 200 reais adicionada");
+                        break;
+                    default:
+                        System.out.println("Opção inválida. Voltando para menu principal...");
+                        break;
                 }
-                break;
-
-            case 2:
-                estacionamento.setMensalista(4, id);
-                System.out.println("Mensalidade de 500 reais adicionada");
+            break;
+            case 2: 
+                estacionamento.setMensalista(tipoCliente.MENSALISTA, id);
+                System.out.println("Mensalidade de 500 reais adicionada");               
                 break;
             case 3:
                 System.out.println("Saindo...");
