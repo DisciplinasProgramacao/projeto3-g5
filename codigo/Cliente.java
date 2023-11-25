@@ -2,12 +2,9 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Serializable;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.time.Period;
-import java.util.ArrayList;
 
-
+// Enumeração que define os tipos de cliente
 enum TipoCliente {
     TURNO_MANHA(LocalTime.of(8, 0), LocalTime.of(12, 0)),
     TURNO_TARDE(LocalTime.of(12, 1), LocalTime.of(18, 0)),
@@ -32,6 +29,7 @@ enum TipoCliente {
     }
 }
 
+// Classe que representa um cliente
 public class Cliente implements Serializable {
 
     private String nome;
@@ -41,6 +39,7 @@ public class Cliente implements Serializable {
     private LocalDate dateMensalista;
     private TipoCliente tipoCliente;
 
+    // Construtor da classe Cliente
     public Cliente(String nome, String id, TipoCliente tipoCliente, LocalDate dateMensalista) {
         this.nome = nome;
         this.id = id;
@@ -48,6 +47,7 @@ public class Cliente implements Serializable {
         this.tipoCliente = tipoCliente;
     }
 
+    // Método para escrever informações do cliente em um arquivo
     public void escreverArquivo(String estacionamento) {
         try {
             FileWriter fileWriter = new FileWriter("cliente.txt", true);
@@ -57,7 +57,6 @@ public class Cliente implements Serializable {
             for (Veiculo veiculo : veiculos) {
                 if (veiculo != null)
                     veiculo.escreverArquivo(this.id, estacionamento);
-
             }
 
             fileWriter.close();
@@ -65,30 +64,25 @@ public class Cliente implements Serializable {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
     }
 
+    // Método para adicionar um veículo ao cliente
     public void addVeiculo(Veiculo veiculo) {
-
         if (veiculos != null) {
             for (int i = 0; i < veiculos.length; i++) {
                 if (veiculos[i] == null) {
-
                     veiculos[i] = veiculo;
                     break;
                 }
             }
         } else {
-
             veiculos[0] = veiculo;
         }
-
     }
 
+    // Método para verificar se o cliente possui um veículo com uma determinada placa
     public Veiculo possuiVeiculo(String placa) {
-
         for (Veiculo veiculo : veiculos) {
-
             if (veiculo != null && veiculo.getPlaca().equals(placa)) {
                 return veiculo;
             }
@@ -96,6 +90,7 @@ public class Cliente implements Serializable {
         return null;
     }
 
+    // Método para calcular o total de usos de veículos pelo cliente
     public int totalDeUsos() {
         int totalUsos = 0;
         for (Veiculo veiculo : veiculos) {
@@ -106,16 +101,8 @@ public class Cliente implements Serializable {
         return totalUsos;
     }
 
-    public double arrecadadoPorVeiculo(String placa) {
-        Veiculo veiculo = possuiVeiculo(placa);
-        if (veiculo != null) {
-            return veiculo.totalArrecadado();
-        }
-        return 0;
-    }
-
+    // Método para calcular a arrecadação total do cliente
     public double arrecadadoTotal() {
-         System.out.println(this.mensalista);
         double totalArrecadado = 0;
         for (Veiculo veiculo : veiculos) {
             if (veiculo != null) {
@@ -125,7 +112,7 @@ public class Cliente implements Serializable {
         if (this.mensalista > 0) {
             LocalDate momentoAtual = LocalDate.now();
             long mes = Period.between(momentoAtual, this.dateMensalista).getMonths();
-            if(mes == 0) mes = 1;
+            if (mes == 0) mes = 1;
             if (this.mensalista < 4) {
                 totalArrecadado += (mes * 200);
             } else {
@@ -135,15 +122,15 @@ public class Cliente implements Serializable {
         return totalArrecadado;
     }
 
+    // Método para calcular a arrecadação do cliente em um determinado mês
     public double arrecadadoNoMes(int mes) {
-        System.out.println( mes >= this.dateMensalista.getMonthValue());
         double arrecadadoNoMes = 0;
         for (Veiculo veiculo : veiculos) {
             if (veiculo != null) {
                 arrecadadoNoMes += veiculo.arrecadadoNoMes(mes);
             }
         }
-        
+
         if (this.mensalista > 0 && mes >= this.dateMensalista.getMonthValue()) {
             if (this.mensalista < 4) {
                 arrecadadoNoMes += 200;
@@ -185,20 +172,23 @@ public class Cliente implements Serializable {
         this.veiculos = veiculos;
     }
 
+    // Getter para o tipo de cliente
     public TipoCliente getTipoCliente() {
         return this.tipoCliente;
     }
 
+    // Setter para o tipo de cliente
     public void setTipoCliente(TipoCliente tipoCliente) {
         this.tipoCliente = tipoCliente;
     }
 
+    // Getter para a data do mensalista
     public LocalDate getDateMensalista() {
         return this.dateMensalista;
     }
 
+    // Setter para a data do mensalista
     public void setDateMensalista(LocalDate dateMensalista) {
         this.dateMensalista = dateMensalista;
     }
-
 }
