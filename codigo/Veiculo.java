@@ -67,9 +67,6 @@ public class Veiculo implements Serializable  {
                 usos[i].sair(tipoCliente);
                 totalPago += usos[i].valorPago();
                 return totalPago;
-            }else{
-                System.out.println("Não é possível sair com veiculo não estacionado");
-                break;
             }
         }
         return totalPago;

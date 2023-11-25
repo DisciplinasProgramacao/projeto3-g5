@@ -29,8 +29,8 @@ public class main {
                 estacionamento3 = estacionamento3.carregarEstado();
                 System.out.println("carregando estacionamento salvo ");
             } catch (IOException | ClassNotFoundException e) {
-                // e.printStackTrace();
-                System.out.println("erro ao carregar estacionamentos");
+                e.printStackTrace();
+                //System.out.println("erro ao carregar estacionamentos");
             }
             // estacionamento2.carregarArquivo();
             // estacionamento3.carregarArquivo();
@@ -144,11 +144,11 @@ public class main {
                     break;
                 case 5:
                     menuMensalista(estacionamento, id);
-                    menuCliente(estacionamento, id);
+                    //menuCliente(estacionamento, id);
                     break;
                     case 6:
                     menuServico(estacionamento, id);
-                    menuCliente(estacionamento, id);
+                    //menuCliente(estacionamento, id);
                     break;
                 case 7:
                     System.out.println("Saindo do menu do cliente.");
@@ -182,7 +182,7 @@ public class main {
                 switch (turno) {
                     case 1:
                         estacionamento.setMensalista(tipoCliente.TURNO_MANHA, id);
-                        System.out.println("Mensalidade de 200 reais adicionada");  
+                        System.out.println("Mensalidade de 200 reais adicionada");
                         break;
                     case 2:
                         estacionamento.setMensalista(tipoCliente.TURNO_TARDE, id);
@@ -196,10 +196,10 @@ public class main {
                         System.out.println("Opção inválida. Voltando para menu principal...");
                         break;
                 }
-            break;
-            case 2: 
+                break;
+            case 2:
                 estacionamento.setMensalista(tipoCliente.MENSALISTA, id);
-                System.out.println("Mensalidade de 500 reais adicionada");               
+                System.out.println("Mensalidade de 500 reais adicionada");
                 break;
             case 3:
                 System.out.println("Saindo...");
@@ -245,7 +245,7 @@ public class main {
         String hour = scanner.nextLine();
         try {
             LocalDateTime momentoAtual = LocalDate.now().atTime(Integer.parseInt(hour.split(":")[0]),
-                Integer.parseInt(hour.split(":")[1]));
+                    Integer.parseInt(hour.split(":")[1]));
             estacionamento.estacionar(plaque, momentoAtual);
         } catch (Exception e) {
             System.out.println("digite um horario valido");
@@ -284,7 +284,7 @@ public class main {
         if (num == 3) {
             estacionamento = estacionamento3;
         }
-
+        System.out.println(estacionamento1.totalArrecadado());
         int escolha;
         do {
             System.out.println("Menu Gestor");
@@ -292,12 +292,17 @@ public class main {
             System.out.println("2. Ver valor arrecadado em mês específico");
             System.out.println("3. Ver valor médio de cada utilização do estacionamento");
             System.out.println("4. Gerar ranking dos clientes que mais geraram arrecadação em um determinado mês");
-            System.out.println("5. Sair");
+            System.out.println("5. Ver a arrecadação total de cada um dos estacionamentos, em ordem decrescente");
+            System.out.println(
+                    "6. Ver média em que os clientes mensalistas utilizaram o estacionamento em um determinado mês");
+            System.out.println("7. Ver arrecadação média gerada pelos clientes horistas em um determinado mês");
+            System.out.println("8. Sair");
             escolha = scanner.nextInt();
             int mes;
             switch (escolha) {
                 case 1:
-                    System.out.println(estacionamento.totalArrecadado());
+                System.out.println(estacionamento.getNome());
+                    System.out.println("a" + estacionamento.totalArrecadado());
                     break;
                 case 2:
                     System.out.println("Insira o mês desejado(1 a 12)");
@@ -313,13 +318,48 @@ public class main {
                     System.out.println(estacionamento.top5Clientes(mes));
                     break;
                 case 5:
-                    System.out.println("Saindo do gestor.");
+                    String[] e = {estacionamento1.getNome(), estacionamento2.getNome(), estacionamento3.getNome()};
+                    double[] v = { estacionamento1.totalArrecadado(), estacionamento2.totalArrecadado(),
+                            estacionamento3.totalArrecadado() };
+                    String tempe;
+                    double temp;
+                    for (int i = 0; i < 3; i++) {
+                        for(int j=i; j<3; j++){
+                            
+                            if(v[i]< v[j]){
+                                temp = v[i];
+                                v[i] = v[j];
+                                v[j] = temp;
+                                tempe = e[i];
+                                e[i] = e[j];
+                                e[j] = tempe;
+                            }
+                        }
+                    }
+    
+                    System.out.println("Arrencadação por estacionamento: ");
+                    for (int i = 0; i < v.length; i++) {
+                        System.out.println(e[i] + ": ");
+                        System.out.println(v[i]);
+                    }
                     break;
-                    //System.exit(0);
+                case 6:
+                    System.out.println("Insira o mês desejado(1 a 12)");
+                    mes = scanner.nextInt();
+                    System.out.println(estacionamento.mediaUsoMensalistasNoMes(mes));
+                    break;
+                case 7:
+                    System.out.println("Insira o mês desejado(1 a 12)");
+                    mes = scanner.nextInt();
+                    System.out.println(estacionamento.mediasHoristaNoMes(mes));
+                    break;
+                case 8:
+                    System.out.println("Saindo do programa.");
+                    System.exit(0);
                 default:
                     System.out.println("Opção inválida. Escolha uma opção válida.");
                     break;
             }
-        } while (escolha < 5 && escolha > 0);
+        } while (escolha < 8 && escolha > 0);
     }
 }

@@ -7,20 +7,21 @@ import java.time.LocalTime;
 import java.time.Period;
 import java.util.ArrayList;
 
-
 enum TipoCliente {
-    TURNO_MANHA(LocalTime.of(8, 0), LocalTime.of(12, 0)),
-    TURNO_TARDE(LocalTime.of(12, 1), LocalTime.of(18, 0)),
-    TURNO_NOITE(LocalTime.of(18, 1), LocalTime.of(23, 59)),
-    MENSALISTA(null, null),  // Insira os horários apropriados para mensalistas
-    HORISTA(null, null);  // Insira os horários apropriados para horistas
+    TURNO_MANHA(LocalTime.of(8, 0), LocalTime.of(12, 0), 200),
+    TURNO_TARDE(LocalTime.of(12, 1), LocalTime.of(18, 0), 200),
+    TURNO_NOITE(LocalTime.of(18, 1), LocalTime.of(23, 59), 200),
+    MENSALISTA(null, null, 500), // Insira os horários apropriados para mensalistas
+    HORISTA(null, null, 0); // Insira os horários apropriados para horistas
 
     private final LocalTime horaInicio;
     private final LocalTime horaFim;
+    private final int valor;
 
-    TipoCliente(LocalTime horaInicio, LocalTime horaFim) {
+    TipoCliente(LocalTime horaInicio, LocalTime horaFim, int valor) {
         this.horaInicio = horaInicio;
         this.horaFim = horaFim;
+        this.valor = valor;
     }
 
     public LocalTime getHoraInicio() {
@@ -29,6 +30,10 @@ enum TipoCliente {
 
     public LocalTime getHoraFim() {
         return horaFim;
+    }
+
+    public int getValor() {
+        return valor;
     }
 }
 
@@ -115,41 +120,36 @@ public class Cliente implements Serializable {
     }
 
     public double arrecadadoTotal() {
-         
         double totalArrecadado = 0;
         for (Veiculo veiculo : veiculos) {
             if (veiculo != null) {
                 totalArrecadado += veiculo.totalArrecadado();
             }
         }
-        if (this.mensalista > 0) {
-            LocalDate momentoAtual = LocalDate.now();
-            long mes = Period.between(momentoAtual, this.dateMensalista).getMonths();
-            if(mes == 0) mes = 1;
-            if (this.mensalista < 4) {
-                totalArrecadado += (mes * 200);
-            } else {
-                totalArrecadado += (mes * 500);
-            }
+        int count = -1;
+        LocalDate momentoAtual = LocalDate.now();
+        if (this.dateMensalista != null) {
+            long mes = 0;
+            mes = Period.between(momentoAtual, this.dateMensalista).getMonths();
+            do {
+                totalArrecadado += this.tipoCliente.getValor();
+                count++;
+            } while (count < mes);
         }
+
         return totalArrecadado;
     }
 
     public double arrecadadoNoMes(int mes) {
-        //System.out.println( mes >= this.dateMensalista.getMonthValue());
         double arrecadadoNoMes = 0;
         for (Veiculo veiculo : veiculos) {
             if (veiculo != null) {
                 arrecadadoNoMes += veiculo.arrecadadoNoMes(mes);
             }
         }
-        
-        if (this.mensalista > 0 && mes >= this.dateMensalista.getMonthValue()) {
-            if (this.mensalista < 4) {
-                arrecadadoNoMes += 200;
-            } else {
-                arrecadadoNoMes += 500;
-            }
+
+        if (this.dateMensalista != null && mes >= this.dateMensalista.getMonthValue()) {
+            arrecadadoNoMes += this.tipoCliente.getValor();
         }
 
         return arrecadadoNoMes;
