@@ -27,14 +27,14 @@ public class main {
                 estacionamento1 = estacionamento1.carregarEstado();
                 estacionamento2 = estacionamento2.carregarEstado();
                 estacionamento3 = estacionamento3.carregarEstado();
-                 System.out.println("carregando estacionamento salvo ");
+                System.out.println("carregando estacionamento salvo ");
             } catch (IOException | ClassNotFoundException e) {
-                //e.printStackTrace();
+                // e.printStackTrace();
                 System.out.println("erro ao carregar estacionamentos");
             }
             // estacionamento2.carregarArquivo();
             // estacionamento3.carregarArquivo();
-           
+
             System.out.println("Menu Principal");
             System.out.println("1. Entrar como Cliente");
             System.out.println("2. Entrar como Gestor");
@@ -62,7 +62,7 @@ public class main {
 
     public static void entrarComoCliente() {
         Scanner scanner = new Scanner(System.in);
-        Estacionamento e=estacionamento1 ;
+        Estacionamento e = estacionamento1;
         System.out.println("escolha o estacionamento: ");
         int escolha = scanner.nextInt();
 
@@ -214,9 +214,14 @@ public class main {
         String plaque = scanner.nextLine();
         System.out.println("Indique hora de entrada: ");
         String hour = scanner.nextLine();
-        LocalDateTime momentoAtual = LocalDate.now().atTime(Integer.parseInt(hour.split(":")[0]),
+        try {
+            LocalDateTime momentoAtual = LocalDate.now().atTime(Integer.parseInt(hour.split(":")[0]),
                 Integer.parseInt(hour.split(":")[1]));
-        estacionamento.estacionar(plaque, momentoAtual);
+            estacionamento.estacionar(plaque, momentoAtual);
+        } catch (Exception e) {
+            System.out.println("digite um horario valido");
+        }
+
     }
 
     public static void sairVeiculo(Estacionamento estacionamento) {
@@ -225,10 +230,13 @@ public class main {
         String plaque = scanner.nextLine();
         System.out.println("Indique hora de saida: ");
         String hour = scanner.nextLine();
+        try {
         LocalDateTime momentoAtual = LocalDate.now().atTime(Integer.parseInt(hour.split(":")[0]),
                 Integer.parseInt(hour.split(":")[1]));
-
         estacionamento.sair(plaque, momentoAtual);
+        } catch (Exception e) {
+            System.out.println("digite um horario valido");
+        }
     }
 
     public static void entrarComoGestor() {
