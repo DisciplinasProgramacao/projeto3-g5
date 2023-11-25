@@ -69,9 +69,6 @@ public class Veiculo implements Serializable {
                 // Calcula o valor total pago pelo uso da vaga
                 totalPago += usos[i].valorPago();
                 return totalPago;
-            } else {
-                System.out.println("Não é possível sair com veículo não estacionado");
-                break;
             }
         }
         return totalPago;
