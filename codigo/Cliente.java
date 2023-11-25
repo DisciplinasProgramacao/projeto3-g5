@@ -2,12 +2,33 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.Period;
 import java.util.ArrayList;
 
 
-enum CategoriaCliente {
-    HORISTA, TURNO, MENSALISTA
+enum TipoCliente {
+    TURNO_MANHA(LocalTime.of(8, 0), LocalTime.of(12, 0)),
+    TURNO_TARDE(LocalTime.of(12, 1), LocalTime.of(18, 0)),
+    TURNO_NOITE(LocalTime.of(18, 1), LocalTime.of(23, 59)),
+    MENSALISTA(null, null),  // Insira os horários apropriados para mensalistas
+    HORISTA(null, null);  // Insira os horários apropriados para horistas
+
+    private final LocalTime horaInicio;
+    private final LocalTime horaFim;
+
+    TipoCliente(LocalTime horaInicio, LocalTime horaFim) {
+        this.horaInicio = horaInicio;
+        this.horaFim = horaFim;
+    }
+
+    public LocalTime getHoraInicio() {
+        return horaInicio;
+    }
+
+    public LocalTime getHoraFim() {
+        return horaFim;
+    }
 }
 
 public class Cliente {
@@ -17,17 +38,19 @@ public class Cliente {
     private Veiculo[] veiculos = new Veiculo[10];
     private int mensalista;
     private LocalDate dateMensalista;
+    private TipoCliente tipoCliente;
 
-    public Cliente(String nome, String id, int mensalista, LocalDate dateMensalista) {
+    public Cliente(String nome, String id, TipoCliente tipoCliente, LocalDate dateMensalista) {
         this.nome = nome;
         this.id = id;
-        
+        this.dateMensalista = dateMensalista;
+        this.tipoCliente = tipoCliente;
     }
 
     public void escreverArquivo(String estacionamento) {
         try {
             FileWriter fileWriter = new FileWriter("cliente.txt", true);
-            fileWriter.write(estacionamento + "," + this.nome + "," + this.id + "," + this.mensalista + ","
+            fileWriter.write(estacionamento + "," + this.nome + "," + this.id + "," + this.tipoCliente + ","
                     + this.dateMensalista + ";");
 
             for (Veiculo veiculo : veiculos) {
@@ -91,6 +114,7 @@ public class Cliente {
     }
 
     public double arrecadadoTotal() {
+         System.out.println(this.mensalista);
         double totalArrecadado = 0;
         for (Veiculo veiculo : veiculos) {
             if (veiculo != null) {
@@ -100,6 +124,7 @@ public class Cliente {
         if (this.mensalista > 0) {
             LocalDate momentoAtual = LocalDate.now();
             long mes = Period.between(momentoAtual, this.dateMensalista).getMonths();
+            if(mes == 0) mes = 1;
             if (this.mensalista < 4) {
                 totalArrecadado += (mes * 200);
             } else {
@@ -110,12 +135,14 @@ public class Cliente {
     }
 
     public double arrecadadoNoMes(int mes) {
+        System.out.println( mes >= this.dateMensalista.getMonthValue());
         double arrecadadoNoMes = 0;
         for (Veiculo veiculo : veiculos) {
             if (veiculo != null) {
                 arrecadadoNoMes += veiculo.arrecadadoNoMes(mes);
             }
         }
+        
         if (this.mensalista > 0 && mes >= this.dateMensalista.getMonthValue()) {
             if (this.mensalista < 4) {
                 arrecadadoNoMes += 200;
@@ -157,12 +184,12 @@ public class Cliente {
         this.veiculos = veiculos;
     }
 
-    public int getMensalista() {
-        return this.mensalista;
+    public TipoCliente getTipoCliente() {
+        return this.tipoCliente;
     }
 
-    public void setMensalista(int mensalista) {
-        this.mensalista = mensalista;
+    public void setTipoCliente(TipoCliente tipoCliente) {
+        this.tipoCliente = tipoCliente;
     }
 
     public LocalDate getDateMensalista() {
