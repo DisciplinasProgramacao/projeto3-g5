@@ -34,17 +34,6 @@ public class Veiculo {
        // System.out.println(this.usos[0].getVaga());
 
     }
-    public void estacionar(Vaga vaga) {
-        for (int i = 0; i < usos.length; i++) {
-            if (usos[i] == null) {
-				if (vaga.disponivel()) {
-					usos[i] = new UsoDeVaga(vaga, this);
-					vaga.estacionar();
-					break;
-				}
-            }
-        }
-    }
 
     public void escreverArquivo(String cliente, String estacionamento) {
         try {
