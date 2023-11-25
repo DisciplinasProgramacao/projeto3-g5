@@ -1,9 +1,10 @@
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.*;
 import java.time.LocalDateTime;
 
-public class Veiculo {
+public class Veiculo implements Serializable  {
 
     private String placa;
     private UsoDeVaga[] usos;
