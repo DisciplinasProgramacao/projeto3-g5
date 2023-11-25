@@ -1,5 +1,6 @@
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Period;
@@ -10,7 +11,7 @@ enum CategoriaCliente {
     HORISTA, TURNO, MENSALISTA
 }
 
-public class Cliente {
+public class Cliente implements Serializable {
 
     private String nome;
     private String id;

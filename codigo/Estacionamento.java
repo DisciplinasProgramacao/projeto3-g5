@@ -1,7 +1,12 @@
 import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -12,7 +17,7 @@ import java.util.Map;
 
 import javax.management.RuntimeErrorException;
 
-public class Estacionamento {
+public class Estacionamento implements Serializable  {
 	private String nome;
 	private Cliente[] id;
 	private Vaga[] vagas;
@@ -75,7 +80,22 @@ public class Estacionamento {
 		return this.vagasPorFileira;
 	}
 
-	public void carregarArquivo() {
+	  public void salvarEstado() throws IOException {
+        try (ObjectOutputStream outputStream = new ObjectOutputStream(new FileOutputStream(this.nome+".ser"))) {
+            outputStream.writeObject(this);
+        }
+    }
+
+    public Estacionamento carregarEstado() throws IOException, ClassNotFoundException {
+        try (ObjectInputStream inputStream = new ObjectInputStream(new FileInputStream(this.nome+".ser"))) {
+            return (Estacionamento) inputStream.readObject();
+        }
+	
+    }
+
+
+
+	public void carregarArquivoLegado() {
 		try {
 
 			FileReader leitor = new FileReader("cliente.txt");

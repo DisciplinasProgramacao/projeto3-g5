@@ -6,11 +6,13 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 public class main {
+    public static Estacionamento estacionamento1 = new Estacionamento("Estacionamento 1", 12, 22);
+    public static Estacionamento estacionamento2 = new Estacionamento("Estacionamento 2", 10, 28);
+    public static Estacionamento estacionamento3 = new Estacionamento("Estacionamento 3", 15, 25);
+
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
-        Estacionamento estacionamento1 = new Estacionamento("Estacionamento 1", 12, 22);
-        Estacionamento estacionamento2 = new Estacionamento("Estacionamento 2", 10, 28);
-        Estacionamento estacionamento3 = new Estacionamento("Estacionamento 3", 15, 25);
+
         // estacionamento1.carregarArquivo();
         // estacionamento2.carregarArquivo();
         // estacionamento3.carregarArquivo();
@@ -20,11 +22,19 @@ public class main {
             estacionamento1 = new Estacionamento("Estacionamento 1", 12, 22);
             estacionamento2 = new Estacionamento("Estacionamento 2", 10, 28);
             estacionamento3 = new Estacionamento("Estacionamento 3", 15, 25);
-            if (estacionamento1.getId()[0] != null)
-            estacionamento1.carregarArquivo();
-            estacionamento2.carregarArquivo();
-            estacionamento3.carregarArquivo();
-            System.out.println("carregando estacionamento salvo ");
+            // if (estacionamento1.getId()[0] != null)
+            try {
+                estacionamento1 = estacionamento1.carregarEstado();
+                estacionamento2 = estacionamento2.carregarEstado();
+                estacionamento3 = estacionamento3.carregarEstado();
+                 System.out.println("carregando estacionamento salvo ");
+            } catch (IOException | ClassNotFoundException e) {
+                //e.printStackTrace();
+                System.out.println("erro ao carregar estacionamentos");
+            }
+            // estacionamento2.carregarArquivo();
+            // estacionamento3.carregarArquivo();
+           
             System.out.println("Menu Principal");
             System.out.println("1. Entrar como Cliente");
             System.out.println("2. Entrar como Gestor");
@@ -35,10 +45,10 @@ public class main {
 
             switch (escolha) {
                 case 1:
-                    entrarComoCliente(estacionamento1, estacionamento2, estacionamento3);
+                    entrarComoCliente();
                     break;
                 case 2:
-                    entrarComoGestor(estacionamento1, estacionamento2, estacionamento3);
+                    entrarComoGestor();
                     break;
                 case 3:
                     System.out.println("Saindo do programa.");
@@ -50,10 +60,9 @@ public class main {
         } while (escolha < 4 && escolha > 0);
     }
 
-    public static void entrarComoCliente(Estacionamento estacionamento1, Estacionamento estacionamento2,
-            Estacionamento estacionamento3) {
+    public static void entrarComoCliente() {
         Scanner scanner = new Scanner(System.in);
-        Estacionamento e = estacionamento1;
+        Estacionamento e=estacionamento1 ;
         System.out.println("escolha o estacionamento: ");
         int escolha = scanner.nextInt();
 
@@ -83,10 +92,10 @@ public class main {
         menuCliente(e, id);
     }
 
-    public static void menuCliente(Estacionamento estacionamento1, String id) {
+    public static void menuCliente(Estacionamento estacionamento, String id) {
         Scanner scanner = new Scanner(System.in);
-        Cliente[] arrCliente = estacionamento1.getId();
-        Cliente c=estacionamento1.getId()[0];
+        Cliente[] arrCliente = estacionamento.getId();
+        Cliente c = estacionamento.getId()[0];
         boolean existe = false;
         if (arrCliente.length > 0) {
             for (Cliente cliente : arrCliente) {
@@ -100,7 +109,7 @@ public class main {
             System.out.println("Indique seu nome: ");
             String nome = scanner.nextLine();
             c = new Cliente(nome, id, 0, null);
-            estacionamento1.addCliente(c);
+            estacionamento.addCliente(c);
         }
 
         // Scanner scanner = new Scanner(System.in);
@@ -117,27 +126,27 @@ public class main {
             scanner.nextLine();
             switch (escolha) {
                 case 1:
-                    estacionarVeiculo(estacionamento1);
+                    estacionarVeiculo(estacionamento);
                     break;
                 case 2:
-                    sairVeiculo(estacionamento1);
+                    sairVeiculo(estacionamento);
                     break;
                 case 3:
-                    ArrayList<String> historico = estacionamento1.historicoDeUso(c);
+                    ArrayList<String> historico = estacionamento.historicoDeUso(c);
                     System.out.println(historico);
                     break;
                 case 4:
                     System.out.println("digite a placa do carro.");
                     String placa = scanner.nextLine();
-                    adicionarVeiculo(estacionamento1, id, placa);
+                    adicionarVeiculo(estacionamento, id, placa);
                     break;
                 case 5:
-                    menuMensalista(estacionamento1, id);
+                    menuMensalista(estacionamento, id);
                     break;
                 case 6:
                     System.out.println("Saindo do menu do cliente.");
-                    System.out.println("contcli_2 " + estacionamento1.contCli);
-                    apagarArquivos(estacionamento1);
+                    // System.out.println("contcli_2 " + estacionamento1.contCli);
+                    salvarEstacionamentos();
 
                     return;
                 default:
@@ -162,15 +171,15 @@ public class main {
                 System.out.println("3- Noite");
                 int turno = scanner.nextInt();
                 scanner.nextLine();
-                if(turno >0 && turno < 4){
+                if (turno > 0 && turno < 4) {
                     estacionamento.setMensalista(turno, id);
                     System.out.println("Mensalidade de 200 reais adicionada");
-                }else{
+                } else {
                     System.out.println("Opção inválida!");
                 }
                 break;
-                
-            case 2: 
+
+            case 2:
                 estacionamento.setMensalista(4, id);
                 System.out.println("Mensalidade de 500 reais adicionada");
                 break;
@@ -183,22 +192,13 @@ public class main {
         }
     }
 
-    public static void apagarArquivos(Estacionamento estacionamento1) {
+    public static void salvarEstacionamentos() {
         try {
-            FileWriter writer = new FileWriter("cliente.txt", false);
-            writer.close();
-            writer = new FileWriter("estacionamento.txt", false);
-            writer.close();
-            writer = new FileWriter("vaga.txt", false);
-            writer.close();
-            writer = new FileWriter("veiculo.txt", false);
-            writer.close();
-            writer = new FileWriter("usoDeVaga.txt", false);
-            writer.close();
+            estacionamento1.salvarEstado();
+            estacionamento2.salvarEstado();
+            estacionamento3.salvarEstado();
         } catch (IOException e) {
             e.printStackTrace();
-        } finally {
-            estacionamento1.escreverArquivo();
         }
     }
 
@@ -231,8 +231,7 @@ public class main {
         estacionamento.sair(plaque, momentoAtual);
     }
 
-    public static void entrarComoGestor(Estacionamento estacionamento1, Estacionamento estacionamento2,
-            Estacionamento estacionamento3) {
+    public static void entrarComoGestor() {
         Scanner scanner = new Scanner(System.in);
         System.out.println("Qual estacionamento você quer gerenciar(1 a 3)?");
         int num = scanner.nextInt();
