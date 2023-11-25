@@ -268,7 +268,7 @@ public class main {
     public static void adicionarVeiculo(Estacionamento estacionamento, String id, String placa) {
         Veiculo v = new Veiculo(placa, 20);
         estacionamento.addVeiculo(v, id);
-        menuCliente(estacionamento, id);
+        //menuCliente(estacionamento, id);
     }
     /*Método para estacionar um veículo
       Permite ao cliente estacionar um veículo, solicitando a placa e a hora de entrada.
