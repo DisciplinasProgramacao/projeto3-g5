@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -17,7 +18,7 @@ import java.util.Map;
 
 import javax.management.RuntimeErrorException;
 
-public class Estacionamento implements Serializable  {
+public class Estacionamento implements Serializable {
 	private String nome;
 	private Cliente[] id;
 	private Vaga[] vagas;
@@ -80,20 +81,18 @@ public class Estacionamento implements Serializable  {
 		return this.vagasPorFileira;
 	}
 
-	  public void salvarEstado() throws IOException {
-        try (ObjectOutputStream outputStream = new ObjectOutputStream(new FileOutputStream(this.nome+".ser"))) {
-            outputStream.writeObject(this);
-        }
-    }
+	public void salvarEstado() throws IOException {
+		try (ObjectOutputStream outputStream = new ObjectOutputStream(new FileOutputStream(this.nome + ".ser"))) {
+			outputStream.writeObject(this);
+		}
+	}
 
-    public Estacionamento carregarEstado() throws IOException, ClassNotFoundException {
-        try (ObjectInputStream inputStream = new ObjectInputStream(new FileInputStream(this.nome+".ser"))) {
-            return (Estacionamento) inputStream.readObject();
-        }
-	
-    }
+	public Estacionamento carregarEstado() throws IOException, ClassNotFoundException {
+		try (ObjectInputStream inputStream = new ObjectInputStream(new FileInputStream(this.nome + ".ser"))) {
+			return (Estacionamento) inputStream.readObject();
+		}
 
-
+	}
 
 	public void carregarArquivoLegado() {
 		try {
@@ -377,18 +376,57 @@ public class Estacionamento implements Serializable  {
 		return historico;
 	}
 
-	public double sair(String placa, LocalDateTime time) {
+	public boolean sair(String placa, LocalDateTime time) {
+		for (Cliente cliente : this.id) {
+			if (cliente!=null && cliente.possuiVeiculo(placa) != null) {
+			Veiculo	veiculo =cliente.possuiVeiculo(placa);
+			UsoDeVaga usos[]=	veiculo.getUsos();
+			for (UsoDeVaga uso : usos) {
+				if (uso!= null && uso.getSaida() == null) {  
+					double diff =Duration.between(uso.getEntrada(),time).toHours();
+				System.out.println(diff);
+					if(diff<=0){
+						System.out.println("digite um horario posterior ao de entrada");
+						return false;
+					}
+					if(uso.getHoraMinima()>diff){
+						System.out.println("Tempo insuficiente para o serviço adquirido");
+						return false;
+					}
+					else{ 
 
-		for (int k = 0; k < this.contCli; k++) {
-			if (this.id[k].possuiVeiculo(placa) != null) {
-				return this.id[k].possuiVeiculo(placa).sair(time, this.id[k].getTipoCliente());
-			} else {
+					veiculo.sair(time, cliente.getTipoCliente());
+					return true;
+					
+				}
+		}
+	}}
+}
+
 				System.out.println("Veiculo não cadastrado, favor cadastrar");
-				break;
+				return true;
+
+	}
+
+	public void adicionarServico(String idCli, int tipo, String placa) {
+		for (Cliente cliente : id) {
+			if (cliente != null && cliente.getId().equals(idCli)) {
+				Veiculo v = cliente.possuiVeiculo(placa);
+				UsoDeVaga[] usos = v.getUsos();
+				for (UsoDeVaga usoDeVaga : usos) {
+					if (usoDeVaga != null && usoDeVaga.getSaida() == null) {
+						// System.out.println(usos[i].getEntrada());
+						if (usoDeVaga.getEntrada() == null) {
+							System.out.println("Não é possível adicionar um serviço com veiculo não estacionado");
+							break;
+						}
+						usoDeVaga.adicionarServico(tipo);
+						usoDeVaga.getHoraMinima();
+					}
+				}
+
 			}
 		}
-		return contCli;
-
 	}
 
 	public double totalArrecadado() {
