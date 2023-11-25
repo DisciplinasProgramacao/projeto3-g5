@@ -1,7 +1,8 @@
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.Serializable;
 
-public class Vaga {
+public class Vaga implements Serializable {
 	private String id;
 	private boolean disponivel;
 
