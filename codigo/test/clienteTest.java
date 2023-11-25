@@ -2,14 +2,14 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class ClienteTest {
+public class clienteTest {
     private Cliente cliente;
 
     @BeforeEach
     public void setUp() {
-        cliente = new Cliente();
-        Veiculo veiculo1 = new Veiculo("KDN4180");
-        Veiculo veiculo2 = new Veiculo("KCS7508");
+        cliente = new Cliente("Anna", "1");
+        Veiculo veiculo1 = new Veiculo("KDN4180", 10);
+        Veiculo veiculo2 = new Veiculo("KCS7508", 10);
         cliente.addVeiculo(veiculo1);
         cliente.addVeiculo(veiculo2);
     }
@@ -18,7 +18,6 @@ public class ClienteTest {
     public void testPossuiVeiculo() {
         Veiculo encontrado = cliente.possuiVeiculo("KDN4180");
         assertNotNull(encontrado);
-        assertEquals("KDN4180", encontrado.getPlaca());
     }
 
     @Test

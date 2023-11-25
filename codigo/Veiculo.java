@@ -1,4 +1,7 @@
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.*;
+import java.time.LocalDateTime;
 
 public class Veiculo {
 
@@ -10,16 +13,26 @@ public class Veiculo {
         this.usos = new UsoDeVaga[maxUsos];
     }
 
-    public void estacionar(Vaga vaga) {
-        for (int i = 0; i < usos.length; i++) {
-            if (usos[i] == null) {
-				if (vaga.disponivel()) {
-					usos[i] = new UsoDeVaga(vaga, this);
-					vaga.estacionar();
-					break;
-				}
+    public void estacionar(Vaga vaga, LocalDateTime entrada) {
+         if (this.usos != null) {
+        for (int i = 0; i < this.usos.length; i++) {
+            if (this.usos[i] == null) {
+                if (vaga.getDisponivel()) {
+                    
+                    this.usos[i] = new UsoDeVaga(vaga, entrada);
+                    vaga.estacionar();
+                    break;
+                }
             }
         }
+        }
+        else{
+           
+            this.usos[0]=new UsoDeVaga(vaga, entrada);
+            
+        }
+       // System.out.println(this.usos[0].getVaga());
+
     }
     public void estacionar(Vaga vaga) {
         for (int i = 0; i < usos.length; i++) {
@@ -33,14 +46,40 @@ public class Veiculo {
         }
     }
 
+    public void escreverArquivo(String cliente, String estacionamento) {
+        try {
+            FileWriter fileWriter = new FileWriter("veiculo.txt", true);
+            fileWriter.write(cliente + "," + this.placa + ";");
+            //System.out.println("escrito um veiculo");
+            for (UsoDeVaga usoDeVaga : usos) {
+                if(usoDeVaga!=null)
+                usoDeVaga.escreverArquivo(this.placa, estacionamento);
+            }
 
-    public double sair() {
+            fileWriter.close();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    public double sair(LocalDateTime time, int mensalista) {
         double totalPago = 0.0;
         for (int i = 0; i < usos.length; i++) {
-            if (usos[i] != null && !usos[i].getSaida()) {
-                usos[i].sair();
+            if (usos[i] != null && usos[i].getSaida() == null) {     
+                System.out.println(usos[i].getEntrada());
+                if(usos[i].getEntrada() == null){
+                    System.out.println("Não é possível sair com veiculo não estacionado");
+                    break;
+                }
+                usos[i].setSaida(time);           
+                usos[i].sair(mensalista);
                 totalPago += usos[i].valorPago();
-                usos[i] = null;
+                return totalPago;
+            }else{
+                System.out.println("Não é possível sair com veiculo não estacionado");
+                break;
             }
         }
         return totalPago;
@@ -49,7 +88,7 @@ public class Veiculo {
     public double totalArrecadado() {
         double totalArrecadado = 0.0;
         for (UsoDeVaga uso : usos) {
-            if (uso != null && uso.getSaida()) {
+            if (uso != null && uso.getSaida() != null) {
                 totalArrecadado += uso.valorPago();
             }
         }
@@ -58,15 +97,15 @@ public class Veiculo {
 
     public double arrecadadoNoMes(int mes) {
         double totalArrecadadoNoMes = 0.0;
-		int mesData = data.getMonth() + 1;
         for (UsoDeVaga uso : usos) {
-			if (uso != null) {
-				Date data = uso.getSaida();
+            if (uso != null && uso.getSaida() != null) {
+                LocalDateTime data = uso.getSaida();
+                int mesData = data.getMonthValue();
 
-				if (data != null && mesData == mes) {
-					totalArrecadadoNoMes += uso.valorPago();
-				}
-			}
+                if (data != null && mesData == mes) {
+                    totalArrecadadoNoMes += uso.valorPago();
+                }
+            }
         }
         return totalArrecadadoNoMes;
     }
@@ -80,20 +119,20 @@ public class Veiculo {
         }
         return totalUsos;
     }
-	
-	public String getPlaca() {
-		return this.placa;
-	}
 
-	public void setPlaca(String placa) {
-		this.placa = placa;
-	}
+    public String getPlaca() {
+        return this.placa;
+    }
 
-	public UsoDeVaga[] getUsos() {
-		return this.usos;
-	}
+    public void setPlaca(String placa) {
+        this.placa = placa;
+    }
 
-	public void setUsos(UsoDeVaga[] usos) {
-		this.usos = usos;
-	}
+    public UsoDeVaga[] getUsos() {
+        return this.usos;
+    }
+
+    public void setUsos(UsoDeVaga[] usos) {
+        this.usos = usos;
+    }
 }

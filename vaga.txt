@@ -1,0 +1,1 @@
+Estacionamento 1,Fila0Vaga00,false;Estacionamento 1,Fila0Vaga01,false;

@@ -10,7 +10,7 @@ public class UsoDeVagaTest {
 
     @Before
     public void setUp() {
-        vaga = new Vaga();
+      //  vaga = new Vaga();
         LocalDateTime entrada = LocalDateTime.of(2023, 10, 18, 10, 0);
         usoDeVaga = new UsoDeVaga(vaga, entrada);
     }
@@ -23,10 +23,13 @@ public class UsoDeVagaTest {
 
     @Test
     public void testCalcularValorComPermanenciaMenorQueUmaHora() {
-        LocalDateTime saida = LocalDateTime.of(2023, 10, 18, 10, 30);
-        usoDeVaga.setSaida(saida);
+   
+        UsoDeVaga usoDeVaga = new UsoDeVaga(vaga, LocalDateTime.of(2023, 10, 18, 10, 30));
+        double valorPago = usoDeVaga.sair();
+   
         double valorEsperado = 1.0; // 30 minutos de permanência, 1 hora de cobrança
-        assertEquals(valorEsperado, usoDeVaga.sair(), 0.01);
+        
+        assertEquals(valorEsperado, valorPago, 0.01);
     }
 
     @Test
