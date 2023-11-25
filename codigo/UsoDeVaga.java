@@ -14,6 +14,16 @@ public class UsoDeVaga implements Serializable {
 	private LocalDateTime entrada;
 	private LocalDateTime saida;
 	private double valorPago;
+	private int horaMinima;
+
+
+	public int getHoraMinima() {
+		return horaMinima;
+	}
+
+	public void setHoraMinima(int horaMinima) {
+		this.horaMinima = horaMinima;
+	}
 
 	public UsoDeVaga(Vaga vaga, LocalDateTime entrada) {
 		this.vaga = vaga;
@@ -46,6 +56,19 @@ public class UsoDeVaga implements Serializable {
 
 		} catch (IOException e) {
 			e.printStackTrace();
+		}
+	}
+	public void adicionarServico(int tipo){
+		if(tipo==1){
+			this.valorPago+=5;
+		}
+		if(tipo==2){
+			this.valorPago+=20;
+			this.horaMinima = 1;
+		}
+		if(tipo==3){
+			this.valorPago+=45;
+			this.horaMinima = 2;
 		}
 	}
 

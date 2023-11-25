@@ -58,7 +58,7 @@ public class Veiculo implements Serializable  {
         double totalPago = 0.0;
         for (int i = 0; i < usos.length; i++) {
             if (usos[i] != null && usos[i].getSaida() == null) {     
-                System.out.println(usos[i].getEntrada());
+                //System.out.println(usos[i].getEntrada());
                 if(usos[i].getEntrada() == null){
                     System.out.println("Não é possível sair com veiculo não estacionado");
                     break;
