@@ -35,8 +35,8 @@ public class main {
                 estacionamento3 = estacionamento3.carregarEstado();
                 System.out.println("carregando estacionamento salvo ");
             } catch (IOException | ClassNotFoundException e) {
-                e.printStackTrace();
-                //System.out.println("erro ao carregar estacionamentos");
+               // e.printStackTrace();
+                System.out.println("erro ao carregar estacionamentos");
             }
             // estacionamento2.carregarArquivo();
             // estacionamento3.carregarArquivo();
@@ -102,7 +102,7 @@ public class main {
         scanner.nextLine();
         System.out.println("Indique seu identificador: ");
         String id = scanner.nextLine();
-
+        //scanner.close();
         menuCliente(e, id);
     }
     
@@ -114,24 +114,18 @@ public class main {
        
     public static void menuCliente(Estacionamento estacionamento, String id) {
         Scanner scanner = new Scanner(System.in);
-        Cliente[] arrCliente = estacionamento.getId();
-        Cliente c = estacionamento.getId()[0];
-        boolean existe = false;
-        if (arrCliente.length > 0) {
-            for (Cliente cliente : arrCliente) {
-                if (cliente != null && cliente.getId().equals(id)) {
-                    c = cliente;
-                    existe = true;
-                }
-            }
-        }
-        if (!existe) {
-            System.out.println("Indique seu nome: ");
-            String nome = scanner.nextLine();
-            TipoCliente tipoCliente = null;
-            c = new Cliente(nome, id,tipoCliente.HORISTA , null);
-            estacionamento.addCliente(c);
-        }
+        Cliente c = estacionamento.getId().stream()
+        .filter(cliente -> cliente != null && cliente.getId().equals(id))
+        .findAny()
+        .orElse(null);
+       
+if (c == null) {
+    System.out.println("Indique seu nome: ");
+    String nome = scanner.nextLine();
+   
+    c = new Cliente(nome, id, TipoCliente.HORISTA, null);
+    estacionamento.addCliente(c);
+}
 
         // Scanner scanner = new Scanner(System.in);
         int escolha;
@@ -148,7 +142,7 @@ public class main {
             scanner.nextLine();
             switch (escolha) {
                 case 1:
-                    estacionarVeiculo(estacionamento);
+                    estacionarVeiculo(estacionamento,c);
                     break;
                 case 2:
                     sairVeiculo(estacionamento);
@@ -181,6 +175,8 @@ public class main {
                     break;
             }
         } while (escolha < 7 && escolha > 0);
+
+        scanner.close();
     }
 
     /*  Método para o menu de tornar-se mensalista
@@ -266,14 +262,14 @@ public class main {
        Adiciona um novo veículo ao cliente no estacionamento.
     */
     public static void adicionarVeiculo(Estacionamento estacionamento, String id, String placa) {
-        Veiculo v = new Veiculo(placa, 20);
+        Veiculo v = new Veiculo(placa);
         estacionamento.addVeiculo(v, id);
         //menuCliente(estacionamento, id);
     }
     /*Método para estacionar um veículo
       Permite ao cliente estacionar um veículo, solicitando a placa e a hora de entrada.
     */
-    public static void estacionarVeiculo(Estacionamento estacionamento) {
+    public static void estacionarVeiculo(Estacionamento estacionamento,Cliente c) {
         Scanner scanner = new Scanner(System.in);
         System.out.println("Indique a placa do veiculo: ");
         String plaque = scanner.nextLine();
@@ -282,8 +278,10 @@ public class main {
         try {
             LocalDateTime momentoAtual = LocalDate.now().atTime(Integer.parseInt(hour.split(":")[0]),
                     Integer.parseInt(hour.split(":")[1]));
-            estacionamento.estacionar(plaque, momentoAtual);
+            estacionamento.estacionar(plaque, momentoAtual,c);
         } catch (Exception e) {
+           e.printStackTrace();
+          //System.out.println(e.getMessage());
             System.out.println("digite um horario valido");
         }
 
@@ -303,6 +301,7 @@ public class main {
         if(!estacionamento.sair(plaque, momentoAtual))
         sairVeiculo( estacionamento);
         } catch (Exception e) {
+            e.printStackTrace();
             System.out.println("digite um horario valido");
         }
     }
