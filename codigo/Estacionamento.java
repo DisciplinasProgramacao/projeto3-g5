@@ -26,7 +26,8 @@ public class Estacionamento implements Serializable {
 	private List<Vaga> vagas=new ArrayList<>();
 	private int quantFileiras;
 	private int vagasPorFileira;
-
+	private Relatorio relatorio = new Relatorio();
+	
 	public Estacionamento(String nome, int fileiras, int vagasPorFila) {
 		this.nome = nome;
 		this.quantFileiras = fileiras;
@@ -89,23 +90,21 @@ public class Estacionamento implements Serializable {
 
 	public void addVeiculo(Veiculo veiculo, String idCli) {
 
-		for (Cliente cliente : this.id) {
-			if (cliente != null && cliente.getId().equals(idCli)) {
-				if (cliente.possuiVeiculo(veiculo.getPlaca()) != null) {
-					System.out.println("Veiculo já existe");
+		if(encontrarClientePorPlaca(veiculo.getPlaca())!=null){
+		System.out.println("Veiculo já existe");
 					return;
-				}
-				cliente.addVeiculo(veiculo);
-
-				return; // Interrompe o loop assim que o cliente é encontrado
-			}
 		}
-
+		Cliente	cliente=this.id.stream().filter(c->c.getId().equals(idCli)).findFirst().orElse(null);
+		if(cliente!=null){
+			cliente.addVeiculo(veiculo);
+			return;
+		}			
 		// Se chegou aqui, o cliente com o ID especificado não foi encontrado
 		System.out.println("Cliente com ID " + idCli + " não encontrado.");
 	}
 
 	public void addCliente(Cliente cliente) {
+		cliente.addObserver(relatorio);
 		this.id.add(cliente);
 	}
 
@@ -225,6 +224,8 @@ public class Estacionamento implements Serializable {
 						} else {
 
 							veiculo.sair(time, cliente.getTipoCliente());
+
+							relatorio.update(cliente, uso);
 							return true;
 						}
 					}
@@ -266,10 +267,8 @@ public class Estacionamento implements Serializable {
 	}
 
 	public double arrecadacaoNoMes(int mes) {
-		return this.id.stream()
-			.filter(cliente -> cliente != null)
-			.mapToDouble(cliente -> cliente.arrecadadoNoMes(mes))
-			.sum();
+		//return this.id.stream().filter(cliente -> cliente != null).mapToDouble(cliente -> cliente.arrecadadoNoMes(mes)).sum();
+		return relatorio.getArrecadadoNoMes(mes);
 	}
 
 	public double valorMedioPorUso() {
@@ -281,12 +280,8 @@ public class Estacionamento implements Serializable {
 	}
 
 	public String top5Clientes(int mes) {
-		return this.id.stream()
-			.filter(cliente -> cliente != null)
-			.sorted((c1, c2) -> Double.compare(c2.arrecadadoNoMes(mes), c1.arrecadadoNoMes(mes)))
-			.limit(5)
-			.map(Cliente::getNome)
-			.collect(Collectors.joining(" "));
+		//return this.id.stream().filter(cliente -> cliente != null).sorted((c1, c2) -> Double.compare(c2.arrecadadoNoMes(mes), c1.arrecadadoNoMes(mes))).limit(5).map(Cliente::getNome).collect(Collectors.joining(" "));
+		return relatorio.getClientesTop5();
 	}
 
 	public double mediaUsoMensalistasNoMes(int mes) {

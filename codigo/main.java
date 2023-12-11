@@ -10,24 +10,16 @@ public class main {
     public static Estacionamento estacionamento1 = new Estacionamento("Estacionamento 1", 12, 22);
     public static Estacionamento estacionamento2 = new Estacionamento("Estacionamento 2", 10, 28);
     public static Estacionamento estacionamento3 = new Estacionamento("Estacionamento 3", 15, 25);
-
+    
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
         /*  Função principal que controla o fluxo do programa.
          Inicializa os estacionamentos e apresenta um menu principal para o usuário.
          Permite a entrada como cliente, gestor ou a saída do programa.*/
-
-        // estacionamento1.carregarArquivo();
-        // estacionamento2.carregarArquivo();
-        // estacionamento3.carregarArquivo();
-        
-        // Inicialização dos estacionamentos e tentativa de carregar estados anteriores
         int escolha;
         do {
             // Carregar estacionamentos previamente salvos
-            estacionamento1 = new Estacionamento("Estacionamento 1", 12, 22);
-            estacionamento2 = new Estacionamento("Estacionamento 2", 10, 28);
-            estacionamento3 = new Estacionamento("Estacionamento 3", 15, 25);
+        
             // if (estacionamento1.getId()[0] != null)
             try {
                 estacionamento1 = estacionamento1.carregarEstado();
@@ -48,7 +40,10 @@ public class main {
             System.out.println("3. Sair");
 
             System.out.print("Escolha uma opção: ");
-            escolha = scanner.nextInt();
+          
+                escolha = scanner.nextInt();
+            
+            
 
             // Switch para lidar com as opções do menu principal
             switch (escolha) {
@@ -102,7 +97,7 @@ public class main {
         scanner.nextLine();
         System.out.println("Indique seu identificador: ");
         String id = scanner.nextLine();
-        //scanner.close();
+       // scanner.close();
         menuCliente(e, id);
     }
     
@@ -146,6 +141,7 @@ if (c == null) {
                     break;
                 case 2:
                     sairVeiculo(estacionamento);
+                    
                     break;
                 case 3:
                     ArrayList<String> historico = estacionamento.historicoDeUso(c);
@@ -168,7 +164,7 @@ if (c == null) {
                     System.out.println("Saindo do menu do cliente.");
                     // System.out.println("contcli_2 " + estacionamento1.contCli);
                     salvarEstacionamentos();
-
+                   // System.out.println(relatorio.getArrecadadoNoMes(12));
                     break;
                 default:
                     System.out.println("Opção inválida. Escolha uma opção válida.");
@@ -176,7 +172,7 @@ if (c == null) {
             }
         } while (escolha < 7 && escolha > 0);
 
-        scanner.close();
+        //scanner.close();
     }
 
     /*  Método para o menu de tornar-se mensalista
@@ -301,7 +297,7 @@ if (c == null) {
         if(!estacionamento.sair(plaque, momentoAtual))
         sairVeiculo( estacionamento);
         } catch (Exception e) {
-            e.printStackTrace();
+            //e.printStackTrace();
             System.out.println("digite um horario valido");
         }
     }
