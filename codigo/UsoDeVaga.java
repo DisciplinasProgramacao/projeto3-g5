@@ -4,29 +4,44 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
+enum Servico {
+    manobrista(5, 0),
+    lavagem(20, 1),
+    polimento(25, 2);
+
+    private final int horaMinima;
+    private final int valor;
+
+    Servico(int valor, int horaMinima) {
+        this.horaMinima = horaMinima;
+        this.valor = valor;
+    }
+
+    public int getHoraMinima() {
+        return horaMinima;
+    }
+
+    public int getValor() {
+        return valor;
+    }
+}
+
 // Classe que representa o uso de uma vaga de estacionamento
 public class UsoDeVaga implements Serializable {
+
 
     // Constantes para cálculos de valor
     private static final double FRACAO_USO = 0.25;
     private static final double VALOR_FRACAO = 4.0;
     private static final double VALOR_MAXIMO = 50.0;
+    private Servico servico;
 
     // Atributos da classe
     private Vaga vaga;
     private LocalDateTime entrada;
     private LocalDateTime saida;
     private double valorPago;
-    private int horaMinima;
 
-    // Getter e Setter para a hora mínima
-    public int getHoraMinima() {
-        return horaMinima;
-    }
-
-    public void setHoraMinima(int horaMinima) {
-        this.horaMinima = horaMinima;
-    }
 
     // Construtor para inicializar um objeto UsoDeVaga com entrada
     public UsoDeVaga(Vaga vaga, LocalDateTime entrada) {
@@ -62,23 +77,27 @@ public class UsoDeVaga implements Serializable {
         }
     }
 
-    // Método para adicionar serviços extras ao valor pago
-    public void adicionarServico(int tipo) {
-        if (tipo == 1) {
-            this.valorPago += 5;
-        } else if (tipo == 2) {
-            this.valorPago += 20;
-            this.horaMinima = 1;
-        } else if (tipo == 3) {
-            this.valorPago += 45;
-            this.horaMinima = 2;
-        }
-    }
-
     // Setter para a vaga
     public void setVaga(Vaga vaga) {
         this.vaga = vaga;
     }
+
+    public Servico getServico() {
+        return this.servico;
+    }
+
+    public void setServico(Servico servico) {
+        this.servico = servico;
+    }
+
+    public double getValorPago() {
+        return this.valorPago;
+    }
+
+    public void setValorPago(double valorPago) {
+        this.valorPago = valorPago;
+    }
+    
 
     // Getter para a entrada
     public LocalDateTime getEntrada() {
@@ -148,7 +167,7 @@ public class UsoDeVaga implements Serializable {
         double valor = minutosEstacionados * FRACAO_USO * VALOR_FRACAO;
 
         // Limita o valor ao valor máximo permitido
-        valorPago = Math.min(valor, VALOR_MAXIMO);
+        valorPago +=  Math.min(valor, VALOR_MAXIMO);
         return valorPago;
     }
 

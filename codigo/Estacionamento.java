@@ -213,12 +213,12 @@ public class Estacionamento implements Serializable {
 				for (UsoDeVaga uso : usos) {
 					if (uso != null && uso.getSaida() == null) {
 						double diff = Duration.between(uso.getEntrada(), time).toMinutes();
-						diff = diff/60;
+						diff = diff / 60;
 						if (diff <= 0) {
 							System.out.println("digite um horario posterior ao de entrada");
 							return false;
 						}
-						if (uso.getHoraMinima() > diff) {
+						if (uso.getServico() != null && uso.getServico().getHoraMinima() > diff) {
 							System.out.println("Tempo insuficiente para o serviço adquirido");
 							return false;
 						} else {
@@ -245,13 +245,31 @@ public class Estacionamento implements Serializable {
 				List<UsoDeVaga> usos = v.getUsos();
 				for (UsoDeVaga usoDeVaga : usos) {
 					if (usoDeVaga != null && usoDeVaga.getSaida() == null) {
-						// System.out.println(usos[i].getEntrada());
 						if (usoDeVaga.getEntrada() == null) {
 							System.out.println("Não é possível adicionar um serviço com veiculo não estacionado");
 							break;
 						}
-						usoDeVaga.adicionarServico(tipo);
-						usoDeVaga.getHoraMinima();
+						double total = 0;
+						switch (tipo) {
+							case 1:
+								usoDeVaga.setServico(Servico.manobrista);
+								total = usoDeVaga.getvalorPago() + Servico.manobrista.getValor();
+								usoDeVaga.setValorPago(total);
+								break;
+							case 2:
+								usoDeVaga.setServico(Servico.lavagem);
+								total = usoDeVaga.getvalorPago() + Servico.lavagem.getValor();
+								usoDeVaga.setValorPago(total);
+								break;
+							case 3:
+								usoDeVaga.setServico(Servico.polimento);
+								total = usoDeVaga.getvalorPago() + Servico.polimento.getValor();
+								usoDeVaga.setValorPago(total);
+								break;
+
+							default:
+								break;
+						}
 					}
 				}
 

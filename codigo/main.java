@@ -14,7 +14,7 @@ public class main {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
         /*  Função principal que controla o fluxo do programa.
-         Inicializa os estacionamentos e apresenta um menu principal para o usuário.
+         Inicializa os estacionamentos e apresenta um menu prin                                                                                                                                                                                                                                              cipal para o usuário.
          Permite a entrada como cliente, gestor ou a saída do programa.*/
         int escolha;
         do {
@@ -30,8 +30,6 @@ public class main {
                // e.printStackTrace();
                 System.out.println("erro ao carregar estacionamentos");
             }
-            // estacionamento2.carregarArquivo();
-            // estacionamento3.carregarArquivo();
             
             // Menu principal
             System.out.println("Menu Principal");
@@ -90,9 +88,6 @@ public class main {
 
                 break;
         }
-
-        // System.out.println("nome cliente"+ e.getId()[0].getNome()+" placa do
-        // carro"+e.getId()[0].getVeiculos()[0].getPlaca());
 
         scanner.nextLine();
         System.out.println("Indique seu identificador: ");
@@ -162,7 +157,6 @@ if (c == null) {
                     break;
                 case 7:
                     System.out.println("Saindo do menu do cliente.");
-                    // System.out.println("contcli_2 " + estacionamento1.contCli);
                     salvarEstacionamentos();
                    // System.out.println(relatorio.getArrecadadoNoMes(12));
                     break;
@@ -336,8 +330,7 @@ if (c == null) {
             int mes;
             switch (escolha) {
                 case 1:
-                System.out.println(estacionamento.getNome());
-                    System.out.println("a" + estacionamento.totalArrecadado());
+                    System.out.println( estacionamento.totalArrecadado());
                     break;
                 case 2:
                     System.out.println("Insira o mês desejado(1 a 12)");
