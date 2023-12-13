@@ -191,4 +191,19 @@ public class UsoDeVaga implements Serializable {
         }
         return calcValue(inicio, fim);
     }
+    private UsoDeVagaPrototype prototipo;
+
+    // Construtor usando o protótipo
+    public UsoDeVaga(UsoDeVagaPrototype prototipo) {
+        this.prototipo = prototipo;
+    }
+
+    // Método para clonar o protótipo e obter uma nova instância de UsoDeVaga
+    public UsoDeVaga clonar() {
+        return prototipo.clonar();
+    }
+
+    public void setHoraMinima(int horaMinima) {
+    }
+
 }
