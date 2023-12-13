@@ -261,16 +261,16 @@ public class Estacionamento implements Serializable {
 	}
 
 	public void adicionarServico(String idCli, int tipo, String placa) {
-		for (Cliente cliente : id) {
-			if (cliente != null && cliente.getId().equals(idCli)) {
+		Cliente cliente = id.stream().filter(c->c.getId().equals(idCli)).findFirst().orElse(null);
+			if (cliente != null) {
 				Veiculo v = cliente.possuiVeiculo(placa);
 				List<UsoDeVaga> usos = v.getUsos();
-				for (UsoDeVaga usoDeVaga : usos) {
-					if (usoDeVaga != null && usoDeVaga.getSaida() == null) {
-						if (usoDeVaga.getEntrada() == null) {
-							System.out.println("Não é possível adicionar um serviço com veiculo não estacionado");
-							break;
-						}
+				if(usos.size()==0){
+				System.out.println("Não é possível adicionar um serviço com veiculo não estacionado");
+					return ;
+				}
+				UsoDeVaga usoDeVaga = usos.stream().filter(u->u.getEntrada()!=null && u.getSaida()==null).findFirst().orElse(null);
+					if (usoDeVaga != null) {
 						double total = 0;
 						switch (tipo) {
 							case 1:
@@ -292,11 +292,13 @@ public class Estacionamento implements Serializable {
 							default:
 								break;
 						}
-					}
+					}else{
+						System.out.println("Não é possível adicionar um serviço com veiculo não estacionado");
 				}
-
+			}else {
+				System.out.println("cliente nao encontrado");
 			}
-		}
+		
 	}
 
 	public double totalArrecadado() {

@@ -231,6 +231,7 @@ public class main {
      * lavagem e polimento.
      */
     public static void menuServico(Estacionamento estacionamento, String id) {
+       try {
         Scanner scanner = new Scanner(System.in);
         System.out.println("Indique a placa do veiculo: ");
         String plaque = scanner.nextLine();
@@ -240,6 +241,10 @@ public class main {
         System.out.println("3- Polimento(inclui lavagem)");
         int escolha = scanner.nextInt();
         estacionamento.adicionarServico(id, escolha, plaque);
+       } catch (Exception e) {
+        System.out.println("Insira dados validos");
+       }
+        
     }
 
     /*
@@ -282,7 +287,7 @@ public class main {
                     Integer.parseInt(hour.split(":")[1]));
             estacionamento.estacionar(plaque, momentoAtual, c);
         } catch (Exception e) {
-            e.printStackTrace();
+            //e.printStackTrace();
             // System.out.println(e.getMessage());
             System.out.println("digite um horario valido");
         }
