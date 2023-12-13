@@ -1,5 +1,3 @@
-import java.io.FileWriter;
-import java.io.IOException;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -45,7 +43,6 @@ public class Cliente extends   Observable implements Serializable {
     private String nome;
     private String id;
     private List<Veiculo>  veiculos =new ArrayList<>();
-    private int mensalista;
     private LocalDate dateMensalista;
     private TipoCliente tipoCliente;
 
