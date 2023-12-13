@@ -114,7 +114,7 @@ public class Estacionamento implements Serializable {
 			for (int j = 0; j < this.vagasPorFileira; j++) {
 				String id = String.format("Fila%dVaga%02d", i, j);
 
-				this.vagas.add(new Vaga(id));
+				this.vagas.add(new Vaga("1", true ));
 			}
 		}
 	}
@@ -135,9 +135,13 @@ public class Estacionamento implements Serializable {
 			System.out.println("Veículo não encontrado");
 		} else if (vaga == null) {
 			System.out.println("Não há vagas disponíveis");
-		} else
+		} else{
 			veiculo.estacionar(vaga, time);
+
+			UsoDeVaga uso = new UsoDeVaga(new Vaga("1", true), time);
+			veiculo.getUsos().add(uso);}
 	}
+
 
 	public static double calcularCustoServicos(Map<String, Boolean> servicosAtivos) {
 		double valorTotal = 0.0;
@@ -205,35 +209,28 @@ public class Estacionamento implements Serializable {
 	public ArrayList<String> historicoDeUso(Cliente cliente) {
 		ArrayList<String> historico = new ArrayList<>();
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
-		if (cliente != null) {
-			List<Veiculo> veiculos = cliente.getVeiculos();
-			if (veiculos != null) {
-				for (Veiculo veiculo : veiculos) {
-					if (veiculo != null) {
-						List<UsoDeVaga> usos = veiculo.getUsos();
-						if (usos != null) {
-							for (UsoDeVaga uso : usos) {
-								if (uso != null) {
-									String infoUso = "Cliente: " + cliente.getNome() +
-											", Veículo: " + veiculo.getPlaca() +
-											", Entrada: " + uso.getEntrada().format(formatter) +
-											", Saída: "
-											+ (uso.getSaida() != null ? uso.getSaida().format(formatter)
-													: "ainda estacionado")
-											+
-											", Valor Pago: R$" + uso.valorPago() +
-											", Vaga: " + uso.getVaga().getId() + "\n";
-									historico.add(infoUso);
-								}
-							}
-						}
-					}
-				}
+	
+		if (cliente == null) return historico;
+	
+		for (Veiculo veiculo : cliente.getVeiculos()) {
+			if (veiculo == null) continue;
+	
+			for (UsoDeVaga uso : veiculo.getUsos()) {
+				if (uso == null) continue;
+	
+				String infoUso = "Cliente: " + cliente.getNome() +
+						", Veículo: " + veiculo.getPlaca() +
+						", Entrada: " + uso.getEntrada().format(formatter) +
+						", Saída: " + (uso.getSaida() != null ? uso.getSaida().format(formatter) : "ainda estacionado") +
+						", Valor Pago: R$" + uso.valorPago() +
+						", Vaga: " + uso.getVaga().getId() + "\n";
+				historico.add(infoUso);
 			}
-
 		}
+	
 		return historico;
 	}
+	
 
 	public boolean sair(String placa, LocalDateTime time) {
 		Cliente cliente = encontrarClientePorPlaca(placa);
@@ -339,35 +336,19 @@ public class Estacionamento implements Serializable {
 	public double mediaUsoMensalistasNoMes(int mes) {
 		int totalUsos = 0;
 		int totalClientesMensalistas = 0;
+	
 		for (Cliente cliente : id) {
-			if (cliente != null && cliente.getTipoCliente() == TipoCliente.MENSALISTA
-					&& cliente.getDateMensalista().getMonthValue() >= mes) {
-				List<Veiculo> veiculos = cliente.getVeiculos();
-				for (Veiculo veiculo : veiculos) {
+			if (cliente != null && cliente.getTipoCliente() == TipoCliente.MENSALISTA && cliente.getDateMensalista().getMonthValue() >= mes) {
+				for (Veiculo veiculo : cliente.getVeiculos()) {
 					if (veiculo != null) {
-						List<UsoDeVaga> usos = veiculo.getUsos();
-						for (UsoDeVaga uso : usos) {
-							if (uso != null && uso.getSaida() != null) {
-								LocalDateTime data = uso.getSaida();
-								int mesData = data.getMonthValue();
-
-								if (mesData == mes) {
-									totalUsos++;
-								}
-							}
-						}
+						totalUsos += veiculo.getUsos().stream().filter(uso -> uso != null && uso.getSaida() != null && uso.getSaida().getMonthValue() == mes).count();
 					}
 					totalClientesMensalistas++;
 				}
-
 			}
 		}
-
-		if (totalClientesMensalistas > 0) {
-			return (double) totalUsos / totalClientesMensalistas;
-		} else {
-			return 0.0;
-		}
+	
+		return totalClientesMensalistas > 0 ? (double) totalUsos / totalClientesMensalistas : 0.0;
 	}
 
 	public double mediasHoristaNoMes(int mes) {
@@ -377,16 +358,14 @@ public class Estacionamento implements Serializable {
 				.average()
 				.orElse(0D);
 	}
-
+	
 	public void setMensalista(TipoCliente tipoCliente, String idCli) {
-		for (Cliente cliente : id) {
-			if (cliente != null && cliente.getId().equals(idCli)) {
-				LocalDate today = LocalDate.now();
+		this.id.stream()
+			.filter(cliente -> cliente != null && cliente.getId().equals(idCli))
+			.forEach(cliente -> {
 				cliente.setTipoCliente(tipoCliente);
-				cliente.setDateMensalista(today);
-			}
-		}
-
+				cliente.setDateMensalista(LocalDate.now());
+			});
 	}
 
 }
