@@ -122,14 +122,15 @@ public class main {
         int escolha;
         do {
             System.out.println("Menu Cliente");
-            System.out.println("1. Estacionar Veiculo");
+            System.out.println("1. Estacionar Veiculo");            
             System.out.println("2. Sair com veículo");
-            System.out.println("3. Acessar histórico de uso do estacionamento");
-            System.out.println("4. Acessar histórico de uso do estacionamento por mês");
-            System.out.println("5. adicionar veículo");
-            System.out.println("6. Seja um mensalista!");
-            System.out.println("7. Adicionar um serviço");
-            System.out.println("8. Sair");
+            System.out.println("3. Adicionar um serviço");
+            System.out.println("4. Adicionar veículo");
+            System.out.println("5. Seja um mensalista!");
+            System.out.println("6. Acessar histórico de uso do estacionamento");
+            System.out.println("7. Acessar histórico de uso do estacionamento por mês");   
+            System.out.println("8. Acessar relatório de veículos");         
+            System.out.println("9. Sair");
             escolha = scanner.nextInt();
             scanner.nextLine();
             switch (escolha) {
@@ -140,37 +141,37 @@ public class main {
                     sairVeiculo(estacionamento);
                     break;
                 case 3:
-                    ArrayList<String> historico = estacionamento.historicoDeUso(c);
-                    System.out.println(historico);
+                    menuServico(estacionamento, id);
                     break;
                 case 4:
-                    System.out.println("Insira o mês desejado(1 a 12)");
-                    int mes = scanner.nextInt();
-                    System.out.println(estacionamento.historicoUsoData(c, mes));
-                    break;
-                case 5:
                     System.out.println("digite a placa do carro.");
                     String placa = scanner.nextLine();
                     adicionarVeiculo(estacionamento, id, placa);
                     break;
-                case 6:
+                case 5:
                     menuMensalista(estacionamento, id);
-                    // menuCliente(estacionamento, id);
+                    break;
+                case 6:
+                    ArrayList<String> historico = estacionamento.historicoDeUso(c);
+                    System.out.println(historico);
                     break;
                 case 7:
-                    menuServico(estacionamento, id);
-                    // menuCliente(estacionamento, id);
-                    break;
+                    System.out.println("Insira o mês desejado(1 a 12)");
+                    int mes = scanner.nextInt();
+                    System.out.println(estacionamento.historicoUsoData(c, mes));
+                    break;              
                 case 8:
+                    System.out.println(estacionamento.gerarRelatorioValor(c));
+                    break;
+                case 9:
                     System.out.println("Saindo do menu do cliente.");
                     salvarEstacionamentos();
-                    // System.out.println(relatorio.getArrecadadoNoMes(12));
                     break;
                 default:
                     System.out.println("Opção inválida. Escolha uma opção válida.");
                     break;
             }
-        } while (escolha < 8 && escolha > 0);
+        } while (escolha < 9 && escolha > 0);
     }
 
     /*

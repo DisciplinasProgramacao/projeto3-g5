@@ -13,6 +13,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -166,6 +167,16 @@ public class Estacionamento implements Serializable {
 			default:
 				return 0.0;
 		}
+	}
+
+	public ArrayList<String> gerarRelatorioValor(Cliente cliente){
+		ArrayList<String> relatorio = new ArrayList<>();
+		cliente.getVeiculos().sort((v1, v2)-> (int) (v1.totalArrecadado() - v2.totalArrecadado()));
+		Collections.reverse(cliente.getVeiculos());
+		cliente.getVeiculos().forEach(item -> {
+			relatorio.add("Veiculo" + item.getPlaca() +": " + item.gerarRelatorio());
+		});
+		return relatorio;
 	}
 
 	public ArrayList<String> historicoUsoData(Cliente cliente, int month) {
