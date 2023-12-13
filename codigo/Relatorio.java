@@ -34,9 +34,6 @@ public class Relatorio implements Observer, Serializable {
             // Atualiza o Top5 de clientes com maior arrecadação no mês atual
             this.clientesTop5.add(cliente);
             this.clientesTop5.sort((c1, c2) -> (int) (c2.arrecadadoNoMes(mes) - c1.arrecadadoNoMes(mes)));
-            for (Cliente cliente2 : clientesTop5) {
-                System.out.println(cliente2.arrecadadoNoMes(mes));
-            }
             
             if (this.clientesTop5.size() > 5) {
                 this.clientesTop5.remove(0);

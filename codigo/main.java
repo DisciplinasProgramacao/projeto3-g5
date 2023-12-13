@@ -6,20 +6,22 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 public class main {
-     // Instâncias estáticas de Estacionamento
+    // Instâncias estáticas de Estacionamento
     public static Estacionamento estacionamento1 = new Estacionamento("Estacionamento 1", 12, 22);
     public static Estacionamento estacionamento2 = new Estacionamento("Estacionamento 2", 10, 28);
     public static Estacionamento estacionamento3 = new Estacionamento("Estacionamento 3", 15, 25);
-    
+
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
-        /*  Função principal que controla o fluxo do programa.
-         Inicializa os estacionamentos e apresenta um menu prin                                                                                                                                                                                                                                              cipal para o usuário.
-         Permite a entrada como cliente, gestor ou a saída do programa.*/
+        /*
+         * Função principal que controla o fluxo do programa.
+         * Inicializa os estacionamentos e apresenta um menu prin cipal para o usuário.
+         * Permite a entrada como cliente, gestor ou a saída do programa.
+         */
         int escolha;
         do {
             // Carregar estacionamentos previamente salvos
-        
+
             // if (estacionamento1.getId()[0] != null)
             try {
                 estacionamento1 = estacionamento1.carregarEstado();
@@ -27,10 +29,10 @@ public class main {
                 estacionamento3 = estacionamento3.carregarEstado();
                 System.out.println("carregando estacionamento salvo ");
             } catch (IOException | ClassNotFoundException e) {
-               // e.printStackTrace();
+                // e.printStackTrace();
                 System.out.println("erro ao carregar estacionamentos");
             }
-            
+
             // Menu principal
             System.out.println("Menu Principal");
             System.out.println("1. Entrar como Cliente");
@@ -38,10 +40,8 @@ public class main {
             System.out.println("3. Sair");
 
             System.out.print("Escolha uma opção: ");
-          
-                escolha = scanner.nextInt();
-            
-            
+
+            escolha = scanner.nextInt();
 
             // Switch para lidar com as opções do menu principal
             switch (escolha) {
@@ -60,13 +60,12 @@ public class main {
             }
         } while (escolha < 4 && escolha > 0);
     }
-    
 
-
-    /* Método para entrada como cliente
-     Permite ao usuário escolher um estacionamento e entrar como cliente.
-     Chama o menu do cliente para realizar operações relacionadas ao cliente.
-    */
+    /*
+     * Método para entrada como cliente
+     * Permite ao usuário escolher um estacionamento e entrar como cliente.
+     * Chama o menu do cliente para realizar operações relacionadas ao cliente.
+     */
     public static void entrarComoCliente() {
         Scanner scanner = new Scanner(System.in);
         Estacionamento e = estacionamento1;
@@ -92,30 +91,32 @@ public class main {
         scanner.nextLine();
         System.out.println("Indique seu identificador: ");
         String id = scanner.nextLine();
-       // scanner.close();
+        // scanner.close();
         menuCliente(e, id);
     }
-    
 
+    /*
+     * Método para o menu do cliente
+     * Apresenta um menu para o cliente realizar diversas operações no
+     * estacionamento.
+     * Inclui estacionar veículo, sair com veículo, acessar histórico, adicionar
+     * veículo, ser mensalista e adicionar serviço.
+     */
 
-    /*  Método para o menu do cliente
-      Apresenta um menu para o cliente realizar diversas operações no estacionamento.
-      Inclui estacionar veículo, sair com veículo, acessar histórico, adicionar veículo, ser mensalista e adicionar serviço.  */
-       
     public static void menuCliente(Estacionamento estacionamento, String id) {
         Scanner scanner = new Scanner(System.in);
         Cliente c = estacionamento.getId().stream()
-        .filter(cliente -> cliente != null && cliente.getId().equals(id))
-        .findAny()
-        .orElse(null);
-       
-if (c == null) {
-    System.out.println("Indique seu nome: ");
-    String nome = scanner.nextLine();
-   
-    c = new Cliente(nome, id, TipoCliente.HORISTA, null);
-    estacionamento.addCliente(c);
-}
+                .filter(cliente -> cliente != null && cliente.getId().equals(id))
+                .findAny()
+                .orElse(null);
+
+        if (c == null) {
+            System.out.println("Indique seu nome: ");
+            String nome = scanner.nextLine();
+
+            c = new Cliente(nome, id, TipoCliente.HORISTA, null);
+            estacionamento.addCliente(c);
+        }
 
         // Scanner scanner = new Scanner(System.in);
         int escolha;
@@ -124,54 +125,59 @@ if (c == null) {
             System.out.println("1. Estacionar Veiculo");
             System.out.println("2. Sair com veículo");
             System.out.println("3. Acessar histórico de uso do estacionamento");
-            System.out.println("4. adicionar veículo");
-            System.out.println("5. Seja um mensalista!");
-            System.out.println("6. Adicionar um serviço");
-            System.out.println("7. Sair");
+            System.out.println("4. Acessar histórico de uso do estacionamento por mês");
+            System.out.println("5. adicionar veículo");
+            System.out.println("6. Seja um mensalista!");
+            System.out.println("7. Adicionar um serviço");
+            System.out.println("8. Sair");
             escolha = scanner.nextInt();
             scanner.nextLine();
             switch (escolha) {
                 case 1:
-                    estacionarVeiculo(estacionamento,c);
+                    estacionarVeiculo(estacionamento, c);
                     break;
                 case 2:
                     sairVeiculo(estacionamento);
-                    
                     break;
                 case 3:
                     ArrayList<String> historico = estacionamento.historicoDeUso(c);
                     System.out.println(historico);
                     break;
                 case 4:
+                    System.out.println("Insira o mês desejado(1 a 12)");
+                    int mes = scanner.nextInt();
+                    System.out.println(estacionamento.historicoUsoData(c, mes));
+                    break;
+                case 5:
                     System.out.println("digite a placa do carro.");
                     String placa = scanner.nextLine();
                     adicionarVeiculo(estacionamento, id, placa);
                     break;
-                case 5:
+                case 6:
                     menuMensalista(estacionamento, id);
-                    //menuCliente(estacionamento, id);
-                    break;
-                    case 6:
-                    menuServico(estacionamento, id);
-                    //menuCliente(estacionamento, id);
+                    // menuCliente(estacionamento, id);
                     break;
                 case 7:
+                    menuServico(estacionamento, id);
+                    // menuCliente(estacionamento, id);
+                    break;
+                case 8:
                     System.out.println("Saindo do menu do cliente.");
                     salvarEstacionamentos();
-                   // System.out.println(relatorio.getArrecadadoNoMes(12));
+                    // System.out.println(relatorio.getArrecadadoNoMes(12));
                     break;
                 default:
                     System.out.println("Opção inválida. Escolha uma opção válida.");
                     break;
             }
-        } while (escolha < 7 && escolha > 0);
-
-        //scanner.close();
+        } while (escolha < 8 && escolha > 0);
     }
 
-    /*  Método para o menu de tornar-se mensalista
-        Permite ao cliente tornar-se mensalista, escolhendo entre opções com ou sem turno definido.
-    */
+    /*
+     * Método para o menu de tornar-se mensalista
+     * Permite ao cliente tornar-se mensalista, escolhendo entre opções com ou sem
+     * turno definido.
+     */
     public static void menuMensalista(Estacionamento estacionamento, String id) {
         Scanner scanner = new Scanner(System.in);
         System.out.println("1- Ser Mensalista por turno");
@@ -219,10 +225,11 @@ if (c == null) {
         }
     }
 
-
-    /*  Método para o menu de adição de serviços
-        Permite ao cliente adicionar serviços ao seu veículo, como manobrista, lavagem e polimento.
-    */
+    /*
+     * Método para o menu de adição de serviços
+     * Permite ao cliente adicionar serviços ao seu veículo, como manobrista,
+     * lavagem e polimento.
+     */
     public static void menuServico(Estacionamento estacionamento, String id) {
         Scanner scanner = new Scanner(System.in);
         System.out.println("Indique a placa do veiculo: ");
@@ -232,13 +239,13 @@ if (c == null) {
         System.out.println("2- Lavagem");
         System.out.println("3- Polimento(inclui lavagem)");
         int escolha = scanner.nextInt();
-        estacionamento.adicionarServico(id,escolha,plaque);
+        estacionamento.adicionarServico(id, escolha, plaque);
     }
 
-
-    /* Método para salvar os estados dos estacionamentos
-       Salva os estados dos estacionamentos em arquivos para persistência de dados.
-    */
+    /*
+     * Método para salvar os estados dos estacionamentos
+     * Salva os estados dos estacionamentos em arquivos para persistência de dados.
+     */
     public static void salvarEstacionamentos() {
         try {
             estacionamento1.salvarEstado();
@@ -248,18 +255,23 @@ if (c == null) {
             e.printStackTrace();
         }
     }
-    /* Método para adicionar veículo ao cliente
-       Adiciona um novo veículo ao cliente no estacionamento.
-    */
+
+    /*
+     * Método para adicionar veículo ao cliente
+     * Adiciona um novo veículo ao cliente no estacionamento.
+     */
     public static void adicionarVeiculo(Estacionamento estacionamento, String id, String placa) {
         Veiculo v = new Veiculo(placa);
         estacionamento.addVeiculo(v, id);
-        //menuCliente(estacionamento, id);
+        // menuCliente(estacionamento, id);
     }
-    /*Método para estacionar um veículo
-      Permite ao cliente estacionar um veículo, solicitando a placa e a hora de entrada.
-    */
-    public static void estacionarVeiculo(Estacionamento estacionamento,Cliente c) {
+
+    /*
+     * Método para estacionar um veículo
+     * Permite ao cliente estacionar um veículo, solicitando a placa e a hora de
+     * entrada.
+     */
+    public static void estacionarVeiculo(Estacionamento estacionamento, Cliente c) {
         Scanner scanner = new Scanner(System.in);
         System.out.println("Indique a placa do veiculo: ");
         String plaque = scanner.nextLine();
@@ -268,16 +280,19 @@ if (c == null) {
         try {
             LocalDateTime momentoAtual = LocalDate.now().atTime(Integer.parseInt(hour.split(":")[0]),
                     Integer.parseInt(hour.split(":")[1]));
-            estacionamento.estacionar(plaque, momentoAtual,c);
+            estacionamento.estacionar(plaque, momentoAtual, c);
         } catch (Exception e) {
-           e.printStackTrace();
-          //System.out.println(e.getMessage());
+            e.printStackTrace();
+            // System.out.println(e.getMessage());
             System.out.println("digite um horario valido");
         }
 
     }
-    /* Método para sair com um veículo
-       Permite ao cliente sair com um veículo, solicitando a placa e a hora de saída.
+
+    /*
+     * Método para sair com um veículo
+     * Permite ao cliente sair com um veículo, solicitando a placa e a hora de
+     * saída.
      */
     public static void sairVeiculo(Estacionamento estacionamento) {
         Scanner scanner = new Scanner(System.in);
@@ -286,18 +301,21 @@ if (c == null) {
         System.out.println("Indique hora de saida: ");
         String hour = scanner.nextLine();
         try {
-        LocalDateTime momentoAtual = LocalDate.now().atTime(Integer.parseInt(hour.split(":")[0]),
-                Integer.parseInt(hour.split(":")[1]));
-        if(!estacionamento.sair(plaque, momentoAtual))
-        sairVeiculo( estacionamento);
+            LocalDateTime momentoAtual = LocalDate.now().atTime(Integer.parseInt(hour.split(":")[0]),
+                    Integer.parseInt(hour.split(":")[1]));
+            if (!estacionamento.sair(plaque, momentoAtual))
+                sairVeiculo(estacionamento);
         } catch (Exception e) {
-            //e.printStackTrace();
+            // e.printStackTrace();
             System.out.println("digite um horario valido");
         }
     }
-    /* Método para entrada como gestor
-      Permite ao usuário entrar como gestor e realizar operações de gestão no estacionamento escolhido.
-    */
+
+    /*
+     * Método para entrada como gestor
+     * Permite ao usuário entrar como gestor e realizar operações de gestão no
+     * estacionamento escolhido.
+     */
     public static void entrarComoGestor() {
         Scanner scanner = new Scanner(System.in);
         System.out.println("Qual estacionamento você quer gerenciar(1 a 3)?");
@@ -330,7 +348,7 @@ if (c == null) {
             int mes;
             switch (escolha) {
                 case 1:
-                    System.out.println( estacionamento.totalArrecadado());
+                    System.out.println(estacionamento.totalArrecadado());
                     break;
                 case 2:
                     System.out.println("Insira o mês desejado(1 a 12)");
@@ -346,15 +364,15 @@ if (c == null) {
                     System.out.println(estacionamento.top5Clientes(mes));
                     break;
                 case 5:
-                    String[] e = {estacionamento1.getNome(), estacionamento2.getNome(), estacionamento3.getNome()};
+                    String[] e = { estacionamento1.getNome(), estacionamento2.getNome(), estacionamento3.getNome() };
                     double[] v = { estacionamento1.totalArrecadado(), estacionamento2.totalArrecadado(),
                             estacionamento3.totalArrecadado() };
                     String tempe;
                     double temp;
                     for (int i = 0; i < 3; i++) {
-                        for(int j=i; j<3; j++){
-                            
-                            if(v[i]< v[j]){
+                        for (int j = i; j < 3; j++) {
+
+                            if (v[i] < v[j]) {
                                 temp = v[i];
                                 v[i] = v[j];
                                 v[j] = temp;
@@ -364,7 +382,7 @@ if (c == null) {
                             }
                         }
                     }
-    
+
                     System.out.println("Arrencadação por estacionamento: ");
                     for (int i = 0; i < v.length; i++) {
                         System.out.println(e[i] + ": ");
