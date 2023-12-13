@@ -1,18 +1,5 @@
-[![Open in Visual Studio Code](https://classroom.github.com/assets/open-in-vscode-718a45dd9cf7e7f842a935f5ebbe5719a5e09af4491e668f4dbf3b35d5cca122.svg)](https://classroom.github.com/online_ide?assignment_repo_id=12219577&assignment_repo_type=AssignmentRepo)
-# Nome do projeto
-Escreva um ou dois parágrafos resumindo o objetivo do seu projeto.
+# Código do Projeto
 
-## Alunos integrantes da equipe
+Mantenha neste diretório todo o código fonte do projeto. 
 
-* Vitor Pereira Leite de Melo
-* Paulo Victor Fernandes de Araujo Silva
-* Lucas de Carvalho Barbosa 
-* Arthur Araújo Mendonça
-* Walter Roberto Rodrigues Loubak  
-* Anna Laura Reis Dornelas Gama
-
-## Professores responsáveis
-
-* Nome completo do professor 1
-* Nome completo do professor 2
-
+Se necessário, descreva neste arquivo aspectos relevantes da estrutura de diretórios criada para organização do código.
