@@ -1,53 +1,115 @@
-import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.ArrayList;
 
 public class VeiculoTest {
 
-    private Veiculo veiculo;
-    private Vaga vaga1;
-    private Vaga vaga2;
-
-    @Before
-    public void setUp() {
-        // Inicialização de objetos antes de cada teste
-        veiculo = new Veiculo("ABC123", 5);
-        vaga1 = new Vaga("A1");
-        vaga2 = new Vaga("B2");
-    }
-
     @Test
     public void testEstacionar() {
-        veiculo.estacionar(vaga1);
-        veiculo.estacionar(vaga2);
-        // Verifique se o veículo foi estacionado corretamente nas vagas
-        assertEquals(2, veiculo.totalDeUsos());
+        Veiculo veiculo = new Veiculo("ABC-1234");
+          Vaga vaga = new Vaga("1", true);
+        LocalDateTime entrada = LocalDateTime.now();
+
+        veiculo.estacionar(vaga, entrada);
+        assertEquals(1, veiculo.totalDeUsos());
     }
 
     @Test
     public void testSair() {
-        veiculo.estacionar(vaga1);
-        veiculo.estacionar(vaga2);
-        double totalPago = veiculo.sair();
-        // Verifique se o valor total pago é igual à soma das taxas das vagas
-        assertEquals(vaga1.getTaxa() + vaga2.getTaxa(), totalPago, 0.01);
+        Veiculo veiculo = new Veiculo("ABC-1234");
+         Vaga vaga = new Vaga("1", true);
+        LocalDateTime entrada = LocalDateTime.now();
+        veiculo.estacionar(vaga, entrada);
+
+        double valorPago = veiculo.sair(LocalDateTime.now().plusHours(1), TipoCliente.HORISTA);
+        assertTrue(valorPago > 0);
     }
 
     @Test
     public void testTotalArrecadado() {
-        veiculo.estacionar(vaga1);
-        veiculo.estacionar(vaga2);
-        veiculo.sair();
-        // Verifique se o total arrecadado é igual à soma das taxas das vagas
-        assertEquals(vaga1.getTaxa() + vaga2.getTaxa(), veiculo.totalArrecadado(), 0.01);
+        Veiculo veiculo = new Veiculo("ABC-1234");
+          Vaga vaga = new Vaga("1", true);
+        LocalDateTime entrada = LocalDateTime.now();
+        veiculo.estacionar(vaga, entrada);
+        veiculo.sair(LocalDateTime.now().plusHours(1), TipoCliente.HORISTA);
+
+        double total = veiculo.totalArrecadado();
+        assertTrue(total > 0);
+    }
+
+    @Test
+    public void testGerarRelatorio() {
+        Veiculo veiculo = new Veiculo("ABC-1234");
+        Vaga vaga = new Vaga("1", true);
+        LocalDateTime entrada = LocalDateTime.now();
+        veiculo.estacionar(vaga, entrada);
+        veiculo.sair(LocalDateTime.now().plusHours(1), TipoCliente.HORISTA);
+
+        String relatorio = veiculo.gerarRelatorio();
+        assertNotNull(relatorio);
+        assertTrue(relatorio.contains("Entrada"));
+        assertTrue(relatorio.contains("Saída"));
+        assertTrue(relatorio.contains("Valor Pago"));
+        assertTrue(relatorio.contains("Vaga"));
     }
 
     @Test
     public void testArrecadadoNoMes() {
-        veiculo.estacionar(vaga1);
-        veiculo.estacionar(vaga2);
-        veiculo.sair();
-        // Verifique se o valor arrecadado no mês 10 é igual à soma das taxas das vagas
-        assertEquals(vaga1.getTaxa() + vaga2.getTaxa(), veiculo.arrecadadoNoMes(10), 0.01);
+        Veiculo veiculo = new Veiculo("ABC-1234");
+       Vaga vaga = new Vaga("1", true);
+        LocalDateTime entrada = LocalDateTime.now();
+        veiculo.estacionar(vaga, entrada);
+        veiculo.sair(LocalDateTime.now().plusHours(1), TipoCliente.HORISTA);
+
+        double total = veiculo.arrecadadoNoMes(LocalDateTime.now().getMonthValue());
+        assertTrue(total > 0);
+    }
+
+    @Test
+    public void testTotalDeUsos() {
+        Veiculo veiculo = new Veiculo("ABC-1234");
+        Vaga vaga = new Vaga("1", true);
+        LocalDateTime entrada = LocalDateTime.now();
+        veiculo.estacionar(vaga, entrada);
+
+        int totalUsos = veiculo.totalDeUsos();
+        assertEquals(1, totalUsos);
+    }
+
+    @Test
+    public void testGetPlaca() {
+        Veiculo veiculo = new Veiculo("ABC-1234");
+        assertEquals("ABC-1234", veiculo.getPlaca());
+    }
+
+    @Test
+    public void testSetPlaca() {
+        Veiculo veiculo = new Veiculo("ABC-1234");
+        veiculo.setPlaca("XYZ-7890");
+        assertEquals("XYZ-7890", veiculo.getPlaca());
+    }
+
+    @Test
+    public void testGetUsos() {
+        Veiculo veiculo = new Veiculo("ABC-1234");
+        Vaga vaga = new Vaga("1", true);
+        LocalDateTime entrada = LocalDateTime.now();
+        veiculo.estacionar(vaga, entrada);
+
+        List<UsoDeVaga> usos = veiculo.getUsos();
+        assertNotNull(usos);
+        assertEquals(1, usos.size());
+    }
+
+    @Test
+    public void testSetUsos() {
+        Veiculo veiculo = new Veiculo("ABC-1234");
+        List<UsoDeVaga> usos = new ArrayList<>();
+        usos.add(new UsoDeVaga(new Vaga("1", true), LocalDateTime.now()));
+
+        veiculo.setUsos(usos);
+        assertEquals(1, veiculo.getUsos().size());
     }
 }

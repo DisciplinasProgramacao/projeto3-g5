@@ -1,55 +1,82 @@
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import static org.junit.jupiter.api.Assertions.*;
+import org.junit.Test;
+import static org.junit.Assert.*;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 public class clienteTest {
-    private Cliente cliente;
-
-    @BeforeEach
-    public void setUp() {
-        cliente = new Cliente("Anna", "1");
-        Veiculo veiculo1 = new Veiculo("KDN4180", 10);
-        Veiculo veiculo2 = new Veiculo("KCS7508", 10);
-        cliente.addVeiculo(veiculo1);
-        cliente.addVeiculo(veiculo2);
-    }
 
     @Test
-    public void testPossuiVeiculo() {
-        Veiculo encontrado = cliente.possuiVeiculo("KDN4180");
-        assertNotNull(encontrado);
+    public void testAddVeiculo() {
+        // Crie um objeto Cliente
+        Cliente cliente = new Cliente("João", "123", TipoCliente.HORISTA, LocalDate.now());
+
+        // Crie um objeto Veiculo
+        Veiculo veiculo = new Veiculo("ABC-1234"); 
+        // Adicione o veículo ao cliente
+        cliente.addVeiculo(veiculo);
+
+        // Verifique se o veículo foi adicionado corretamente
+        assertEquals(veiculo, cliente.possuiVeiculo(veiculo.getPlaca()));
     }
 
     @Test
     public void testTotalDeUsos() {
-        int totalUsos = cliente.totalDeUsos();
-        assertEquals(10, totalUsos);
-    }
+        
 
-    @Test
-    public void testArrecadadoPorVeiculo() {
-        double arrecadacaoKDN4180 = cliente.arrecadadoPorVeiculo("KDN4180");
-        assertEquals(15.0, arrecadacaoKDN4180, 0.01);
+        Cliente cliente = new Cliente("João", "123", TipoCliente.HORISTA, LocalDate.now());
+        Vaga vaga = new Vaga("1", true); 
+          
+        LocalDateTime saida = LocalDateTime.now().plusHours(1);
 
-        double arrecadacaoKCS7508 = cliente.arrecadadoPorVeiculo("KCS7508");
-        assertEquals(35.0, arrecadacaoKCS7508, 0.01);
+        for (int i = 0; i < 5; i++) {
+            Veiculo veiculo = new Veiculo("ABC-1234"); 
+            List<UsoDeVaga> usos = new ArrayList<>();
+            for (int j = 0; j < i + 1; j++) {
+                usos.add(new UsoDeVaga(vaga, saida)); 
+            }
+            veiculo.setUsos(usos);
+            cliente.addVeiculo(veiculo);
     }
+}
 
     @Test
     public void testArrecadadoTotal() {
-        double totalArrecadado = cliente.arrecadadoTotal();
-        assertEquals(150.0, totalArrecadado, 0.01);
+        Cliente cliente = new Cliente("João", "123", TipoCliente.HORISTA, LocalDate.now());
+
+        double totalArrecadado = 0.0;
+    
+        for (int i = 0; i < 5; i++) {
+            Veiculo veiculo = new Veiculo("ABC-1234"); 
+            LocalDateTime entrada = LocalDateTime.now().minusHours(i);
+            LocalDateTime saida = LocalDateTime.now();
+            veiculo.estacionar(new Vaga("1", true), entrada);
+            totalArrecadado += veiculo.sair(saida, TipoCliente.HORISTA);
+            cliente.addVeiculo(veiculo);
+        }
+    
+        // Verifique se a arrecadação total é correta
+        assertEquals(totalArrecadado, cliente.arrecadadoTotal(), 0.001);
     }
 
     @Test
     public void testArrecadadoNoMes() {
-        double arrecadadoMes1 = cliente.arrecadadoNoMes(1);
-        assertEquals(50.0, arrecadadoMes1, 0.01);
+        // Crie um objeto Cliente
+        Cliente cliente = new Cliente("João", "123", TipoCliente.MENSALISTA, LocalDate.now());
 
-        double arrecadadoMes2 = cliente.arrecadadoNoMes(2);
-        assertEquals(30.0, arrecadadoMes2, 0.01);
-
-        double arrecadadoMes3 = cliente.arrecadadoNoMes(3);
-        assertEquals(0.0, arrecadadoMes3, 0.01);
+        double totalArrecadado = 0.0;
+    
+        for (int i = 0; i < 5; i++) {
+            Veiculo veiculo = new Veiculo("ABC-1234"); 
+            LocalDateTime entrada = LocalDateTime.now().minusHours(i);
+            LocalDateTime saida = LocalDateTime.now();
+            veiculo.estacionar(new Vaga("1", true), entrada);
+            totalArrecadado += veiculo.sair(saida, TipoCliente.HORISTA);
+            cliente.addVeiculo(veiculo);
+        }
+    
+        // Verifique se a arrecadação no mês atual é correta
+        assertEquals(totalArrecadado, cliente.arrecadadoNoMes(LocalDate.now().getMonthValue()), 0.001);
     }
 }

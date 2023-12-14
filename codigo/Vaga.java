@@ -8,7 +8,7 @@ public class Vaga implements Serializable {
 	private boolean disponivel;  // Indica se a vaga está disponível
 
 	// Construtor para criar uma Vaga com uma identificação única
-	public Vaga(String id) {
+	public Vaga(String id, boolean disponivel) {
         this.id = id;
         this.disponivel = true;  // Inicialmente, a vaga está disponível
 	}
