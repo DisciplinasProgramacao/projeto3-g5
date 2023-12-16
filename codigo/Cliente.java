@@ -38,13 +38,26 @@ enum TipoCliente {
 }
 
 // Classe que representa um cliente
-public class Cliente extends   Observable implements Serializable {
+public class Cliente extends Observable implements Serializable {
 
     private String nome;
     private String id;
-    private List<Veiculo>  veiculos =new ArrayList<>();
+    private List<Veiculo> veiculos = new ArrayList<>();
     private LocalDate dateMensalista;
     private TipoCliente tipoCliente;
+
+    private List<Observer> observadores = new ArrayList<>();
+
+    public void addObserver(Observer observador) {
+        observadores.add(observador);
+    }
+
+    // Método chamado quando ocorre uma mudança
+    public void notificarMudanca(UsoDeVaga uso) {
+        for (Observer observador : observadores) {
+            observador.notificarMudanca(this, uso);
+        }
+    }
 
     // Construtor da classe Cliente
     public Cliente(String nome, String id, TipoCliente tipoCliente, LocalDate dateMensalista) {
@@ -59,39 +72,38 @@ public class Cliente extends   Observable implements Serializable {
         if (veiculo == null) {
             throw new IllegalArgumentException("O veículo não pode ser null.");
         }
-    
+
         if (veiculos.contains(veiculo)) {
             throw new IllegalArgumentException("O veículo já existe na lista.");
         }
-    
+
         veiculos.add(veiculo);
     }
 
-    // Método para verificar se o cliente possui um veículo com uma determinada placa
+    // Método para verificar se o cliente possui um veículo com uma determinada
+    // placa
     public Veiculo possuiVeiculo(String placa) {
-        return this.veiculos.stream().
-        filter(veiculo -> veiculo != null && veiculo.getPlaca().equals(placa))
-        .findFirst().orElse(null);
+        return this.veiculos.stream().filter(veiculo -> veiculo != null && veiculo.getPlaca().equals(placa))
+                .findFirst().orElse(null);
 
     }
 
     // Método para calcular o total de usos de veículos pelo cliente
     public int totalDeUsos() {
-        return (int) veiculos.stream().
-        filter(veiculo -> veiculo != null).
-        mapToInt(veiculo -> veiculo.totalDeUsos()).
-        sum();
+        return (int) veiculos.stream().filter(veiculo -> veiculo != null).mapToInt(veiculo -> veiculo.totalDeUsos())
+                .sum();
     }
 
     // Método para calcular a arrecadação total do cliente
     public double arrecadadoTotal() {
         double totalArrecadado = 0;
-       totalArrecadado= veiculos.stream().filter(veiculo -> veiculo != null).mapToDouble(veiculo -> veiculo.totalArrecadado()).sum();     
-    if (this.dateMensalista != null) {
-        LocalDate hoje = LocalDate.now();
-        long meses = Period.between(this.dateMensalista, hoje).getMonths();
-        totalArrecadado += meses * this.tipoCliente.getValor();
-    }
+        totalArrecadado = veiculos.stream().filter(veiculo -> veiculo != null)
+                .mapToDouble(veiculo -> veiculo.totalArrecadado()).sum();
+        if (this.dateMensalista != null) {
+            LocalDate hoje = LocalDate.now();
+            long meses = Period.between(this.dateMensalista, hoje).getMonths();
+            totalArrecadado += meses * this.tipoCliente.getValor();
+        }
 
         return totalArrecadado;
     }
@@ -99,15 +111,13 @@ public class Cliente extends   Observable implements Serializable {
     // Método para calcular a arrecadação do cliente em um determinado mês
     public double arrecadadoNoMes(int mes) {
         double arrecadadoNoMes = 0;
-        arrecadadoNoMes = veiculos.stream().filter(veiculo -> veiculo != null).
-        mapToDouble(veiculo -> veiculo.
-        arrecadadoNoMes(mes)).
-        sum()
-        + (this.dateMensalista != null && mes >= this.dateMensalista.getMonthValue() ? this.tipoCliente.getValor() : 0);
+        arrecadadoNoMes = veiculos.stream().filter(veiculo -> veiculo != null)
+                .mapToDouble(veiculo -> veiculo.arrecadadoNoMes(mes)).sum()
+                + (this.dateMensalista != null && mes >= this.dateMensalista.getMonthValue()
+                        ? this.tipoCliente.getValor()
+                        : 0);
         return arrecadadoNoMes;
     }
-    
-    
 
     // Getter para o campo nome
     public String getNome() {
@@ -133,7 +143,6 @@ public class Cliente extends   Observable implements Serializable {
     public List<Veiculo> getVeiculos() {
         return veiculos;
     }
-
 
     // Getter para o tipo de cliente
     public TipoCliente getTipoCliente() {

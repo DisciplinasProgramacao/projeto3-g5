@@ -3,8 +3,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Observable;
-import java.util.Observer;
 import java.util.stream.Collectors;
 
 public class Relatorio implements Observer, Serializable {
@@ -17,27 +15,32 @@ public class Relatorio implements Observer, Serializable {
         this.arrecadadoNoMesPorCliente = new HashMap<>();
     }
 
+    // ... Outros membros e construtores ...
+
     @Override
-    public void update(Observable o, Object arg) {
-        
-        if (o instanceof Cliente) {
-            Cliente cliente = (Cliente) o;
-            UsoDeVaga uso = (UsoDeVaga) arg;
-            int mes = uso.getSaida().getMonthValue();
-            //Cliente cliente = uso.getCliente();
-            if (!arrecadadoNoMesPorCliente.containsKey(mes)) {
+    public void notificarMudanca(Cliente cliente, UsoDeVaga uso) {
+        int mes = uso.getSaida().getMonthValue();
+
+        // Atualiza arrecadação por cliente no mês
+        atualizarArrecadacaoNoMes(cliente, uso, mes);
+
+        // Atualiza Top 5 de clientes
+        atualizarClientesTop5(cliente, mes);
+    }
+
+    private void atualizarArrecadacaoNoMes(Cliente cliente, UsoDeVaga uso, int mes) {
+          if (!arrecadadoNoMesPorCliente.containsKey(mes)) {
                 arrecadadoNoMesPorCliente.put(mes, 0.0);
             }
-            arrecadadoNoMesPorCliente.put(mes, arrecadadoNoMesPorCliente.get(mes) + uso.valorPago());
+        arrecadadoNoMesPorCliente.put(mes, arrecadadoNoMesPorCliente.get(mes) + uso.valorPago());
+    }
 
-            // Atualiza o Top5 de clientes com maior arrecadação no mês atual
-            this.clientesTop5.add(cliente);
-            this.clientesTop5.sort((c1, c2) -> (int) (c2.arrecadadoNoMes(mes) - c1.arrecadadoNoMes(mes)));
-            
-            if (this.clientesTop5.size() > 5) {
-                this.clientesTop5.remove(0);
-            }
-            
+    private void atualizarClientesTop5(Cliente cliente, int mes) {
+        clientesTop5.add(cliente);
+        clientesTop5.sort((c1, c2) -> (int) (c2.arrecadadoNoMes(mes) - c1.arrecadadoNoMes(mes)));
+
+        if (clientesTop5.size() > 5) {
+            clientesTop5.remove(0);
         }
     }
 

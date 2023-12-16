@@ -3,6 +3,8 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.List;
 
 enum Servico {
     manobrista(5, 0),
@@ -34,7 +36,7 @@ public class UsoDeVaga implements Serializable {
     private static final double FRACAO_USO = 0.25;
     private static final double VALOR_FRACAO = 4.0;
     private static final double VALOR_MAXIMO = 50.0;
-    private Servico servico;
+    private List<Servico> servico = new ArrayList<>();
 
     // Atributos da classe
     private Vaga vaga;
@@ -82,12 +84,13 @@ public class UsoDeVaga implements Serializable {
         this.vaga = vaga;
     }
 
-    public Servico getServico() {
-        return this.servico;
-    }
+    public List<Servico> getServico() {
+		return this.servico;
+	}
 
     public void setServico(Servico servico) {
-        this.servico = servico;
+        this.servico.add(servico);
+        this.valorPago += servico.getValor();
     }
 
     public double getValorPago() {

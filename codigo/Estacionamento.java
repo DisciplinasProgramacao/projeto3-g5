@@ -13,6 +13,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.Map;
+
 public class Estacionamento implements Serializable {
 	private String nome;
 	private List<Cliente> id = new ArrayList<>();
@@ -165,12 +166,12 @@ public class Estacionamento implements Serializable {
 		}
 	}
 
-	public ArrayList<String> gerarRelatorioValor(Cliente cliente){
+	public ArrayList<String> gerarRelatorioValor(Cliente cliente) {
 		ArrayList<String> relatorio = new ArrayList<>();
-		cliente.getVeiculos().sort((v1, v2)-> (int) (v1.totalArrecadado() - v2.totalArrecadado()));
+		cliente.getVeiculos().sort((v1, v2) -> (int) (v1.totalArrecadado() - v2.totalArrecadado()));
 		Collections.reverse(cliente.getVeiculos());
 		cliente.getVeiculos().forEach(item -> {
-			relatorio.add("Veiculo" + item.getPlaca() +": " + item.gerarRelatorio());
+			relatorio.add("Veiculo" + item.getPlaca() + ": " + item.gerarRelatorio());
 		});
 		return relatorio;
 	}
@@ -232,70 +233,95 @@ public class Estacionamento implements Serializable {
 			List<UsoDeVaga> usos = veiculo.getUsos();
 			for (UsoDeVaga uso : usos) {
 				if (uso != null && uso.getSaida() == null) {
+
 					double diff = Duration.between(uso.getEntrada(), time).toMinutes();
 					diff = diff / 60;
 					if (diff <= 0) {
 						System.out.println("digite um horario posterior ao de entrada");
 						return false;
 					}
-					if (uso.getServico() != null && uso.getServico().getHoraMinima() > diff) {
-						System.out.println("Tempo insuficiente para o serviço adquirido");
-						return false;
-					} else {
+					List<Servico> services = uso.getServico();
+					if (services != null && services.size() > 0) {
+						services.sort((u1, u2) -> (int) (u1.getHoraMinima() - u2.getHoraMinima()));
+						Collections.reverse(services);
 
-						veiculo.sair(time, cliente.getTipoCliente());
-
-						relatorio.update(cliente, uso);
-						return true;
+						if (services.get(0).getHoraMinima() > diff) {
+							System.out.println("Tempo insuficiente para o serviço adquirido");
+							return false;
+						}
 					}
+					veiculo.sair(time, cliente.getTipoCliente());
+					relatorio.notificarMudanca(cliente, uso);
+					return true;
+
 				}
 			}
 		}
 
 		System.out.println("Veiculo não cadastrado, favor cadastrar");
-		return true;
+		return false;
 
 	}
 
 	public void adicionarServico(String idCli, int tipo, String placa) {
-		Cliente cliente = id.stream().filter(c->c.getId().equals(idCli)).findFirst().orElse(null);
-			if (cliente != null) {
-				Veiculo v = cliente.possuiVeiculo(placa);
-				List<UsoDeVaga> usos = v.getUsos();
-				if(usos.size()==0){
+		Cliente cliente = id.stream().filter(c -> c.getId().equals(idCli)).findFirst().orElse(null);
+		if (cliente != null) {
+			Veiculo v = cliente.possuiVeiculo(placa);
+			List<UsoDeVaga> usos = v.getUsos();
+			if (usos.size() == 0) {
 				System.out.println("Não é possível adicionar um serviço com veiculo não estacionado");
-					return ;
-				}
-				UsoDeVaga usoDeVaga = usos.stream().filter(u->u.getEntrada()!=null && u.getSaida()==null).findFirst().orElse(null);
-					if (usoDeVaga != null) {
-						double total = 0;
-						switch (tipo) {
-							case 1:
-								usoDeVaga.setServico(Servico.manobrista);
-								total = usoDeVaga.getvalorPago() + Servico.manobrista.getValor();
-								usoDeVaga.setValorPago(total);
-								break;
-							case 2:
-								usoDeVaga.setServico(Servico.lavagem);
-								total = usoDeVaga.getvalorPago() + Servico.lavagem.getValor();
-								usoDeVaga.setValorPago(total);
-								break;
-							case 3:
-								usoDeVaga.setServico(Servico.polimento);
-								total = usoDeVaga.getvalorPago() + Servico.polimento.getValor();
-								usoDeVaga.setValorPago(total);
-								break;
-
-							default:
-								break;
-						}
-					}else{
-						System.out.println("Não é possível adicionar um serviço com veiculo não estacionado");
-				}
-			}else {
-				System.out.println("cliente nao encontrado");
+				return;
 			}
-		
+			UsoDeVaga usoDeVaga = usos.stream().filter(u -> u.getEntrada() != null && u.getSaida() == null).findFirst()
+					.orElse(null);
+			if (usoDeVaga != null) {
+				double total = 0;
+				switch (tipo) {
+					case 1:
+						Servico servico = usoDeVaga.getServico().stream()
+								.filter(s -> s.getValor() == Servico.manobrista.getValor()).findFirst().orElse(null);
+						if (servico != null) {
+							System.out.println("Serviço já adicionado");
+						} else {
+							usoDeVaga.setServico(Servico.manobrista);
+						}
+						break;
+					case 2:
+						servico = usoDeVaga.getServico().stream()
+								.filter(s -> s.getValor() == Servico.lavagem.getValor()).findFirst().orElse(null);
+						if (servico != null) {
+							System.out.println("Serviço já adicionado");
+						} else {
+							servico = usoDeVaga.getServico().stream()
+									.filter(s -> s.getValor() == Servico.polimento.getValor()).findFirst().orElse(null);
+							if (servico != null) {
+								System.out.println("Serviço de polimento já inclui limpeza");
+							} else {
+								usoDeVaga.setServico(Servico.lavagem);
+							}
+
+						}
+						break;
+					case 3:
+						servico = usoDeVaga.getServico().stream()
+								.filter(s -> s.getValor() == Servico.polimento.getValor()).findFirst().orElse(null);
+						if (servico != null) {
+							System.out.println("Serviço já adicionado");
+						} else {
+							usoDeVaga.setServico(Servico.polimento);
+						}
+						break;
+
+					default:
+						break;
+				}
+			} else {
+				System.out.println("Não é possível adicionar um serviço com veiculo não estacionado");
+			}
+		} else {
+			System.out.println("cliente nao encontrado");
+		}
+
 	}
 
 	public double totalArrecadado() {
