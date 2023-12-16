@@ -351,11 +351,10 @@ public class Estacionamento implements Serializable {
 	}
 
 	public String top5Clientes(int mes) {
-		// return this.id.stream().filter(cliente -> cliente != null).sorted((c1, c2) ->
-		// Double.compare(c2.arrecadadoNoMes(mes),
-		// c1.arrecadadoNoMes(mes))).limit(5).map(Cliente::getNome).collect(Collectors.joining("
-		// "));
-		return relatorio.getClientesTop5();
+		return this.id.stream().filter(cliente -> cliente != null).sorted((c1, c2) ->
+		Double.compare(c2.arrecadadoNoMes(mes),
+		c1.arrecadadoNoMes(mes))).limit(5).map(Cliente::getNome).collect(Collectors.joining(" "));
+		//return relatorio.getClientesTop5();
 	}
 
 	public double mediaUsoMensalistasNoMes(int mes) {

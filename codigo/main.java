@@ -20,9 +20,10 @@ public class main {
          * Permite a entrada como cliente, gestor ou a saída do programa.
          */
         int escolha;
+        int countEst = 1;
         do {
             
-                int countEst = 1;
+                
            
             try {
 
@@ -38,9 +39,11 @@ public class main {
                 // e.printStackTrace();
                 System.out.println("erro ao carregar estacionamentos");
             }
+
             if(countEst==1){
                   System.out.println("nenhum estacionamento carregado, crie um para continuar");
                   criarEstacionamento();
+                  countEst++;
             }
             
             // Menu principal
@@ -84,6 +87,7 @@ public class main {
          System.out.println("digite o numero de vaga por fileiras:");
        int vaga =scanner.nextInt();
        estacionamentos.put(estacionamentos.size()+1, new Estacionamento(nome, file, vaga));
+        salvarEstacionamentos();
     }
 
     /*

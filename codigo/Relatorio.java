@@ -45,6 +45,8 @@ public class Relatorio implements Observer, Serializable {
     }
 
     public String getClientesTop5() {
+        System.out.println(clientesTop5.get(0).getNome());
+        System.out.println(this.clientesTop5.size());
         return this.clientesTop5.stream().map(Cliente::getNome).collect(Collectors.joining(" "));
     }
 
