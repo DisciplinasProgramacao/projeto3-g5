@@ -19,6 +19,11 @@ public class Veiculo implements Serializable {
     // Método para estacionar o veículo em uma vaga com um horário de entrada
     public void estacionar(Vaga vaga, LocalDateTime entrada) {
         if (vaga.getDisponivel()) {
+            if(usos.stream().filter(u->u.getEntrada()!=null && u.getSaida()==null).findFirst().orElse(null)!=null){
+                System.out.println("veiculo ja estacionado");
+                return;
+            }
+
             UsoDeVaga uso = new UsoDeVaga(vaga, entrada);
             this.usos.add(uso);
         }

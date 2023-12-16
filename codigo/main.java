@@ -2,13 +2,15 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.Scanner;
+import java.util.stream.Collectors;
 
 public class main {
     // Instâncias estáticas de Estacionamento
-    public static Estacionamento estacionamento1 = new Estacionamento("Estacionamento 1", 12, 22);
-    public static Estacionamento estacionamento2 = new Estacionamento("Estacionamento 2", 10, 28);
-    public static Estacionamento estacionamento3 = new Estacionamento("Estacionamento 3", 15, 25);
+    public static Map<Integer, Estacionamento> estacionamentos = new HashMap<>();
 
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
@@ -19,24 +21,34 @@ public class main {
          */
         int escolha;
         do {
-            // Carregar estacionamentos previamente salvos
-
-            // if (estacionamento1.getId()[0] != null)
+            
+                int countEst = 1;
+           
             try {
-                estacionamento1 = estacionamento1.carregarEstado();
-                estacionamento2 = estacionamento2.carregarEstado();
-                estacionamento3 = estacionamento3.carregarEstado();
+
+                
+                while (new Estacionamento("Estacionamento", 0, 0)
+                        .carregarEstado("Estacionamento " + countEst) != null) {
+                    estacionamentos.put(countEst,
+                            new Estacionamento("Estacionamento", 0, 0).carregarEstado("Estacionamento " + countEst));
+                    countEst++;
+                }
                 System.out.println("carregando estacionamento salvo ");
             } catch (IOException | ClassNotFoundException e) {
                 // e.printStackTrace();
                 System.out.println("erro ao carregar estacionamentos");
             }
-
+            if(countEst==1){
+                  System.out.println("nenhum estacionamento carregado, crie um para continuar");
+                  criarEstacionamento();
+            }
+            
             // Menu principal
             System.out.println("Menu Principal");
             System.out.println("1. Entrar como Cliente");
             System.out.println("2. Entrar como Gestor");
-            System.out.println("3. Sair");
+            System.out.println("3. Criar novo Estacionamento");
+            System.out.println("4. Sair");
 
             System.out.print("Escolha uma opção: ");
 
@@ -51,6 +63,9 @@ public class main {
                     entrarComoGestor();
                     break;
                 case 3:
+                    criarEstacionamento();
+                    break;
+                case 4:
                     System.out.println("Saindo do programa.");
                     System.exit(0);
                 default:
@@ -60,6 +75,17 @@ public class main {
         } while (escolha < 4 && escolha > 0);
     }
 
+    private static void criarEstacionamento() {
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("digite o nome do estacionamento:");
+       String nome =scanner.nextLine();
+         System.out.println("digite o numero de fileiras:");
+       int file =scanner.nextInt();
+         System.out.println("digite o numero de vaga por fileiras:");
+       int vaga =scanner.nextInt();
+       estacionamentos.put(estacionamentos.size()+1, new Estacionamento(nome, file, vaga));
+    }
+
     /*
      * Método para entrada como cliente
      * Permite ao usuário escolher um estacionamento e entrar como cliente.
@@ -67,24 +93,23 @@ public class main {
      */
     public static void entrarComoCliente() {
         Scanner scanner = new Scanner(System.in);
-        Estacionamento e = estacionamento1;
+        Estacionamento e = new Estacionamento(null, 0, 0);
         System.out.println("escolha o estacionamento: ");
+        estacionamentos.forEach((i,est)->{System.out.println("digite: "+i+ " para "+est.getNome());});
         int escolha = scanner.nextInt();
-
-        switch (escolha) {
-            case 1:
-                e = estacionamento1;
-                break;
-            case 2:
-                e = estacionamento2;
-                break;
-            case 3:
-                e = estacionamento3;
-                break;
-            default:
-                System.out.println("Opção inválida. Escolha uma opção válida.");
-
-                break;
+        try {
+           
+            if(escolha>estacionamentos.size()){
+            System.out.println("Opção inválida. Escolha uma opção válida.");
+            entrarComoCliente();
+            return;
+            }
+            else {
+                 e = estacionamentos.get(escolha);
+            }
+        } catch (Exception error) {
+            System.out.println("Opção inválida. Escolha uma opção válida.");
+            entrarComoCliente();
         }
 
         scanner.nextLine();
@@ -121,14 +146,14 @@ public class main {
         int escolha;
         do {
             System.out.println("Menu Cliente");
-            System.out.println("1. Estacionar Veiculo");            
+            System.out.println("1. Estacionar Veiculo");
             System.out.println("2. Sair com veículo");
             System.out.println("3. Adicionar um serviço");
             System.out.println("4. Adicionar veículo");
             System.out.println("5. Seja um mensalista!");
             System.out.println("6. Acessar histórico de uso do estacionamento");
-            System.out.println("7. Acessar histórico de uso do estacionamento por mês");   
-            System.out.println("8. Acessar relatório de veículos");         
+            System.out.println("7. Acessar histórico de uso do estacionamento por mês");
+            System.out.println("8. Acessar relatório de veículos");
             System.out.println("9. Sair");
             escolha = scanner.nextInt();
             scanner.nextLine();
@@ -158,7 +183,7 @@ public class main {
                     System.out.println("Insira o mês desejado(1 a 12)");
                     int mes = scanner.nextInt();
                     System.out.println(estacionamento.historicoUsoData(c, mes));
-                    break;              
+                    break;
                 case 8:
                     System.out.println(estacionamento.gerarRelatorioValor(c));
                     break;
@@ -231,20 +256,20 @@ public class main {
      * lavagem e polimento.
      */
     public static void menuServico(Estacionamento estacionamento, String id) {
-       try {
-        Scanner scanner = new Scanner(System.in);
-        System.out.println("Indique a placa do veiculo: ");
-        String plaque = scanner.nextLine();
+        try {
+            Scanner scanner = new Scanner(System.in);
+            System.out.println("Indique a placa do veiculo: ");
+            String plaque = scanner.nextLine();
 
-        System.out.println("1- Manobrista");
-        System.out.println("2- Lavagem");
-        System.out.println("3- Polimento(inclui lavagem)");
-        int escolha = scanner.nextInt();
-        estacionamento.adicionarServico(id, escolha, plaque);
-       } catch (Exception e) {
-        System.out.println("Insira dados validos");
-       }
-        
+            System.out.println("1- Manobrista");
+            System.out.println("2- Lavagem");
+            System.out.println("3- Polimento(inclui lavagem)");
+            int escolha = scanner.nextInt();
+            estacionamento.adicionarServico(id, escolha, plaque);
+        } catch (Exception e) {
+            System.out.println("Insira dados validos");
+        }
+
     }
 
     /*
@@ -252,13 +277,14 @@ public class main {
      * Salva os estados dos estacionamentos em arquivos para persistência de dados.
      */
     public static void salvarEstacionamentos() {
-        try {
-            estacionamento1.salvarEstado();
-            estacionamento2.salvarEstado();
-            estacionamento3.salvarEstado();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        estacionamentos.forEach((i, item) -> {
+            try {
+                item.salvarEstado("Estacionamento " + i);
+            } catch (IOException e) {
+                System.out.println("Erro ao salvar estacionamentos");
+                // e.printStackTrace();
+            }
+        });
     }
 
     /*
@@ -287,7 +313,7 @@ public class main {
                     Integer.parseInt(hour.split(":")[1]));
             estacionamento.estacionar(plaque, momentoAtual, c);
         } catch (Exception e) {
-            //e.printStackTrace();
+            // e.printStackTrace();
             // System.out.println(e.getMessage());
             System.out.println("digite um horario valido");
         }
@@ -325,18 +351,9 @@ public class main {
         Scanner scanner = new Scanner(System.in);
         System.out.println("Qual estacionamento você quer gerenciar(1 a 3)?");
         int num = scanner.nextInt();
-        Estacionamento estacionamento = new Estacionamento(null, num, num);
+        Estacionamento estacionamento = estacionamentos.get(num);
 
-        if (num == 1) {
-            estacionamento = estacionamento1;
-        }
-        if (num == 2) {
-            estacionamento = estacionamento2;
-        }
-        if (num == 3) {
-            estacionamento = estacionamento3;
-        }
-        System.out.println(estacionamento1.totalArrecadado());
+        System.out.println(estacionamento.totalArrecadado());
         int escolha;
         do {
             System.out.println("Menu Gestor");
@@ -369,30 +386,19 @@ public class main {
                     System.out.println(estacionamento.top5Clientes(mes));
                     break;
                 case 5:
-                    String[] e = { estacionamento1.getNome(), estacionamento2.getNome(), estacionamento3.getNome() };
-                    double[] v = { estacionamento1.totalArrecadado(), estacionamento2.totalArrecadado(),
-                            estacionamento3.totalArrecadado() };
-                    String tempe;
-                    double temp;
-                    for (int i = 0; i < 3; i++) {
-                        for (int j = i; j < 3; j++) {
-
-                            if (v[i] < v[j]) {
-                                temp = v[i];
-                                v[i] = v[j];
-                                v[j] = temp;
-                                tempe = e[i];
-                                e[i] = e[j];
-                                e[j] = tempe;
-                            }
-                        }
-                    }
-
+                    Map<Integer, Estacionamento> estacionamentosOrdenados = estacionamentos.entrySet().stream()
+                            .sorted(Map.Entry.comparingByValue(
+                                    (e1, e2) -> Double.compare(e2.totalArrecadado(), e1.totalArrecadado())))
+                            .collect(Collectors.toMap(
+                                    Map.Entry::getKey,
+                                    Map.Entry::getValue,
+                                    (e1, e2) -> e1,
+                                    LinkedHashMap::new));
                     System.out.println("Arrencadação por estacionamento: ");
-                    for (int i = 0; i < v.length; i++) {
-                        System.out.println(e[i] + ": ");
-                        System.out.println(v[i]);
-                    }
+                    estacionamentosOrdenados.forEach((index, e) -> {
+                        System.out.println(e.getNome() + "valor: " + e.totalArrecadado());
+                    });
+
                     break;
                 case 6:
                     System.out.println("Insira o mês desejado(1 a 12)");

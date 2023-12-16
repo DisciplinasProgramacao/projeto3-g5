@@ -69,15 +69,20 @@ public class Estacionamento implements Serializable {
 		return this.vagasPorFileira;
 	}
 
-	public void salvarEstado() throws IOException {
-		try (ObjectOutputStream outputStream = new ObjectOutputStream(new FileOutputStream(this.nome + ".ser"))) {
+	public void salvarEstado(String nome) throws IOException {
+		try (ObjectOutputStream outputStream = new ObjectOutputStream(new FileOutputStream(nome + ".ser"))) {
 			outputStream.writeObject(this);
 		}
 	}
 
-	public Estacionamento carregarEstado() throws IOException, ClassNotFoundException {
-		try (ObjectInputStream inputStream = new ObjectInputStream(new FileInputStream(this.nome + ".ser"))) {
+	public Estacionamento carregarEstado(String nome) throws IOException, ClassNotFoundException {
+		try {
+			//System.out.println(nome + ".ser");
+			ObjectInputStream inputStream = new ObjectInputStream(new FileInputStream(nome + ".ser")) ;
 			return (Estacionamento) inputStream.readObject();
+		} catch (Exception e) {
+			//System.out.println(e);
+			return null;
 		}
 
 	}
@@ -128,11 +133,11 @@ public class Estacionamento implements Serializable {
 			System.out.println("Veículo não encontrado");
 		} else if (vaga == null) {
 			System.out.println("Não há vagas disponíveis");
-		} else{
+		}
+		else{
 			veiculo.estacionar(vaga, time);
+		}
 
-			UsoDeVaga uso = new UsoDeVaga(new Vaga("1", true), time);
-			veiculo.getUsos().add(uso);}
 	}
 
 
@@ -227,7 +232,7 @@ public class Estacionamento implements Serializable {
 
 	public boolean sair(String placa, LocalDateTime time) {
 		Cliente cliente = encontrarClientePorPlaca(placa);
-
+			
 		if (cliente != null && cliente.possuiVeiculo(placa) != null) {
 			Veiculo veiculo = cliente.possuiVeiculo(placa);
 			List<UsoDeVaga> usos = veiculo.getUsos();
