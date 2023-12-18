@@ -8,6 +8,9 @@
   - Documentação: 1,25/3 pontos;
   - Tarefas nas aulas: 5 pontos;
   - Atraso nos artefatos: desconto de 1 a 4 pontos por semana.
+  - 01/11 (Anna, Vitor, Walter)
+  - 08/11 (Walter)
+  - 15/11 ❌
 
 ## Requisitos
 
